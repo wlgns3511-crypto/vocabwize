@@ -67,3 +67,32 @@ export function getTopComparisons(limit = 500): { slugA: string; slugB: string }
 export function countWords(): number {
   return (getDb().prepare('SELECT COUNT(*) as c FROM words').get() as { c: number }).c;
 }
+
+// --- Word length queries (for Wordle-style searches) ---
+
+export function getWordsByLength(length: number, limit = 200): Word[] {
+  return getDb().prepare('SELECT * FROM words WHERE LENGTH(word) = ? ORDER BY frequency DESC LIMIT ?').all(length, limit) as Word[];
+}
+
+export function getAvailableLengths(): number[] {
+  return (getDb().prepare('SELECT DISTINCT LENGTH(word) as len FROM words WHERE LENGTH(word) BETWEEN 3 AND 15 ORDER BY len').all() as { len: number }[]).map(r => r.len);
+}
+
+// --- Rhyming words (simple suffix match) ---
+
+export function getRhymingWords(slug: string, limit = 30): Word[] {
+  const word = getWordBySlug(slug);
+  if (!word) return [];
+  // Get last 3 chars as rhyme pattern
+  const w = word.word.toLowerCase();
+  const suffix = w.length >= 3 ? w.slice(-3) : w.slice(-2);
+  return getDb().prepare('SELECT * FROM words WHERE word LIKE ? AND slug != ? ORDER BY frequency DESC LIMIT ?')
+    .all('%' + suffix, slug, limit) as Word[];
+}
+
+// --- POS (Part of Speech) queries ---
+
+export function getWordsByPOS(pos: string, limit = 200): Word[] {
+  return getDb().prepare('SELECT * FROM words WHERE pos LIKE ? ORDER BY frequency DESC LIMIT ?')
+    .all('%' + pos + '%', limit) as Word[];
+}
