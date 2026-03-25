@@ -1,0 +1,51 @@
+import { getTopWords, countWords } from "@/lib/db";
+
+export default function Home() {
+  const topWords = getTopWords(50);
+  const total = countWords();
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  return (
+    <div>
+      <section className="mb-12 text-center">
+        <h1 className="text-4xl font-bold mb-3">English Word Definitions & Meanings</h1>
+        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          Look up {total.toLocaleString()}+ English words. Definitions, pronunciation, and word comparisons.
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3 text-center">Browse by Letter</h2>
+        <div className="flex flex-wrap justify-center gap-2">
+          {letters.map((l) => (
+            <a key={l} href={`/letter/${l.toLowerCase()}`}
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 font-semibold text-sm">{l}</a>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-xl font-bold mb-4">Most Common Words</h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+          {topWords.map((w) => (
+            <a key={w.slug} href={`/word/${w.slug}`}
+              className="p-2 border border-slate-100 rounded hover:bg-indigo-50">
+              <span className="font-medium">{w.word}</span>
+              {w.phonetic && <span className="text-slate-400 ml-2 text-xs">/{w.phonetic}/</span>}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-bold mb-4">Commonly Confused Words</h2>
+        <div className="grid sm:grid-cols-2 gap-2 text-sm">
+          {[['affect','effect'],['than','then'],['their','there'],['your',"you-re"],['lose','loose'],['who','whom'],['lay','lie'],['farther','further'],['advice','advise'],['complement','compliment']].map(([a,b]) => {
+            const [x,y] = [a,b].sort();
+            return (<a key={a+b} href={`/compare/${x}-vs-${y}`} className="p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-indigo-600">{a} vs {b}</a>);
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
