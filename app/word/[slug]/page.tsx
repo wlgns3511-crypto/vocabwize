@@ -64,6 +64,15 @@ export default async function WordPage({ params }: Props) {
         </div>
       </section>
 
+      <div className="flex gap-3 mb-8">
+        <a href={`/rhymes/${slug}`} className="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm">
+          Words that rhyme with {w.word}
+        </a>
+        <a href={`/words-length/${w.word.length}`} className="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm">
+          {w.word.length}-letter words
+        </a>
+      </div>
+
       {similar.length > 0 && (
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-3">Related Words</h2>
