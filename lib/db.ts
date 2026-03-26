@@ -96,3 +96,7 @@ export function getWordsByPOS(pos: string, limit = 200): Word[] {
   return getDb().prepare('SELECT * FROM words WHERE pos LIKE ? ORDER BY frequency DESC LIMIT ?')
     .all('%' + pos + '%', limit) as Word[];
 }
+
+export function getPopularWords(limit = 10): Word[] {
+  return getDb().prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ?').all(limit) as Word[];
+}
