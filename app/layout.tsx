@@ -25,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <nav className="flex gap-4 text-sm">
               <a href="/word" className="hover:text-indigo-600">Words</a>
               <a href="/compare" className="hover:text-indigo-600">Compare</a>
+              <a href="/quiz" className="hover:text-indigo-600">Quiz</a>
             </nav>
           </div>
         </header>
