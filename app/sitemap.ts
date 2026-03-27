@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { getTopWords, getTopComparisons, getAllWordsCount } from "@/lib/db";
+import { getTopWords, getTopComparisons } from "@/lib/db";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Get maximum allowed by Next.js sitemap (50K limit, we use 45K to be safe)
   const words = getTopWords(44000);
-  const comparisons = getTopComparisons(500);
+  const comparisons = getTopComparisons(2000);
   return [
     { url: SITE_URL, changeFrequency: "monthly", priority: 1.0 },
     { url: `${SITE_URL}/word`, changeFrequency: "monthly", priority: 0.9 },

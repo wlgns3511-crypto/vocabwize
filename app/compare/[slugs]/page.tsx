@@ -15,6 +15,8 @@ function parseJson(s: string | null): string[] {
   try { return JSON.parse(s); } catch { return []; }
 }
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return getTopComparisons(500).map((p) => {
     const [a, b] = [p.slugA, p.slugB].sort();
