@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getSimilarWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { DataFeedback } from "@/components/DataFeedback";
+import { EmbedButton } from "@/components/EmbedButton";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -191,7 +192,9 @@ export default async function WordPage({ params }: Props) {
         ))}
       </section>
 
-      <DataFeedback />
+      <EmbedButton url="https://vocabwize.com" title="Data from VocabWize" site="VocabWize" siteUrl="https://vocabwize.com" />
+
+          <DataFeedback />
 
           <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
         <h3 className="text-lg font-semibold text-teal-900 mb-3">Improve Your English Skills</h3>
