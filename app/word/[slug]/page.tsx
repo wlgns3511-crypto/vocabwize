@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getSimilarWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
+import { DataFeedback } from "@/components/DataFeedback";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -190,7 +191,9 @@ export default async function WordPage({ params }: Props) {
         ))}
       </section>
 
-      <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
+      <DataFeedback />
+
+          <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
         <h3 className="text-lg font-semibold text-teal-900 mb-3">Improve Your English Skills</h3>
         <p className="text-teal-800 text-sm leading-relaxed">
           Start a free online English course, prepare for TOEFL or IELTS exams, or find a private tutor to accelerate your language learning journey.
