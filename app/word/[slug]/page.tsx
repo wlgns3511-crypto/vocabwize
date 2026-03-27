@@ -190,6 +190,14 @@ export default async function WordPage({ params }: Props) {
         ))}
       </section>
 
+      <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
+        <h3 className="text-lg font-semibold text-teal-900 mb-3">Improve Your English Skills</h3>
+        <p className="text-teal-800 text-sm leading-relaxed">
+          Start a free online English course, prepare for TOEFL or IELTS exams, or find a private tutor to accelerate your language learning journey.
+          Explore <a href="https://degreewize.com" className="underline font-medium">top university programs</a> for international students.
+        </p>
+      </section>
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema(w.word, w.definition)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(breadcrumbs)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />
