@@ -1,4 +1,5 @@
 import { getTopWords, countWords } from "@/lib/db";
+import { VocabQuiz } from "@/components/VocabQuiz";
 
 export default function Home() {
   const topWords = getTopWords(50);
@@ -36,6 +37,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <VocabQuiz />
 
       <section>
         <h2 className="text-xl font-bold mb-4">Commonly Confused Words</h2>
