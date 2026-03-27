@@ -4,6 +4,7 @@ import { getWordBySlug, getTopWords, getSimilarWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { DataFeedback } from "@/components/DataFeedback";
 import { EmbedButton } from "@/components/EmbedButton";
+import { FreshnessTag } from "@/components/FreshnessTag";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -192,7 +193,9 @@ export default async function WordPage({ params }: Props) {
         ))}
       </section>
 
-      <EmbedButton url="https://vocabwize.com" title="Data from VocabWize" site="VocabWize" siteUrl="https://vocabwize.com" />
+      <FreshnessTag source="Lexical Database" />
+
+          <EmbedButton url="https://vocabwize.com" title="Data from VocabWize" site="VocabWize" siteUrl="https://vocabwize.com" />
 
           <DataFeedback />
 
