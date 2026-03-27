@@ -52,10 +52,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <a href="https://nameblooms.com" className="hover:text-blue-600">Baby Names</a>
                 <a href="https://vocabwize.com" className="hover:text-blue-600">Vocabulary</a>
                 <a href="https://calcpeek.com" className="hover:text-blue-600">Calculators</a>
-                <a href="https://tariffpeek.com" className="hover:text-blue-600">HS Codes <p>&copy; {new Dateamp; Tariffs</a>
+                <a href="https://tariffpeek.com" className="hover:text-blue-600">HS Codes &amp; Tariffs</a>
               </div>
             </div>
-            <p>\<p>&copy; {new Datecopy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
           </div>
         </footer>
       </body>
