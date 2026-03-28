@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopComparisons } from "@/lib/db";
+import { AdSlot } from "@/components/AdSlot";
 import { faqSchema } from "@/lib/schema";
 
 interface Props { params: Promise<{ slugs: string }> }
@@ -146,6 +147,8 @@ export default async function ComparePage({ params }: Props) {
           </table>
         </div>
       </section>
+
+      <AdSlot id="compare-mid" />
 
       {/* Etymology Comparison */}
       {(a.etymology || b.etymology) && (

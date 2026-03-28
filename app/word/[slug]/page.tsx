@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getSimilarWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
+import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
 import { EmbedButton } from "@/components/EmbedButton";
 import { FreshnessTag } from "@/components/FreshnessTag";
@@ -93,6 +94,8 @@ export default async function WordPage({ params }: Props) {
         </div>
       </section>
 
+      <AdSlot id="word-after-def" />
+
       {examples.length > 0 && (
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-3">Examples</h2>
@@ -165,6 +168,8 @@ export default async function WordPage({ params }: Props) {
           {w.word.length}-letter words
         </a>
       </div>
+
+      <AdSlot id="word-before-related" />
 
       {similar.length > 0 && (
         <section className="mb-8">
