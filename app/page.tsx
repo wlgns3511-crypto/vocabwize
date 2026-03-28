@@ -1,10 +1,11 @@
-import { getTopWords, countWords } from "@/lib/db";
+import { getTopWords, countWords, getAvailableLengths } from "@/lib/db";
 import { VocabQuiz } from "@/components/VocabQuiz";
 
 export default function Home() {
   const topWords = getTopWords(50);
   const total = countWords();
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const lengths = getAvailableLengths();
 
   return (
     <div>
@@ -21,6 +22,29 @@ export default function Home() {
           {letters.map((l) => (
             <a key={l} href={`/letter/${l.toLowerCase()}`}
               className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 font-semibold text-sm">{l}</a>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3 text-center">Words by Length</h2>
+        <div className="flex flex-wrap justify-center gap-2">
+          {lengths.map((l) => (
+            <a key={l} href={`/words-length/${l}`}
+              className="px-3 py-1 rounded-full text-sm border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300">{l} letters</a>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3 text-center">Find Rhyming Words</h2>
+        <p className="text-sm text-slate-600 text-center mb-3">Pick a word to find words that rhyme with it.</p>
+        <div className="grid sm:grid-cols-3 md:grid-cols-5 gap-2 text-sm">
+          {topWords.slice(0, 20).map((w) => (
+            <a key={w.slug} href={`/rhymes/${w.slug}`}
+              className="p-2 border border-slate-100 rounded hover:bg-indigo-50 text-center text-indigo-600">
+              {w.word}
+            </a>
           ))}
         </div>
       </section>
