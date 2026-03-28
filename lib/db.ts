@@ -34,7 +34,7 @@ export function getWordCount(): number {
 }
 
 export function getWordSlugsPage(offset: number, limit: number): { slug: string }[] {
-  return getDb().prepare('SELECT slug FROM words ORDER BY frequency DESC, word ASC LIMIT ? OFFSET ?').all(limit, offset) as { slug: string }[];
+  return getDb().prepare('SELECT slug FROM words ORDER BY frequency DESC, word ASC LIMIT ? OFFSET ?').all(Number(limit), Number(offset)) as { slug: string }[];
 }
 
 export function getWordsByLetter(letter: string, limit = 500): Word[] {
