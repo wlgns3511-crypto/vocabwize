@@ -29,6 +29,14 @@ export function getTopWords(limit = 3000): Word[] {
   return getDb().prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ?').all(limit) as Word[];
 }
 
+export function getWordCount(): number {
+  return (getDb().prepare('SELECT COUNT(*) as c FROM words').get() as { c: number }).c;
+}
+
+export function getWordSlugsPage(offset: number, limit: number): { slug: string }[] {
+  return getDb().prepare('SELECT slug FROM words ORDER BY frequency DESC, word ASC LIMIT ? OFFSET ?').all(limit, offset) as { slug: string }[];
+}
+
 export function getWordsByLetter(letter: string, limit = 500): Word[] {
   return getDb().prepare('SELECT * FROM words WHERE slug LIKE ? ORDER BY frequency DESC, word LIMIT ?').all(letter.toLowerCase() + '%', limit) as Word[];
 }
