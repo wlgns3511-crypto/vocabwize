@@ -197,6 +197,15 @@ export default async function WordPage({ params }: Props) {
 
           <EmbedButton url="https://vocabwize.com" title="Data from VocabWize" site="VocabWize" siteUrl="https://vocabwize.com" />
 
+          {/* Related Data Resources */}
+          <section className="mt-8 p-4 bg-slate-50 rounded-lg">
+            <h3 className="text-sm font-semibold text-slate-500 mb-2">Related Data Resources</h3>
+            <div className="flex flex-wrap gap-3 text-sm">
+              <a href="https://nameblooms.com" className="text-indigo-600 hover:underline">NameBlooms - Baby name meanings &rarr;</a>
+              <a href="https://degreewize.com" className="text-indigo-600 hover:underline">DegreeWize - College data &rarr;</a>
+            </div>
+          </section>
+
           <DataFeedback />
 
           <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
