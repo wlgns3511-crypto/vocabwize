@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getTopWords, getTopComparisons } from "@/lib/db";
+import { getTopWords, getTopComparisons, getAvailableLengths } from "@/lib/db";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
 
@@ -7,11 +7,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Get maximum allowed by Next.js sitemap (50K limit, we use 45K to be safe)
   const words = getTopWords(44000);
   const comparisons = getTopComparisons(2000);
+  const lengths = getAvailableLengths();
   return [
     { url: SITE_URL, changeFrequency: "monthly", priority: 1.0 },
     { url: `${SITE_URL}/word`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE_URL}/compare`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE_URL}/quiz`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/about`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.3 },
     ..."abcdefghijklmnopqrstuvwxyz".split("").map((l) => ({
       url: `${SITE_URL}/letter/${l}`,
       changeFrequency: "monthly" as const,
@@ -30,5 +35,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.5,
       };
     }),
+    ...words.slice(0, 500).map((w) => ({
+      url: `${SITE_URL}/rhymes/${w.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...lengths.map((l) => ({
+      url: `${SITE_URL}/words-length/${l}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 }
