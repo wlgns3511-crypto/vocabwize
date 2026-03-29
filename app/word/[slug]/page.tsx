@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopWords, getSimilarWords } from "@/lib/db";
+import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
@@ -187,6 +187,64 @@ export default async function WordPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Synonym/Antonym comparisons */}
+      {(() => {
+        const syns: string[] = w.synonyms ? (() => { try { return JSON.parse(w.synonyms); } catch { return []; } })() : [];
+        const ants: string[] = w.antonyms ? (() => { try { return JSON.parse(w.antonyms); } catch { return []; } })() : [];
+        const popular = getPopularWords(6).filter(p => p.slug !== slug);
+        return (
+          <section className="mb-8">
+            <h2 className="text-xl font-bold mb-3">Compare &ldquo;{w.word}&rdquo;</h2>
+            {syns.length > 0 && (
+              <>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">vs Synonyms</h3>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {syns.slice(0, 5).map(syn => {
+                    const synSlug = syn.toLowerCase().replace(/\s+/g, '-');
+                    const [x, y] = [slug, synSlug].sort();
+                    return (
+                      <a key={syn} href={`/compare/${x}-vs-${y}`}
+                        className="text-sm px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full">
+                        vs {syn}
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            {ants.length > 0 && (
+              <>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">vs Antonyms</h3>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {ants.slice(0, 5).map(ant => {
+                    const antSlug = ant.toLowerCase().replace(/\s+/g, '-');
+                    const [x, y] = [slug, antSlug].sort();
+                    return (
+                      <a key={ant} href={`/compare/${x}-vs-${y}`}
+                        className="text-sm px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-full">
+                        vs {ant}
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">vs Common Words</h3>
+            <div className="flex flex-wrap gap-2">
+              {popular.map(p => {
+                const [x, y] = [slug, p.slug].sort();
+                return (
+                  <a key={p.slug} href={`/compare/${x}-vs-${y}`}
+                    className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
+                    vs {p.word}
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
 
       <section className="mt-8">
         <h2 className="text-xl font-bold mb-4">Frequently Asked Questions</h2>

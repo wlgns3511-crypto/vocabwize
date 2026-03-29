@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopComparisons } from "@/lib/db";
+import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS } from "@/lib/db";
 import { AdSlot } from "@/components/AdSlot";
 import { faqSchema } from "@/lib/schema";
 
@@ -190,6 +190,67 @@ export default async function ComparePage({ params }: Props) {
           </details>
         ))}
       </section>
+
+      {/* Smart related comparisons */}
+      {(() => {
+        const similarA = getSimilarWords(a.slug, 4).filter(w => w.slug !== b.slug);
+        const samePOS = a.pos ? getWordsBySamePOS(a.pos, a.slug, 4).filter(w => w.slug !== b.slug && !similarA.find(s => s.slug === w.slug)) : [];
+        const synA = parseJson(a.synonyms).slice(0, 3);
+        const synB = parseJson(b.synonyms).slice(0, 3);
+        return (
+          <section className="mt-8 mb-4">
+            <h2 className="text-lg font-bold mb-3">Related Comparisons</h2>
+            {similarA.length > 0 && (
+              <>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">Similar to &ldquo;{a.word}&rdquo;</h3>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {similarA.map(w => {
+                    const [x, y] = [a.slug, w.slug].sort();
+                    return (
+                      <a key={w.slug} href={`/compare/${x}-vs-${y}`}
+                        className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
+                        {a.word} vs {w.word}
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            {synA.length > 0 && (
+              <>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">Synonym comparisons</h3>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {synA.map(syn => {
+                    const [x, y] = [b.slug, syn.toLowerCase().replace(/\s+/g, '-')].sort();
+                    return (
+                      <a key={syn} href={`/compare/${x}-vs-${y}`}
+                        className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
+                        {b.word} vs {syn}
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            {samePOS.length > 0 && (
+              <>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">More {a.pos} comparisons</h3>
+                <div className="flex flex-wrap gap-2">
+                  {samePOS.map(w => {
+                    const [x, y] = [a.slug, w.slug].sort();
+                    return (
+                      <a key={w.slug} href={`/compare/${x}-vs-${y}`}
+                        className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-blue-700 rounded-full">
+                        {a.word} vs {w.word}
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </section>
+        );
+      })()}
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />
     </div>

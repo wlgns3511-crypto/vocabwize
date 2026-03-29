@@ -111,3 +111,17 @@ export function getWordsByPOS(pos: string, limit = 200): Word[] {
 export function getPopularWords(limit = 10): Word[] {
   return getDb().prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ?').all(limit) as Word[];
 }
+
+export function getWordsBySamePOS(pos: string | null, excludeSlug: string, limit = 6): Word[] {
+  if (!pos) return [];
+  return getDb().prepare(
+    'SELECT * FROM words WHERE pos = ? AND slug != ? ORDER BY frequency DESC LIMIT ?'
+  ).all(pos, excludeSlug, limit) as Word[];
+}
+
+export function getWordsBySameLevel(level: string | null, excludeSlug: string, limit = 6): Word[] {
+  if (!level) return [];
+  return getDb().prepare(
+    'SELECT * FROM words WHERE level = ? AND slug != ? ORDER BY frequency DESC LIMIT ?'
+  ).all(level, excludeSlug, limit) as Word[];
+}
