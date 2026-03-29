@@ -45,6 +45,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <a href="/word" className="hover:text-indigo-600">Words</a>
               <a href="/compare" className="hover:text-indigo-600">Compare</a>
               <a href="/quiz" className="hover:text-indigo-600">Quiz</a>
+              <a href="/es/" className="text-slate-400 hover:text-indigo-600 text-xs">ES</a>
             </nav>
           </div>
         </header>

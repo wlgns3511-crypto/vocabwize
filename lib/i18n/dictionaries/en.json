@@ -1,0 +1,27 @@
+{
+  "common": {
+    "home": "Home",
+    "words": "Words",
+    "compare": "Compare",
+    "quiz": "Quiz",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "allRightsReserved": "All rights reserved.",
+    "langSwitch": "Español",
+    "langSwitchPrefix": "/es"
+  },
+  "word": {
+    "definition": "Definition",
+    "meaning": "Meaning",
+    "usage": "Usage",
+    "examples": "Examples",
+    "synonyms": "Synonyms",
+    "antonyms": "Antonyms",
+    "pronunciation": "Pronunciation",
+    "etymology": "Etymology",
+    "relatedWords": "Related Words",
+    "faq": "Frequently Asked Questions"
+  }
+}
