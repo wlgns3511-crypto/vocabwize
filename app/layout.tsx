@@ -17,6 +17,25 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-KGNDY9231R" />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-KGNDY9231R');` }} />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5724806562146685" crossOrigin="anonymous" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "name": "VocabWize",
+              "url": "https://vocabwize.com",
+              "description": "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
+              "inLanguage": "en-US"
+            },
+            {
+              "@type": "Organization",
+              "name": "VocabWize",
+              "url": "https://vocabwize.com",
+              "description": "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
+              "sameAs": []
+            }
+          ]
+        }) }} />
       </head>
       <body className={`${inter.className} antialiased bg-white text-slate-900 min-h-screen flex flex-col`}>
         <header className="border-b border-slate-200">
