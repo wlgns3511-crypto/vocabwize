@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS } from "@/lib/db";
 import { AdSlot } from "@/components/AdSlot";
+import { ComparisonBar } from "@/components/ComparisonBar";
 import { faqSchema } from "@/lib/schema";
 
 interface Props { params: Promise<{ slugs: string }> }
@@ -147,6 +148,21 @@ export default async function ComparePage({ params }: Props) {
           </table>
         </div>
       </section>
+
+      {(a.frequency != null || b.frequency != null) && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", margin: "24px 0" }}>
+          <div>
+            <h3 className="text-sm font-medium text-slate-600 mb-2">Word Frequency</h3>
+            <ComparisonBar
+              bars={[
+                ...(a.frequency != null ? [{ label: a.word, value: a.frequency }] : []),
+                ...(b.frequency != null ? [{ label: b.word, value: b.frequency }] : []),
+              ]}
+              format={(v) => v.toLocaleString()}
+            />
+          </div>
+        </div>
+      )}
 
       <AdSlot id="compare-mid" />
 
