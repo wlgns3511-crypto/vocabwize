@@ -6,7 +6,8 @@
     "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "gunzip -kf data/vocab.db.gz || true"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0",

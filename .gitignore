@@ -42,3 +42,7 @@ next-env.d.ts
 
 # Claude
 .claude/
+data/vocab.db
+data/vocab.db-wal
+data/vocab.db-shm
+data/vocab.db-journal
