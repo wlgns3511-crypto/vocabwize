@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords } from "@/lib/db";
+import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
@@ -266,6 +266,11 @@ export default async function WordPage({ params }: Props) {
             <div className="flex flex-wrap gap-3 text-sm">
               <a href="https://nameblooms.com" className="text-indigo-600 hover:underline">NameBlooms - Baby name meanings &rarr;</a>
               <a href="https://degreewize.com" className="text-indigo-600 hover:underline">DegreeWize - College data &rarr;</a>
+              <a href="https://vocablibre.com" className="text-indigo-600 hover:underline">VocabLibre - Dictionnaire Français &rarr;</a>
+              <a href="https://dicionariowize.com" className="text-indigo-600 hover:underline">DicionarioWize - Dicionário Português &rarr;</a>
+              <a href="https://kalimawize.com" className="text-indigo-600 hover:underline">KalimaWize - قاموس عربي &rarr;</a>
+              <a href="https://wortwize.com" className="text-indigo-600 hover:underline">WortWize - Deutsches Wörterbuch &rarr;</a>
+              <a href="https://kotobapeek.com" className="text-indigo-600 hover:underline">KotobaPeek - 日本語辞典 &rarr;</a>
             </div>
           </section>
 
@@ -277,6 +282,27 @@ export default async function WordPage({ params }: Props) {
           Start a free online English course, prepare for TOEFL or IELTS exams, or find a private tutor to accelerate your language learning journey.
           Explore <a href="https://degreewize.com" className="underline font-medium">top university programs</a> for international students.
         </p>
+      </section>
+
+      {/* Dynamic Comparison Discovery */}
+      <section className="mt-10">
+        <h2 className="text-xl font-bold mb-4">Discover More Comparisons</h2>
+        <div className="flex flex-wrap gap-2">
+          {getRandomWords(20)
+            .filter(rw => rw.slug !== slug)
+            .map(rw => {
+              const pair = [slug, rw.slug].sort();
+              return (
+                <a
+                  key={rw.slug}
+                  href={`/compare/${pair[0]}-vs-${pair[1]}/`}
+                  className="text-sm px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full transition-colors"
+                >
+                  {w.word} vs {rw.word}
+                </a>
+              );
+            })}
+        </div>
       </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema(w.word, w.definition)) }} />

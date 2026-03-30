@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS } from "@/lib/db";
+import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS, getRandomWords } from "@/lib/db";
 import { AdSlot } from "@/components/AdSlot";
 import { ComparisonBar } from "@/components/ComparisonBar";
 import { faqSchema } from "@/lib/schema";
@@ -264,6 +264,36 @@ export default async function ComparePage({ params }: Props) {
                 </div>
               </>
             )}
+          </section>
+        );
+      })()}
+
+      {/* Dynamic Comparison Discovery */}
+      {(() => {
+        const randomWords = getRandomWords(30);
+        const randomPairs: { w1: typeof randomWords[0]; w2: typeof randomWords[0] }[] = [];
+        for (let i = 0; i + 1 < randomWords.length && randomPairs.length < 15; i += 2) {
+          if (randomWords[i].slug !== randomWords[i + 1].slug) {
+            randomPairs.push({ w1: randomWords[i], w2: randomWords[i + 1] });
+          }
+        }
+        return (
+          <section className="mt-10">
+            <h2 className="text-xl font-bold mb-4">Explore More Comparisons</h2>
+            <div className="flex flex-wrap gap-2">
+              {randomPairs.map(({ w1, w2 }) => {
+                const [x, y] = [w1.slug, w2.slug].sort();
+                return (
+                  <a
+                    key={`${x}-${y}`}
+                    href={`/compare/${x}-vs-${y}/`}
+                    className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full transition-colors"
+                  >
+                    {w1.slug < w2.slug ? w1.word : w2.word} vs {w1.slug < w2.slug ? w2.word : w1.word}
+                  </a>
+                );
+              })}
+            </div>
           </section>
         );
       })()}
