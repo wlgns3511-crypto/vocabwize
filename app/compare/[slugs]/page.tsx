@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!a || !b) return {};
   return {
     title: `${a.word} vs ${b.word} — What's the Difference?`,
-    description: `What's the difference between "${a.word}" and "${b.word}"? Compare definitions, examples, usage, and learn when to use each word.`,
+    description: `${a.word} means "${a.definition.substring(0, 60)}..." while ${b.word} means "${b.definition.substring(0, 60)}..." Compare side by side with examples.`,
     alternates: { canonical: `/compare/${slugs}` },
   };
 }
@@ -298,6 +298,18 @@ export default async function ComparePage({ params }: Props) {
         );
       })()}
 
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "DefinedTerm",
+        name: a.word,
+        description: a.definition,
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "DefinedTerm",
+        name: b.word,
+        description: b.definition,
+      }) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />
     </div>
   );

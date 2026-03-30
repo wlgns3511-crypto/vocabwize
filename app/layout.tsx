@@ -8,6 +8,18 @@ export const metadata: Metadata = {
   title: { default: `${SITE_NAME} - Word Definitions, Meanings & Comparisons`, template: `%s | ${SITE_NAME}` },
   description: "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
   metadataBase: new URL(SITE_URL), robots: { index: true, follow: true },
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en': 'https://vocabwize.com',
+      'fr': 'https://vocablibre.com',
+      'pt': 'https://dicionariowize.com',
+      'ar': 'https://kalimawize.com',
+      'de': 'https://wortwize.com',
+      'ja': 'https://kotobapeek.com',
+      'x-default': 'https://vocabwize.com',
+    },
+  },
   openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

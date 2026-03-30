@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!w) return {};
   const shortDef = w.definition.substring(0, 120);
   return {
-    title: `${w.word} - Definition, Meaning & Usage`,
-    description: `${w.word}: ${shortDef}. Learn the definition, pronunciation, examples, etymology, and how to use "${w.word}" in a sentence.`,
+    title: `${w.word} — Meaning, Examples & Complete Guide`,
+    description: `${w.word}: ${shortDef}. Discover pronunciation, real-world examples, synonyms, antonyms, and expert tips for using "${w.word}" correctly.`,
     alternates: { canonical: `/word/${slug}` },
   };
 }

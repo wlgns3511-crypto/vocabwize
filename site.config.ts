@@ -1,4 +1,4 @@
-import type { SiteConfig } from '../_shared/vocab-core/types';
+import type { SiteConfig } from './lib/types';
 
 export const siteConfig: SiteConfig = {
   domain: 'vocabwize.com',

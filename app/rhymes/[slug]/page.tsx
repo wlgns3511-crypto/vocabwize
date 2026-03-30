@@ -12,9 +12,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const w = getWordBySlug(slug);
   if (!w) return {};
+  const count = getRhymingWords(slug).length;
   return {
-    title: `Words That Rhyme With ${w.word}`,
-    description: `Find words that rhyme with "${w.word}". Perfect for poetry, songwriting, and creative writing.`,
+    title: `${count}+ Words That Rhyme With ${w.word}`,
+    description: `Discover ${count} words that rhyme with "${w.word}". Complete rhyming dictionary with pronunciation — perfect for poetry, rap, and songwriting.`,
   };
 }
 

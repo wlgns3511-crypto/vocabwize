@@ -1,4 +1,4 @@
-import { breadcrumbSchema as _breadcrumb, faqSchema, definedTermSchema } from '../../_shared/vocab-core/schema';
+import { breadcrumbSchema as _breadcrumb, faqSchema, definedTermSchema } from './core-schema';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vocabwize.com';
 
