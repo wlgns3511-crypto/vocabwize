@@ -44,7 +44,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               "name": "VocabWize",
               "url": "https://vocabwize.com",
               "description": "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
-              "sameAs": []
+              "sameAs": ["https://datapeekfacts.com"],
+              "knowsAbout": "Lexicography, Dictionary, Vocabulary"
             }
           ]
         }) }} />
@@ -57,6 +58,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <a href="/word" className="hover:text-indigo-600">Words</a>
               <a href="/compare" className="hover:text-indigo-600">Compare</a>
               <a href="/blog/" className="hover:text-indigo-600">Guides</a>
+              <a href="/pos" className="hover:text-indigo-600">POS</a>
+              <a href="/rankings" className="hover:text-indigo-600">Rankings</a>
               <a href="/quiz" className="hover:text-indigo-600">Quiz</a>
               <a href="/es/" className="text-slate-400 hover:text-indigo-600 text-xs">ES</a>
             </nav>

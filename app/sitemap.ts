@@ -25,6 +25,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/about/`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/privacy/`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/contact/`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/pos/`, changeFrequency: "monthly", priority: 0.8 },
+    ...["noun", "verb", "adjective", "adverb", "pronoun", "preposition", "conjunction", "interjection"].map((p) => ({
+      url: `${SITE_URL}/pos/${p}/`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    { url: `${SITE_URL}/rankings/`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/blog/`, changeFrequency: "weekly" as const, priority: 0.8 },
     ...posts.map((p) => ({
       url: `${SITE_URL}/blog/${p.slug}/`,

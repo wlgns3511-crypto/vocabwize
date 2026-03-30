@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { AdSlot } from "@/components/AdSlot";
+import { AuthorBox } from "@/components/AuthorBox";
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -161,6 +162,8 @@ export default async function BlogPostPage({
           </a>
         </div>
       </div>
+
+      <AuthorBox />
 
       {/* Related guides */}
       {suggestions.length > 0 && (

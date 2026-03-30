@@ -4,6 +4,7 @@ import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandom
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
+import { AuthorBox } from "@/components/AuthorBox";
 import { EmbedButton } from "@/components/EmbedButton";
 import { FreshnessTag } from "@/components/FreshnessTag";
 
@@ -275,6 +276,8 @@ export default async function WordPage({ params }: Props) {
           </section>
 
           <DataFeedback />
+
+          <AuthorBox />
 
           <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
         <h3 className="text-lg font-semibold text-teal-900 mb-3">Improve Your English Skills</h3>

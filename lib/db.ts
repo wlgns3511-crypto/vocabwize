@@ -100,6 +100,11 @@ function createDb(db: Database.Database) {
   function getRandomWords(limit = 20): Word[] {
     return db.prepare('SELECT * FROM words ORDER BY RANDOM() LIMIT ?').all(limit) as Word[];
   }
+  function searchWords(query: string, limit = 50): Word[] {
+    const q = `%${query}%`;
+    return db.prepare('SELECT * FROM words WHERE word LIKE ? OR definition LIKE ? ORDER BY frequency DESC LIMIT ?')
+      .all(q, q, limit) as Word[];
+  }
   function getRotatingComparisons(limit = 2000): { slugA: string; slugB: string }[] {
     const week = getCurrentWeek();
     const offset = ((week - 1) % 50) * limit;
@@ -119,7 +124,16 @@ function createDb(db: Database.Database) {
     getWordsByLetter, getSimilarWords, getTopComparisons, getWordsByLength,
     getAvailableLengths, getRhymingWords, getWordsByPOS, getPopularWords,
     getWordsBySamePOS, getWordsBySameLevel, getRandomWords, getRotatingComparisons,
+    searchWords,
+    getLongestWords,
+    getShortestWords,
   };
+  function getLongestWords(limit = 50): Word[] {
+    return db.prepare('SELECT * FROM words ORDER BY LENGTH(word) DESC LIMIT ?').all(limit) as Word[];
+  }
+  function getShortestWords(limit = 50): Word[] {
+    return db.prepare('SELECT * FROM words WHERE LENGTH(word) >= 2 ORDER BY LENGTH(word) ASC, frequency DESC LIMIT ?').all(limit) as Word[];
+  }
 }
 
 const db = createDb(getDbInstance());
@@ -142,3 +156,6 @@ export const getWordsBySameLevel = db.getWordsBySameLevel;
 export const getRandomWords = db.getRandomWords;
 export const getRotatingComparisons = db.getRotatingComparisons;
 export const countWords = db.getWordCount;
+export const searchWords = db.searchWords;
+export const getLongestWords = db.getLongestWords;
+export const getShortestWords = db.getShortestWords;
