@@ -119,6 +119,10 @@ function createDb(db: Database.Database) {
     }
     return pairs;
   }
+  function getMaxFrequency(): number {
+    const row = db.prepare('SELECT MAX(frequency) as m FROM words').get() as { m: number } | undefined;
+    return row?.m || 1;
+  }
   return {
     getWordBySlug, getAllWords, getTopWords, getWordCount, getWordSlugsPage,
     getWordsByLetter, getSimilarWords, getTopComparisons, getWordsByLength,
@@ -127,6 +131,7 @@ function createDb(db: Database.Database) {
     searchWords,
     getLongestWords,
     getShortestWords,
+    getMaxFrequency,
   };
   function getLongestWords(limit = 50): Word[] {
     return db.prepare('SELECT * FROM words ORDER BY LENGTH(word) DESC LIMIT ?').all(limit) as Word[];
@@ -159,3 +164,4 @@ export const countWords = db.getWordCount;
 export const searchWords = db.searchWords;
 export const getLongestWords = db.getLongestWords;
 export const getShortestWords = db.getShortestWords;
+export const getMaxFrequency = db.getMaxFrequency;

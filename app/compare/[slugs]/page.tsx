@@ -166,21 +166,6 @@ export default async function ComparePage({ params }: Props) {
 
       <AdSlot id="compare-mid" />
 
-      {/* Etymology Comparison */}
-      {(a.etymology || b.etymology) && (
-        <section className="mb-8">
-          <h2 className="text-xl font-bold mb-3">Origin & Etymology</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {[a, b].map((w) => (
-              <div key={w.slug} className="bg-amber-50 border-l-4 border-amber-300 p-4 rounded-r-lg">
-                <h3 className="font-semibold text-amber-800 mb-1">{w.word}</h3>
-                <p className="text-slate-700 text-sm">{w.etymology || "Etymology information not available."}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Usage Tips */}
       {(a.usage_note || b.usage_note) && (
         <section className="mb-8">
@@ -205,6 +190,108 @@ export default async function ComparePage({ params }: Props) {
             <div className="px-4 pb-4 text-slate-600">{faq.answer}</div>
           </details>
         ))}
+      </section>
+
+      {/* Etymology Comparison */}
+      {(a.etymology || b.etymology) && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Etymology Comparison</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-amber-800 mb-1">{a.word} — Origin</h3>
+              <p className="text-slate-700 text-sm">{a.etymology || "Etymology not available"}</p>
+            </div>
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-amber-800 mb-1">{b.word} — Origin</h3>
+              <p className="text-slate-700 text-sm">{b.etymology || "Etymology not available"}</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Usage in Context */}
+      {(exA.length > 0 || exB.length > 0) && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Usage in Context</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <h3 className="font-semibold text-indigo-700 mb-2">{a.word} examples</h3>
+              {exA.length > 0 ? (
+                <ul className="space-y-2">
+                  {exA.map((ex, i) => (
+                    <li key={i} className="text-slate-700 text-sm bg-slate-50 p-3 rounded-lg italic">&ldquo;{ex}&rdquo;</li>
+                  ))}
+                </ul>
+              ) : <p className="text-slate-400 text-sm">No examples available</p>}
+            </div>
+            <div>
+              <h3 className="font-semibold text-indigo-700 mb-2">{b.word} examples</h3>
+              {exB.length > 0 ? (
+                <ul className="space-y-2">
+                  {exB.map((ex, i) => (
+                    <li key={i} className="text-slate-700 text-sm bg-slate-50 p-3 rounded-lg italic">&ldquo;{ex}&rdquo;</li>
+                  ))}
+                </ul>
+              ) : <p className="text-slate-400 text-sm">No examples available</p>}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Word Properties */}
+      <section className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Word Properties</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="p-3 text-left font-semibold text-slate-600 border border-slate-200">Property</th>
+                <th className="p-3 text-left font-semibold text-indigo-600 border border-slate-200">{a.word}</th>
+                <th className="p-3 text-left font-semibold text-indigo-600 border border-slate-200">{b.word}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(a.level || b.level) && (
+                <tr>
+                  <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Level</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{a.level || "—"}</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{b.level || "—"}</td>
+                </tr>
+              )}
+              <tr>
+                <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Syllables</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{a.syllables ?? "—"}</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{b.syllables ?? "—"}</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Length</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{a.word.length} chars</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{b.word.length} chars</td>
+              </tr>
+              {(a.frequency != null || b.frequency != null) && (
+                <tr>
+                  <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Frequency</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{a.frequency != null ? a.frequency.toLocaleString() : "—"}</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{b.frequency != null ? b.frequency.toLocaleString() : "—"}</td>
+                </tr>
+              )}
+              {(a.pos || b.pos) && (
+                <tr>
+                  <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Part of Speech</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{a.pos || "—"}</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{b.pos || "—"}</td>
+                </tr>
+              )}
+              {(a.phonetic || b.phonetic) && (
+                <tr>
+                  <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Pronunciation</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{a.phonetic ? `/${a.phonetic}/` : "—"}</td>
+                  <td className="p-3 text-slate-700 border border-slate-200">{b.phonetic ? `/${b.phonetic}/` : "—"}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Smart related comparisons */}

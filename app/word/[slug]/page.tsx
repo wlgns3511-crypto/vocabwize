@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords } from "@/lib/db";
+import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
 import { AuthorBox } from "@/components/AuthorBox";
 import { EmbedButton } from "@/components/EmbedButton";
+import { FrequencyMeter } from "@/components/FrequencyMeter";
 import { FreshnessTag } from "@/components/FreshnessTag";
 
 interface Props { params: Promise<{ slug: string }> }
@@ -81,6 +82,8 @@ export default async function WordPage({ params }: Props) {
       </div>
       {w.phonetic && <p className="text-lg text-slate-500 mb-1">/{w.phonetic}/</p>}
       {w.pos && <p className="text-sm text-indigo-500 mb-6">{w.pos}</p>}
+
+      <FrequencyMeter frequency={w.frequency} maxFrequency={getMaxFrequency()} />
 
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-3">Definition</h2>
@@ -257,7 +260,7 @@ export default async function WordPage({ params }: Props) {
         ))}
       </section>
 
-      <FreshnessTag source="Lexical Database" />
+      <FreshnessTag source="Wiktionary, WordNet & Corpus Linguistics Data" />
 
           <EmbedButton url="https://vocabwize.com" title="Data from VocabWize" site="VocabWize" siteUrl="https://vocabwize.com" />
 
