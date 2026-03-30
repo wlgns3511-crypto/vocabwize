@@ -260,8 +260,8 @@ export default async function ComparePage({ params }: Props) {
               )}
               <tr>
                 <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Syllables</td>
-                <td className="p-3 text-slate-700 border border-slate-200">{a.syllables ?? "—"}</td>
-                <td className="p-3 text-slate-700 border border-slate-200">{b.syllables ?? "—"}</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{(a as any).syllables ?? "—"}</td>
+                <td className="p-3 text-slate-700 border border-slate-200">{(b as any).syllables ?? "—"}</td>
               </tr>
               <tr>
                 <td className="p-3 font-medium text-slate-600 border border-slate-200 bg-slate-50">Length</td>

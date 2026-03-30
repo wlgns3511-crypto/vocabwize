@@ -8,6 +8,10 @@ import { AuthorBox } from "@/components/AuthorBox";
 import { EmbedButton } from "@/components/EmbedButton";
 import { FrequencyMeter } from "@/components/FrequencyMeter";
 import { FreshnessTag } from "@/components/FreshnessTag";
+import { EditorNote } from "@/components/EditorNote";
+import { DidYouKnow } from "@/components/DidYouKnow";
+import { DataSourceBadge } from "@/components/DataSourceBadge";
+import { CrossSiteLinks } from "@/components/CrossSiteLinks";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -83,6 +87,13 @@ export default async function WordPage({ params }: Props) {
       {w.phonetic && <p className="text-lg text-slate-500 mb-1">/{w.phonetic}/</p>}
       {w.pos && <p className="text-sm text-indigo-500 mb-6">{w.pos}</p>}
 
+      <EditorNote note={
+        w.level === "academic" ? `"${w.word}" is in the top tier of academic vocabulary — commonly tested on GRE, TOEFL, and IELTS.` :
+        w.level === "advanced" ? `"${w.word}" is an advanced word — mastering it will elevate your writing and speaking.` :
+        w.frequency && w.frequency > 5000 ? `"${w.word}" ranks in the top ${Math.round(w.frequency / 100)}% by usage frequency.` :
+        `"${w.word}" is a commonly used English word${w.pos ? ` (${w.pos})` : ""} worth adding to your active vocabulary.`
+      } />
+
       <FrequencyMeter frequency={w.frequency} maxFrequency={getMaxFrequency()} />
 
       <section className="mb-8">
@@ -97,6 +108,12 @@ export default async function WordPage({ params }: Props) {
           )}
         </div>
       </section>
+
+      <DidYouKnow fact={
+        w.etymology ? `The word "${w.word}" has roots in ${w.etymology.split('.')[0].replace(/^From\s+/i, '')}.` :
+        synonyms.length > 3 ? `"${w.word}" has ${synonyms.length} synonyms — versatile words like this appear in the top 10% of English vocabulary.` :
+        `"${w.word}" has ${w.word.length} letters and ${w.word.split(/[aeiou]/i).length - 1} vowel groups — ${w.word.length > 8 ? "longer words tend to be more specific in meaning" : "short words tend to be among the most frequently used"}.`
+      } />
 
       <AdSlot id="word-after-def" />
 
@@ -311,7 +328,15 @@ export default async function WordPage({ params }: Props) {
         </div>
       </section>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema(w.word, w.definition)) }} />
+      <DataSourceBadge sources={[
+        { name: "Wiktionary", url: "https://en.wiktionary.org" },
+        { name: "WordNet", url: "https://wordnet.princeton.edu" },
+        { name: "Corpus Data", url: "https://www.english-corpora.org/coca/" },
+      ]} />
+
+      <CrossSiteLinks current="VocabWize" />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ ...definedTermSchema(w.word, w.definition), dateModified: "2026-03-31", author: { "@type": "Organization", name: "DataPeek" } }) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(breadcrumbs)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />
     </div>
