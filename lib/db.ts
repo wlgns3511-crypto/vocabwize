@@ -123,6 +123,12 @@ function createDb(db: Database.Database) {
     const row = db.prepare('SELECT MAX(frequency) as m FROM words').get() as { m: number } | undefined;
     return row?.m || 1;
   }
+  function getLongestWords(limit = 50): Word[] {
+    return db.prepare('SELECT * FROM words ORDER BY LENGTH(word) DESC LIMIT ?').all(limit) as Word[];
+  }
+  function getShortestWords(limit = 50): Word[] {
+    return db.prepare('SELECT * FROM words WHERE LENGTH(word) >= 2 ORDER BY LENGTH(word) ASC, frequency DESC LIMIT ?').all(limit) as Word[];
+  }
   return {
     getWordBySlug, getAllWords, getTopWords, getWordCount, getWordSlugsPage,
     getWordsByLetter, getSimilarWords, getTopComparisons, getWordsByLength,
@@ -133,12 +139,6 @@ function createDb(db: Database.Database) {
     getShortestWords,
     getMaxFrequency,
   };
-  function getLongestWords(limit = 50): Word[] {
-    return db.prepare('SELECT * FROM words ORDER BY LENGTH(word) DESC LIMIT ?').all(limit) as Word[];
-  }
-  function getShortestWords(limit = 50): Word[] {
-    return db.prepare('SELECT * FROM words WHERE LENGTH(word) >= 2 ORDER BY LENGTH(word) ASC, frequency DESC LIMIT ?').all(limit) as Word[];
-  }
 }
 
 const db = createDb(getDbInstance());
