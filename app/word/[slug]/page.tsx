@@ -41,7 +41,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${w.word} — Meaning, Examples & Complete Guide`,
     description: `${w.word}: ${shortDef}. Discover pronunciation, real-world examples, synonyms, antonyms, and expert tips for using "${w.word}" correctly.`,
-    alternates: { canonical: `/word/${slug}` },
+    alternates: {
+      canonical: `/word/${slug}`,
+      languages: {
+        'en': `https://vocabwize.com/word/${slug}`,
+        'fr': `https://vocablibre.com/mot/${slug}`,
+        'de': `https://wortwize.com/wort/${slug}`,
+        'ar': `https://kalimawize.com/kalima/${slug}`,
+        'pt': `https://dicionariowize.com/palavra/${slug}`,
+        'ja': `https://kotobapeek.com/tango/${slug}`,
+        'x-default': `https://vocabwize.com/word/${slug}`,
+      },
+    },
   };
 }
 

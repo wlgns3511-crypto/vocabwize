@@ -18,7 +18,7 @@ function parseJson(s: string | null): string[] {
 }
 
 export const dynamicParams = true;
-export const revalidate = 86400;
+export const revalidate = false;
 
 export async function generateStaticParams() {
   return [];
