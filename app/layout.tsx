@@ -39,7 +39,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               "name": "VocabWize",
               "url": "https://vocabwize.com",
               "description": "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
-              "inLanguage": "en-US"
+              "inLanguage": "en-US",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://vocabwize.com/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
             },
             {
               "@type": "Organization",
