@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency } from "@/lib/db";
+import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
@@ -66,6 +66,7 @@ export default async function WordPage({ params }: Props) {
   const examples = parseJson(w.examples);
   const synonyms = parseJson(w.synonyms);
   const antonyms = parseJson(w.antonyms);
+  const maxFreq = getMaxFrequency();
 
   const faqs = [
     { question: `What does "${w.word}" mean?`, answer: defs[0] || w.definition },
@@ -107,7 +108,22 @@ export default async function WordPage({ params }: Props) {
         `"${w.word}" is a commonly used English word${w.pos ? ` (${w.pos})` : ""} worth adding to your active vocabulary.`
       } />
 
-      <FrequencyMeter frequency={w.frequency} maxFrequency={getMaxFrequency()} />
+      <FrequencyMeter frequency={w.frequency} maxFrequency={maxFreq} />
+
+      {/* Word Insights */}
+      <section className="bg-blue-50 rounded-lg p-4 mb-6">
+        <h2 className="text-lg font-bold mb-2">Word Insights</h2>
+        <ul className="space-y-1 text-sm text-slate-700">
+          {w.frequency && maxFreq > 0 && <li>This word ranks in the <strong>top {Math.max(1, Math.round((w.frequency / maxFreq) * 100))}%</strong> of most frequently used English words.</li>}
+          {w.word.length < 5 && <li>At <strong>{w.word.length} letters</strong>, this is a relatively short word — easy to remember and commonly used in everyday speech.</li>}
+          {w.word.length >= 5 && w.word.length <= 8 && <li>At <strong>{w.word.length} letters</strong>, this is an average-length word commonly found in both casual and formal writing.</li>}
+          {w.word.length > 8 && <li>At <strong>{w.word.length} letters</strong>, this is a longer word — often used in academic or formal contexts.</li>}
+          {w.level === 'basic' && <li>This is a <strong>basic-level</strong> word — essential for everyday communication.</li>}
+          {w.level === 'intermediate' && <li>This is an <strong>intermediate-level</strong> word — commonly encountered in news articles and professional communication.</li>}
+          {w.level === 'advanced' && <li>This is an <strong>advanced-level</strong> word — typically found in academic texts, literature, or specialized fields.</li>}
+          {w.level === 'academic' && <li>This is an <strong>academic-level</strong> word — used primarily in scholarly writing and research.</li>}
+        </ul>
+      </section>
 
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-3">Definition</h2>
@@ -127,6 +143,12 @@ export default async function WordPage({ params }: Props) {
         synonyms.length > 3 ? `"${w.word}" has ${synonyms.length} synonyms — versatile words like this appear in the top 10% of English vocabulary.` :
         `"${w.word}" has ${w.word.length} letters and ${w.word.split(/[aeiou]/i).length - 1} vowel groups — ${w.word.length > 8 ? "longer words tend to be more specific in meaning" : "short words tend to be among the most frequently used"}.`
       } />
+
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 my-6 text-sm">
+        <p className="text-slate-600">
+          <strong>Related:</strong> Looking for this word in other languages? Try <a href="https://dicionariowize.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Portuguese</a>, <a href="https://wortwize.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">German</a>, or <a href="https://vocablibre.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">French</a>.
+        </p>
+      </div>
 
       <AdSlot id="word-after-def" />
 
@@ -319,6 +341,45 @@ export default async function WordPage({ params }: Props) {
           Explore <a href="https://degreewize.com" className="underline font-medium">top university programs</a> for international students.
         </p>
       </section>
+
+      {/* Words at Same Level */}
+      {(() => {
+        const sameLevel = getWordsBySameLevel(w.level, slug, 8);
+        if (!sameLevel.length) return null;
+        return (
+          <section className="mb-8">
+            <h2 className="text-xl font-bold mb-3">{w.level ? `${w.level.charAt(0).toUpperCase() + w.level.slice(1)}-Level` : ''} Words</h2>
+            <div className="flex flex-wrap gap-2">
+              {sameLevel.map(s => (
+                <a key={s.slug} href={`/word/${s.slug}/`} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-sm hover:bg-indigo-100 transition-colors">
+                  {s.word}
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* Compare with Same Part of Speech */}
+      {(() => {
+        const samePOS = getWordsBySamePOS(w.pos, slug, 6);
+        if (!samePOS.length) return null;
+        return (
+          <section className="mb-8">
+            <h2 className="text-xl font-bold mb-3">Compare with Other {w.pos ? w.pos.charAt(0).toUpperCase() + w.pos.slice(1) + 's' : 'Words'}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {samePOS.map(s => {
+                const [a, b] = [slug, s.slug].sort();
+                return (
+                  <a key={s.slug} href={`/compare/${a}-vs-${b}/`} className="p-3 border rounded-lg hover:bg-indigo-50 text-indigo-600 text-sm text-center transition-colors">
+                    {w.word} vs {s.word}
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Dynamic Comparison Discovery */}
       <section className="mt-10">
