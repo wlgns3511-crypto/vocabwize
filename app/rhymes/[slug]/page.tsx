@@ -4,8 +4,10 @@ import { getWordBySlug, getRhymingWords, getTopWords } from "@/lib/db";
 
 interface Props { params: Promise<{ slug: string }> }
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  return getTopWords(500).map((w) => ({ slug: w.slug }));
+  return [];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

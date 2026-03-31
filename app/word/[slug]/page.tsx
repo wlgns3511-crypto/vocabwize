@@ -27,8 +27,10 @@ const levelColors: Record<string, string> = {
   academic: "bg-purple-100 text-purple-700",
 };
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  return getTopWords(3000).map((w) => ({ slug: w.slug }));
+  return [];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
