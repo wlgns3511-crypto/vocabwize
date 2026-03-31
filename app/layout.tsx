@@ -62,12 +62,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             <a href="/" className="text-xl font-bold text-indigo-700">{SITE_NAME}</a>
             <nav className="flex gap-4 text-sm">
-              <a href="/word" className="hover:text-indigo-600">Words</a>
-              <a href="/compare" className="hover:text-indigo-600">Compare</a>
+              <a href="/word/" className="hover:text-indigo-600">Words</a>
+              <a href="/compare/" className="hover:text-indigo-600">Compare</a>
               <a href="/blog/" className="hover:text-indigo-600">Guides</a>
-              <a href="/pos" className="hover:text-indigo-600">POS</a>
-              <a href="/rankings" className="hover:text-indigo-600">Rankings</a>
-              <a href="/quiz" className="hover:text-indigo-600">Quiz</a>
+              <a href="/pos/" className="hover:text-indigo-600">POS</a>
+              <a href="/rankings/" className="hover:text-indigo-600">Rankings</a>
+              <a href="/quiz/" className="hover:text-indigo-600">Quiz</a>
               <a href="/es/" className="text-slate-400 hover:text-indigo-600 text-xs">ES</a>
             </nav>
           </div>
@@ -76,15 +76,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <footer className="border-t border-slate-200 mt-16">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500">
             <p className="mb-2">
-              <a href="/about" className="hover:text-indigo-600">About</a>
+              <a href="/about/" className="hover:text-indigo-600">About</a>
               {" | "}
-              <a href="/privacy" className="hover:text-indigo-600">Privacy</a>
+              <a href="/privacy/" className="hover:text-indigo-600">Privacy</a>
               {" | "}
-              <a href="/terms" className="hover:text-indigo-600">Terms</a>
+              <a href="/terms/" className="hover:text-indigo-600">Terms</a>
               {" | "}
-              <a href="/disclaimer" className="hover:text-indigo-600">Disclaimer</a>
+              <a href="/disclaimer/" className="hover:text-indigo-600">Disclaimer</a>
               {" | "}
-              <a href="/contact" className="hover:text-indigo-600">Contact</a>
+              <a href="/contact/" className="hover:text-indigo-600">Contact</a>
             </p>
             <div className="mt-4 pt-4 border-t border-slate-100">
               <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Related Resources</p>
