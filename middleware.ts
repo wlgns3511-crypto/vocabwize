@@ -31,6 +31,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Allow root-level static files (ads.txt, verification files, etc.)
+  if (/^\/[^/]+\.(txt|xml)$/.test(pathname)) {
+    return NextResponse.next();
+  }
+
   // Block common vulnerability probes
   if (BLOCKED_PATTERNS.test(pathname)) {
     return new NextResponse('Not Found', { status: 404 });
