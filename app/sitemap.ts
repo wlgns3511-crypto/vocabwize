@@ -5,8 +5,6 @@ import { getAllPosts } from "@/lib/blog";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
 const MAX_PER_SITEMAP = 45000;
 
-export const revalidate = 86400;
-
 export async function generateSitemaps() {
   const totalWords = getWordCount();
   const sitemapCount = Math.ceil(totalWords / MAX_PER_SITEMAP) + 1;
