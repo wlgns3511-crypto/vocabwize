@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: { type: "website", url: SITE_URL, siteName: SITE_NAME, locale: "en_US" },
+  other: { "google-adsense-account": "ca-pub-5724806562146685" },
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
