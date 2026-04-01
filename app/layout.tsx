@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   description: "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
   metadataBase: new URL(SITE_URL), robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
   alternates: {
-    canonical: '/',
     languages: {
       'en': 'https://vocabwize.com',
       'fr': 'https://vocablibre.com',
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
       'x-default': 'https://vocabwize.com',
     },
   },
-  openGraph: { type: "website", url: SITE_URL, siteName: SITE_NAME, locale: "en_US" },
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
   other: { "google-adsense-account": "ca-pub-5724806562146685" },
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

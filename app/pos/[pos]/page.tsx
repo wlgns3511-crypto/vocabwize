@@ -17,7 +17,8 @@ export function generateMetadata({ params }: { params: { pos: string } }): Metad
   return {
     title: `${pos.charAt(0).toUpperCase() + pos.slice(1)} Words - English ${pos} List`,
     description: `Browse top ${pos} words in English with definitions and usage examples.`,
-    alternates: { canonical: `${SITE_URL}/pos/${encodeURIComponent(pos)}/` },
+    openGraph: { url: `/pos/${encodeURIComponent(pos)}` },
+    alternates: { canonical: `/pos/${encodeURIComponent(pos)}` },
   };
 }
 

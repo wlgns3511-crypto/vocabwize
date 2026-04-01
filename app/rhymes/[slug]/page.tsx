@@ -18,6 +18,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${count}+ Words That Rhyme With ${w.word}`,
     description: `Discover ${count} words that rhyme with "${w.word}". Complete rhyming dictionary with pronunciation — perfect for poetry, rap, and songwriting.`,
+    openGraph: { url: `/rhymes/${slug}` },
+    alternates: { canonical: `/rhymes/${slug}` },
   };
 }
 

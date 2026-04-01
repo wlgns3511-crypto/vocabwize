@@ -13,6 +13,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${length} Letter Words - Complete List`,
     description: `Browse ${length} letter words. Perfect for word games, Wordle, Scrabble, and crossword puzzles.`,
+    openGraph: { url: `/words-length/${length}` },
+    alternates: { canonical: `/words-length/${length}` },
   };
 }
 

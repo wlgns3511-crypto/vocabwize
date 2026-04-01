@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${w.word} - Definición, Significado y Uso`,
     description: `${w.word}: ${shortDef}. Aprende la definición, pronunciación, ejemplos y cómo usar "${w.word}" en una oración.`,
+    openGraph: { url: `/es/word/${slug}` },
     alternates: {
       canonical: `/es/word/${slug}`,
       languages: { en: `/word/${slug}`, es: `/es/word/${slug}`, "x-default": `/word/${slug}` },

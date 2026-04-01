@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${a.word} vs ${b.word} — What's the Difference?`,
     description: `${a.word} means "${a.definition.substring(0, 60)}..." while ${b.word} means "${b.definition.substring(0, 60)}..." Compare side by side with examples.`,
+    openGraph: { url: `/compare/${slugs}` },
     alternates: { canonical: `/compare/${slugs}` },
   };
 }
