@@ -7,7 +7,7 @@ export const contentType = 'image/png';
 export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return [];
+  return getTopWords(3000).map(w => ({ slug: w.slug }));
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {

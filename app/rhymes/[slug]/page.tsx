@@ -7,7 +7,7 @@ interface Props { params: Promise<{ slug: string }> }
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return [];
+  return getTopWords(1000).map(w => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

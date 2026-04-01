@@ -13,7 +13,7 @@ export const dynamicParams = true;
 export const revalidate = false;
 
 export function generateStaticParams() {
-  return [];
+  return getTopWords(3000).map(w => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

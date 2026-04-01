@@ -21,7 +21,7 @@ export const dynamicParams = true;
 export const revalidate = false;
 
 export async function generateStaticParams() {
-  return [];
+  return getTopComparisons(500).map(c => ({ slugs: c.slugA + '-vs-' + c.slugB }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
