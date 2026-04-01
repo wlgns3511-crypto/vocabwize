@@ -1,5 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { gunzipSync } from 'zlib';
 
 export interface Word {
   slug: string;
@@ -17,10 +19,20 @@ export interface Word {
   usage_note: string | null;
 }
 
-const DB_PATH = path.join(process.cwd(), 'data', 'vocab.db');
+function resolveDbPath(): string {
+  const local = path.join(process.cwd(), 'data', 'vocab.db');
+  if (existsSync(local)) return local;
+  const tmp = '/tmp/vocab.db';
+  if (!existsSync(tmp)) {
+    const gz = path.join(process.cwd(), 'data', 'vocab.db.gz');
+    writeFileSync(tmp, gunzipSync(readFileSync(gz)));
+  }
+  return tmp;
+}
+
 let _db: Database.Database | null = null;
 function getDbInstance(): Database.Database {
-  if (!_db) _db = new Database(DB_PATH, { readonly: true, fileMustExist: true });
+  if (!_db) _db = new Database(resolveDbPath(), { readonly: true, fileMustExist: true });
   return _db;
 }
 
