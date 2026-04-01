@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "About VocabWize",
   description: "Learn about VocabWize, our mission, and data sources.",
   alternates: { canonical: "/about/" },
+  openGraph: { url: "/about/" },
 };
 
 export default function AboutPage() {

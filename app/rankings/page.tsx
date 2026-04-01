@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Word Rankings - Most Common, Longest & Shortest English Words",
   description: "Discover the most common, longest, and shortest English words ranked by frequency and length.",
   alternates: { canonical: `${SITE_URL}/rankings/` },
+  openGraph: { url: "/rankings/" },
 };
 
 export default function RankingsPage() {

@@ -4,6 +4,7 @@ import { VocabQuiz } from "@/components/VocabQuiz";
 export const metadata: Metadata = {
   title: "Vocabulary Quiz - Embeddable Widget",
   robots: "noindex, nofollow",
+  openGraph: { url: "/embed/quiz/" },
 };
 
 export default function EmbedQuizPage() {

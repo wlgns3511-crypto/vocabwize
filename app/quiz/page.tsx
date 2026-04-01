@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Take a fun vocabulary quiz! Match definitions to words and test your English vocabulary. 10 questions per round with instant feedback.",
   alternates: { canonical: "/quiz" },
+  openGraph: { url: "/quiz/" },
 };
 
 export default function QuizPage() {

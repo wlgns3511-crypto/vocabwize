@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Browse Words by Part of Speech",
   description: "Explore English words organized by part of speech: nouns, verbs, adjectives, adverbs, and more.",
   alternates: { canonical: `${SITE_URL}/pos/` },
+  openGraph: { url: "/pos/" },
 };
 
 export default function POSListPage() {

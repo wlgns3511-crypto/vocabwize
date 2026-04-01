@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Compare Words", description: "Compare confusing English words side by side.", alternates: { canonical: "/compare/" }};
+export const metadata: Metadata = { title: "Compare Words", description: "Compare confusing English words side by side.", alternates: { canonical: "/compare/" },
+  openGraph: { url: "/compare/" },
+};
 export default function ComparePage() {
   const pairs = [['affect','effect'],['than','then'],['their','there'],['lose','loose'],['who','whom'],['lay','lie'],['farther','further'],['advice','advise'],['complement','compliment'],['ensure','insure'],['principle','principal'],['stationary','stationery'],['eminent','imminent'],['imply','infer'],['precede','proceed'],['accept','except'],['desert','dessert'],['elicit','illicit'],['allusion','illusion'],['discreet','discrete']];
   return (

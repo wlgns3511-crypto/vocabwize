@@ -1,6 +1,8 @@
 import { getTopWords, countWords } from "@/lib/db";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "All Words", description: "Browse 160,000+ English word definitions.", alternates: { canonical: "/word/" }};
+export const metadata: Metadata = { title: "All Words", description: "Browse 160,000+ English word definitions.", alternates: { canonical: "/word/" },
+  openGraph: { url: "/word/" },
+};
 export default function WordsPage() {
   const words = getTopWords(200);
   const total = countWords();

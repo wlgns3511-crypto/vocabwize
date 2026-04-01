@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Expert guides on building vocabulary, test prep (GRE, SAT), etymology, and professional communication. Learn words faster and retain them longer.",
   alternates: { canonical: "/blog/" },
+  openGraph: { url: "/blog/" },
 };
 
 function formatDate(dateStr: string) {

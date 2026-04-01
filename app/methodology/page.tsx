@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Our Methodology",
   description: "Learn how VocabWize collects, processes, and verifies English vocabulary definitions, etymologies, and word comparisons.",
   alternates: { canonical: "/methodology/" },
+  openGraph: { url: "/methodology/" },
 };
 
 export default function MethodologyPage() {
