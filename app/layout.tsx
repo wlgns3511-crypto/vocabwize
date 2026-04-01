@@ -20,7 +20,7 @@ export const metadata: Metadata = {
       'x-default': 'https://vocabwize.com',
     },
   },
-  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
+  openGraph: { type: "website", url: SITE_URL, siteName: SITE_NAME, locale: "en_US" },
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
