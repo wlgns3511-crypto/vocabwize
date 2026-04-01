@@ -51,7 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               "name": "VocabWize",
               "url": "https://vocabwize.com",
               "description": "Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.",
-              "sameAs": ["https://datapeekfacts.com"],
+              "sameAs": ["https://vocablibre.com", "https://dicionariowize.com", "https://wortwize.com", "https://kalimawize.com", "https://kotobapeek.com", "https://nameblooms.com", "https://salarybycity.com", "https://netpaypeek.com", "https://wagepeek.com", "https://costbycity.com", "https://fairrentwize.com", "https://propertytaxpeek.com", "https://homepricepeek.com", "https://degreewize.com", "https://myschoolpeek.com", "https://medcheckwize.com", "https://medcostpeek.com", "https://eldercarepeek.com", "https://ingredipeek.com", "https://caloriewize.com", "https://powerbillpeek.com", "https://sunpowerpeek.com", "https://shipcalcwize.com", "https://tariffpeek.com", "https://calcpeek.com", "https://visapeek.com", "https://guidebycity.com", "https://zippeek.com", "https://safecitypeek.com", "https://datapeekfacts.com"],
               "knowsAbout": "Lexicography, Dictionary, Vocabulary"
             }
           ]
