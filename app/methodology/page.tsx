@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Our Methodology",
   description: "Learn how VocabWize collects, processes, and verifies English vocabulary definitions, etymologies, and word comparisons.",
+  alternates: { canonical: "/methodology/" },
 };
 
 export default function MethodologyPage() {
@@ -49,9 +50,16 @@ export default function MethodologyPage() {
         with primary sources for important decisions.
       </p>
 
+      <h2>Official Data Sources</h2>
+      <ul>
+        <li><a href="https://en.wiktionary.org/" target="_blank" rel="noopener noreferrer">Wiktionary</a> &mdash; Community-maintained multilingual dictionary with English definitions, etymologies, and usage examples.</li>
+        <li><a href="https://cldr.unicode.org/" target="_blank" rel="noopener noreferrer">Unicode CLDR</a> &mdash; Common Locale Data Repository for language and locale standardization.</li>
+        <li><a href="https://www.merriam-webster.com/" target="_blank" rel="noopener noreferrer">Merriam-Webster</a> &mdash; Authoritative English language dictionary for cross-referencing definitions and usage.</li>
+      </ul>
+
       <h2>Contact</h2>
       <p>
-        If you find inaccuracies or have suggestions for improvement, please 
+        If you find inaccuracies or have suggestions for improvement, please
         <a href="/contact">contact us</a>. We value community input in maintaining data quality.
       </p>
     </article>

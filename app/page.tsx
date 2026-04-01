@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { getTopWords, countWords, getAvailableLengths } from "@/lib/db";
 import { VocabQuiz } from "@/components/VocabQuiz";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   const topWords = getTopWords(50);

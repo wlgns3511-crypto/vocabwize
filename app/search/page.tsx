@@ -4,6 +4,7 @@ import { searchWords } from "@/lib/db";
 export const metadata: Metadata = {
   title: "Search Words",
   description: "Search the English vocabulary database. Find words by name or definition.",
+  alternates: { canonical: "/search/" },
 };
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
