@@ -31,19 +31,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Allow root-level static files (ads.txt, verification files, etc.)
-  if (/^\/[^/]+\.(txt|xml)$/.test(pathname)) {
-    return NextResponse.next();
-  }
-
-  // Block common vulnerability probes
-  if (BLOCKED_PATTERNS.test(pathname)) {
-    return new NextResponse('Not Found', { status: 404 });
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/word/:path*', '/((?!_next|api|favicon|icon|opengraph).*)'],
+  matcher: ['/word/:path*'],
 };
