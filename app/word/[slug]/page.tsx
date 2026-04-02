@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel } from "@/lib/db";
+import { getWordBySlug, getTopWords, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel, getFrequencyPercentile, getWordCountByLevel, getWordCountByPOS } from "@/lib/db";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
@@ -12,6 +12,7 @@ import { EditorNote } from "@/components/EditorNote";
 import { DidYouKnow } from "@/components/DidYouKnow";
 import { DataSourceBadge } from "@/components/DataSourceBadge";
 import { CrossSiteLinks } from "@/components/CrossSiteLinks";
+import { InsightCards } from "@/components/InsightCards";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -68,6 +69,9 @@ export default async function WordPage({ params }: Props) {
   const synonyms = parseJson(w.synonyms);
   const antonyms = parseJson(w.antonyms);
   const maxFreq = getMaxFrequency();
+  const frequencyPercentile = w.frequency > 0 ? getFrequencyPercentile(w.frequency) : 50;
+  const levelCount = w.level ? getWordCountByLevel(w.level) : 0;
+  const posCount = w.pos ? getWordCountByPOS(w.pos) : 0;
 
   const faqs = [
     { question: `What does "${w.word}" mean?`, answer: defs[0] || w.definition },
@@ -152,6 +156,18 @@ export default async function WordPage({ params }: Props) {
       </div>
 
       <AdSlot id="word-after-def" />
+
+      <InsightCards
+        word={w.word}
+        frequency={w.frequency}
+        frequencyPercentile={frequencyPercentile}
+        level={w.level}
+        levelCount={levelCount}
+        pos={w.pos}
+        posCount={posCount}
+        synonymCount={synonyms.length}
+        antonymCount={antonyms.length}
+      />
 
       {examples.length > 0 && (
         <section className="mb-8">

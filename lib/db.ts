@@ -177,3 +177,19 @@ export const searchWords = db.searchWords;
 export const getLongestWords = db.getLongestWords;
 export const getShortestWords = db.getShortestWords;
 export const getMaxFrequency = db.getMaxFrequency;
+
+// ── Insight ranking functions ──
+
+export function getFrequencyPercentile(freq: number): number {
+  const total = (getDb().prepare('SELECT COUNT(*) as c FROM words WHERE frequency IS NOT NULL AND frequency > 0').get() as { c: number }).c;
+  const below = (getDb().prepare('SELECT COUNT(*) as c FROM words WHERE frequency IS NOT NULL AND frequency > 0 AND frequency < ?').get(freq) as { c: number }).c;
+  return total > 0 ? Math.round((below / total) * 100) : 50;
+}
+
+export function getWordCountByLevel(level: string): number {
+  return (getDb().prepare('SELECT COUNT(*) as c FROM words WHERE level = ?').get(level) as { c: number }).c;
+}
+
+export function getWordCountByPOS(pos: string): number {
+  return (getDb().prepare('SELECT COUNT(*) as c FROM words WHERE pos = ?').get(pos) as { c: number }).c;
+}
