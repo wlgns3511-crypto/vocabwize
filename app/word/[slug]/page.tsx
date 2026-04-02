@@ -31,7 +31,7 @@ const levelColors: Record<string, string> = {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return getTopWords(8000).map(w => ({ slug: w.slug }));
+  return getTopWords(3000).map(w => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
