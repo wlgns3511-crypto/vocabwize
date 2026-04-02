@@ -17,7 +17,7 @@ function parseJson(s: string | null): string[] {
   try { return JSON.parse(s); } catch { return []; }
 }
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 export const revalidate = false;
 
 export async function generateStaticParams() {
@@ -308,7 +308,7 @@ export default async function ComparePage({ params }: Props) {
                   {similarA.map(w => {
                     const [x, y] = [a.slug, w.slug].sort();
                     return (
-                      <a key={w.slug} href={`/compare/${x}-vs-${y}`}
+                      <a key={w.slug} href={`/word/${y}/`}
                         className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
                         {a.word} vs {w.word}
                       </a>
@@ -324,7 +324,7 @@ export default async function ComparePage({ params }: Props) {
                   {synA.map(syn => {
                     const [x, y] = [b.slug, syn.toLowerCase().replace(/\s+/g, '-')].sort();
                     return (
-                      <a key={syn} href={`/compare/${x}-vs-${y}`}
+                      <a key={syn} href={`/word/${y}/`}
                         className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
                         {b.word} vs {syn}
                       </a>
@@ -340,7 +340,7 @@ export default async function ComparePage({ params }: Props) {
                   {samePOS.map(w => {
                     const [x, y] = [a.slug, w.slug].sort();
                     return (
-                      <a key={w.slug} href={`/compare/${x}-vs-${y}`}
+                      <a key={w.slug} href={`/word/${y}/`}
                         className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-blue-700 rounded-full">
                         {a.word} vs {w.word}
                       </a>
@@ -353,35 +353,18 @@ export default async function ComparePage({ params }: Props) {
         );
       })()}
 
-      {/* Dynamic Comparison Discovery */}
-      {(() => {
-        const randomWords = getRandomWords(30);
-        const randomPairs: { w1: typeof randomWords[0]; w2: typeof randomWords[0] }[] = [];
-        for (let i = 0; i + 1 < randomWords.length && randomPairs.length < 15; i += 2) {
-          if (randomWords[i].slug !== randomWords[i + 1].slug) {
-            randomPairs.push({ w1: randomWords[i], w2: randomWords[i + 1] });
-          }
-        }
-        return (
-          <section className="mt-10">
-            <h2 className="text-xl font-bold mb-4">Explore More Comparisons</h2>
-            <div className="flex flex-wrap gap-2">
-              {randomPairs.map(({ w1, w2 }) => {
-                const [x, y] = [w1.slug, w2.slug].sort();
-                return (
-                  <a
-                    key={`${x}-${y}`}
-                    href={`/compare/${x}-vs-${y}/`}
-                    className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full transition-colors"
-                  >
-                    {w1.slug < w2.slug ? w1.word : w2.word} vs {w1.slug < w2.slug ? w2.word : w1.word}
-                  </a>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })()}
+      {/* Discover more words */}
+      <section className="mt-10">
+        <h2 className="text-xl font-bold mb-4">Discover More Words</h2>
+        <div className="flex flex-wrap gap-2">
+          {getRandomWords(15).map(rw => (
+            <a key={rw.slug} href={`/word/${rw.slug}/`}
+              className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full transition-colors">
+              {rw.word}
+            </a>
+          ))}
+        </div>
+      </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org",

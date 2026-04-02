@@ -9,7 +9,7 @@ function parseJson(s: string | null): string[] {
   try { return JSON.parse(s); } catch { return []; }
 }
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 export const revalidate = false;
 
 export function generateStaticParams() {

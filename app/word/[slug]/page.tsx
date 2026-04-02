@@ -27,7 +27,7 @@ const levelColors: Record<string, string> = {
   academic: "bg-purple-100 text-purple-700",
 };
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return getTopWords(3000).map(w => ({ slug: w.slug }));
@@ -237,7 +237,7 @@ export default async function WordPage({ params }: Props) {
               return (
                 <div key={s.slug} className="p-3 border border-slate-200 rounded-lg">
                   <a href={`/word/${s.slug}`} className="font-medium text-indigo-600 hover:underline">{s.word}</a>
-                  <div className="mt-1"><a href={`/compare/${a}-vs-${b}`} className="text-xs text-slate-400 hover:underline">Compare</a></div>
+                  <div className="mt-1"><a href={`/word/${b}/`} className="text-xs text-slate-400 hover:underline">Compare</a></div>
                 </div>
               );
             })}
@@ -261,7 +261,7 @@ export default async function WordPage({ params }: Props) {
                     const synSlug = syn.toLowerCase().replace(/\s+/g, '-');
                     const [x, y] = [slug, synSlug].sort();
                     return (
-                      <a key={syn} href={`/compare/${x}-vs-${y}`}
+                      <a key={syn} href={`/word/${y}/`}
                         className="text-sm px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full">
                         vs {syn}
                       </a>
@@ -278,7 +278,7 @@ export default async function WordPage({ params }: Props) {
                     const antSlug = ant.toLowerCase().replace(/\s+/g, '-');
                     const [x, y] = [slug, antSlug].sort();
                     return (
-                      <a key={ant} href={`/compare/${x}-vs-${y}`}
+                      <a key={ant} href={`/word/${y}/`}
                         className="text-sm px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-full">
                         vs {ant}
                       </a>
@@ -292,7 +292,7 @@ export default async function WordPage({ params }: Props) {
               {popular.map(p => {
                 const [x, y] = [slug, p.slug].sort();
                 return (
-                  <a key={p.slug} href={`/compare/${x}-vs-${y}`}
+                  <a key={p.slug} href={`/word/${y}/`}
                     className="text-sm px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 text-indigo-700 rounded-full">
                     vs {p.word}
                   </a>
@@ -372,7 +372,7 @@ export default async function WordPage({ params }: Props) {
               {samePOS.map(s => {
                 const [a, b] = [slug, s.slug].sort();
                 return (
-                  <a key={s.slug} href={`/compare/${a}-vs-${b}/`} className="p-3 border rounded-lg hover:bg-indigo-50 text-indigo-600 text-sm text-center transition-colors">
+                  <a key={s.slug} href={`/word/${b}/`} className="p-3 border rounded-lg hover:bg-indigo-50 text-indigo-600 text-sm text-center transition-colors">
                     {w.word} vs {s.word}
                   </a>
                 );
@@ -382,24 +382,18 @@ export default async function WordPage({ params }: Props) {
         );
       })()}
 
-      {/* Dynamic Comparison Discovery */}
+      {/* Discover more words */}
       <section className="mt-10">
-        <h2 className="text-xl font-bold mb-4">Discover More Comparisons</h2>
+        <h2 className="text-xl font-bold mb-4">Discover More Words</h2>
         <div className="flex flex-wrap gap-2">
           {getRandomWords(20)
             .filter(rw => rw.slug !== slug)
-            .map(rw => {
-              const pair = [slug, rw.slug].sort();
-              return (
-                <a
-                  key={rw.slug}
-                  href={`/compare/${pair[0]}-vs-${pair[1]}/`}
-                  className="text-sm px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full transition-colors"
-                >
-                  {w.word} vs {rw.word}
+            .map(rw => (
+                <a key={rw.slug} href={`/word/${rw.slug}/`}
+                  className="text-sm px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full transition-colors">
+                  {rw.word}
                 </a>
-              );
-            })}
+            ))}
         </div>
       </section>
 

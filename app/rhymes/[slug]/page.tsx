@@ -4,7 +4,7 @@ import { getWordBySlug, getRhymingWords, getTopWords } from "@/lib/db";
 
 interface Props { params: Promise<{ slug: string }> }
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return getTopWords(1000).map(w => ({ slug: w.slug }));
