@@ -4,7 +4,7 @@ import { getAllPosts } from "@/lib/blog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // 50K URL 제한 — 고빈도 단어 우선, 나머지는 내부 링크로 크롤링 유도
