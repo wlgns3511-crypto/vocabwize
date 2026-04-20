@@ -1,18 +1,47 @@
+import { siteConfig } from "@/site.config";
+import { EDITORIAL_TEAM, PUBLISHER } from "@/lib/authorship";
+import { getDataVintageLabel, getReviewedAt } from "@/lib/seo";
+
 export function AuthorBox() {
+  const reviewedAt = getReviewedAt();
+  const dataVintage = getDataVintageLabel();
+
   return (
-    <div className="mt-8 p-4 bg-slate-50 border-l-4 border-indigo-500 rounded-r-lg">
-      <div className="flex items-center gap-2 mb-2">
-        <svg className="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-        </svg>
-        <span className="text-sm font-semibold text-slate-700">VocabWize Lexicography Team</span>
+    <div className="mt-10 p-5 bg-slate-50 border border-slate-200 rounded-xl">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-slate-900 text-sm">
+            Data verified by {EDITORIAL_TEAM.name}
+          </div>
+          <div className="text-xs text-slate-500 mt-0.5">
+            Part of the <a href={PUBLISHER.url} className="text-slate-700 hover:underline" rel="noopener">{PUBLISHER.name}</a>
+          </div>
+        </div>
       </div>
-      <p className="text-xs text-slate-600 leading-relaxed mb-2">
-        Our definitions are compiled from multiple authoritative lexicographic databases, verified by computational linguistics analysis, and updated monthly.
+      <p className="text-xs text-slate-600 leading-relaxed mb-3">
+        {siteConfig.name} is maintained by an editorial workflow that audits public data sources and verifies dates, values, and methodology on every page. We publish as an organization — no individual bylines — and disclose our data vintage and review dates openly.
       </p>
-      <p className="text-xs text-slate-400">
-        Sources: English Lexicographic Databases &middot; Corpus Linguistics Data &middot; Etymological Records
-      </p>
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+        {reviewedAt && (
+          <>
+            <span>Last verified: <time dateTime={reviewedAt}>{reviewedAt}</time></span>
+            <span className="text-slate-300">·</span>
+          </>
+        )}
+        <span>Data vintage: {dataVintage}</span>
+        <span className="text-slate-300">·</span>
+        <a href="https://datapeekfacts.com/editorial-policy/" className="underline underline-offset-2 hover:text-slate-900" rel="noopener">Editorial policy</a>
+        <span className="text-slate-300">·</span>
+        <a href="/methodology/" className="underline underline-offset-2 hover:text-slate-900">Methodology</a>
+        <span className="text-slate-300">·</span>
+        <a href="/contact/" className="underline underline-offset-2 hover:text-slate-900">Send a correction</a>
+      </div>
     </div>
   );
 }
