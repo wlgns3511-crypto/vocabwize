@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTopWords, countWords, getAvailableLengths } from "@/lib/db";
+import { getTopWords, countWords, getAvailableLengths, getTopComparisons } from "@/lib/db";
 import { VocabQuiz } from "@/components/VocabQuiz";
 
 export const metadata: Metadata = {
@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const topWords = getTopWords(50);
+  const topComparisons = getTopComparisons(10);
   const total = countWords();
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const lengths = getAvailableLengths();
@@ -73,9 +74,8 @@ export default function Home() {
       <section>
         <h2 className="text-xl font-bold mb-4">Commonly Confused Words</h2>
         <div className="grid sm:grid-cols-2 gap-2 text-sm">
-          {[['affect','effect'],['than','then'],['their','there'],['your',"you-re"],['lose','loose'],['who','whom'],['lay','lie'],['farther','further'],['advice','advise'],['complement','compliment']].map(([a,b]) => {
-            const [x,y] = [a,b].sort();
-            return (<a key={a+b} href={`/compare/${x}-vs-${y}`} className="p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-indigo-600">{a} vs {b}</a>);
+          {topComparisons.map(({ slugA, slugB, wordA, wordB }) => {
+            return (<a key={`${slugA}-${slugB}`} href={`/compare/${slugA}-vs-${slugB}`} className="p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-indigo-600">{wordA || slugA} vs {wordB || slugB}</a>);
           })}
         </div>
       </section>

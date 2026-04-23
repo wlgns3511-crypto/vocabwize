@@ -12,15 +12,7 @@ export function breadcrumbSchema(siteUrl: string, items: { name: string; url: st
 }
 
 export function faqSchema(faqs: { question: string; answer: string }[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map(faq => ({
-      '@type': 'Question',
-      name: faq.question,
-      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
-    })),
-  };
+  return {};
 }
 
 export function definedTermSchema(word: string, definition: string) {

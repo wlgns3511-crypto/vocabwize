@@ -4,6 +4,7 @@ import { searchWords } from "@/lib/db";
 export const metadata: Metadata = {
   title: "Search Words",
   description: "Search the English vocabulary database. Find words by name or definition.",
+  robots: { index: false, follow: true },
   alternates: { canonical: "/search/" },
   openGraph: { url: "/search/" },
 };
@@ -58,7 +59,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           <h2 className="font-bold mb-3">Popular Searches</h2>
           <div className="flex flex-wrap gap-2">
             {["love", "happy", "time", "beautiful", "strong", "knowledge", "freedom", "nature", "wisdom", "peace"].map((term) => (
-              <a key={term} href={`/search?q=${term}`} className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm hover:border-indigo-300 hover:bg-indigo-50">
+              <a key={term} href={`/search/?q=${term}`} className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm hover:border-indigo-300 hover:bg-indigo-50">
                 {term}
               </a>
             ))}

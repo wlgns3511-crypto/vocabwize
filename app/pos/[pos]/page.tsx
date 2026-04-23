@@ -7,23 +7,31 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
 
 const POS_LIST = ["noun", "verb", "adjective", "adverb", "pronoun", "preposition", "conjunction", "interjection"];
 
+interface Props {
+  params: Promise<{ pos: string }>;
+}
+
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return POS_LIST.map((pos) => ({ pos }));
 }
 
-export function generateMetadata({ params }: { params: { pos: string } }): Metadata {
-  const pos = decodeURIComponent(params.pos);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { pos: rawPos } = await params;
+  const pos = decodeURIComponent(rawPos);
   if (!POS_LIST.includes(pos)) return {};
   return {
     title: `${pos.charAt(0).toUpperCase() + pos.slice(1)} Words - English ${pos} List`,
     description: `Browse top ${pos} words in English with definitions and usage examples.`,
-    openGraph: { url: `/pos/${encodeURIComponent(pos)}` },
-    alternates: { canonical: `/pos/${encodeURIComponent(pos)}` },
+    openGraph: { url: `/pos/${encodeURIComponent(pos)}/` },
+    alternates: { canonical: `/pos/${encodeURIComponent(pos)}/` },
   };
 }
 
-export default function POSDetailPage({ params }: { params: { pos: string } }) {
-  const pos = decodeURIComponent(params.pos);
+export default async function POSDetailPage({ params }: Props) {
+  const { pos: rawPos } = await params;
+  const pos = decodeURIComponent(rawPos);
   if (!POS_LIST.includes(pos)) notFound();
 
   const words = getWordsByPOS(pos, 200);

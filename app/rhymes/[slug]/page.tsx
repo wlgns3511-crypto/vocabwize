@@ -4,10 +4,11 @@ import { getWordBySlug, getRhymingWords, getTopWords } from "@/lib/db";
 
 interface Props { params: Promise<{ slug: string }> }
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  return getTopWords(1000).map(w => ({ slug: w.slug }));
+  return getTopWords(5000).map(w => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -18,8 +19,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${count}+ Words That Rhyme With ${w.word}`,
     description: `Discover ${count} words that rhyme with "${w.word}". Complete rhyming dictionary with pronunciation — perfect for poetry, rap, and songwriting.`,
-    openGraph: { url: `/rhymes/${slug}` },
-    alternates: { canonical: `/rhymes/${slug}` },
+    openGraph: { url: `/rhymes/${slug}/` },
+    alternates: { canonical: `/rhymes/${slug}/` },
   };
 }
 

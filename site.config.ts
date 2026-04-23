@@ -1,14 +1,40 @@
-import type { SiteConfig } from './lib/types';
-
-export const siteConfig: SiteConfig = {
+export const siteConfig = {
+  name: 'VocabWize',
   domain: 'vocabwize.com',
   siteName: 'VocabWize',
+  description: 'Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.',
+  lang: 'en',
   primaryLang: 'en',
+  defaultLocale: 'en',
+  supportedLocales: ['en'],
   targetLangs: ['es'],
   locale: 'en-US',
   dbPath: './data/vocab.db',
+  methodologyUrl: '/methodology/',
+  publisherMode: 'organization',
+  dataVintage: 'Lexical sources verified',
+  reviewedAt: '2026-04-19',
+  reviewedBy: 'DataPeek Research Network',
   gaId: 'G-KGNDY9231R',
   adsenseId: 'ca-pub-5724806562146685',
+  entity: {
+    slug: 'word',
+    label: 'Words',
+    labelSingular: 'Word',
+    dbPath: './data/vocab.db',
+    tableName: 'words',
+    slugColumn: 'slug',
+    nameColumn: 'word',
+    categoryColumn: 'pos',
+    compareFields: ['pos', 'level', 'frequency'],
+    prerenderLimit: 5000,
+    comparePrerenderLimit: 2000,
+  },
+  dataSource: {
+    name: 'English lexical and corpus sources',
+    url: 'https://www.merriam-webster.com/',
+    year: 2024,
+  },
   colors: {
     primary: 'indigo',
     accent: 'teal',

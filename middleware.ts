@@ -1,39 +1,17 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-
-// Block obviously invalid word slugs at edge — saves serverless invocations
-const WORD_PATH = '/word/';
-const MAX_SLUG_LEN = 45;
-
-// Known bot/spam patterns that never match real words
-const BLOCKED_PATTERNS = /\.(php|asp|env|xml|json|txt|cgi|wp-|admin|login|config)/i;
+import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', request.nextUrl.pathname);
 
-  // Only check word detail pages
-  if (pathname.startsWith(WORD_PATH) && pathname !== WORD_PATH) {
-    const slug = pathname.replace(WORD_PATH, '').replace(/\/$/, '');
-    
-    // Block: too long
-    if (slug.length > MAX_SLUG_LEN) {
-      return new NextResponse('Not Found', { status: 404 });
-    }
-    
-    // Block: contains file extensions or suspicious patterns
-    if (BLOCKED_PATTERNS.test(slug)) {
-      return new NextResponse('Not Found', { status: 404 });
-    }
-    
-    // Block: contains multiple consecutive hyphens or numbers-only
-    if (/---/.test(slug) || /^\d+$/.test(slug)) {
-      return new NextResponse('Not Found', { status: 404 });
-    }
-  }
-
-  return NextResponse.next();
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
-  matcher: ['/word/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.png|robots.txt|sitemap.xml|api).*)'],
 };

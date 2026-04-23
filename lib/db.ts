@@ -19,6 +19,14 @@ export interface Word {
   usage_note: string | null;
 }
 
+export interface ComparisonPair {
+  slugA: string;
+  slugB: string;
+  wordA?: string;
+  wordB?: string;
+  popularityScore?: number;
+}
+
 function resolveDbPath(): string {
   const local = path.join(process.cwd(), 'data', 'vocab.db');
   if (existsSync(local)) return local;
@@ -67,13 +75,30 @@ function createDb(db: Database.Database) {
     const prefix = slug.substring(0, 3);
     return db.prepare('SELECT * FROM words WHERE slug LIKE ? AND slug != ? ORDER BY frequency DESC LIMIT ?').all(prefix + '%', slug, limit) as Word[];
   }
-  function getTopComparisons(limit = 500): { slugA: string; slugB: string }[] {
-    const top = db.prepare('SELECT slug FROM words WHERE frequency > 1000 ORDER BY frequency DESC LIMIT 100').all() as { slug: string }[];
-    const pairs: { slugA: string; slugB: string }[] = [];
+  function getTopComparisons(limit = 500): ComparisonPair[] {
+    try {
+      const stored = db.prepare(`
+        SELECT slugA, slugB, wordA, wordB, popularity_score AS popularityScore
+        FROM comparisons
+        ORDER BY popularity_score DESC, id ASC
+        LIMIT ?
+      `).all(limit) as ComparisonPair[];
+      if (stored.length > 0) return stored;
+    } catch {
+      // Fall back to a deterministic heuristic if the comparisons table is unavailable.
+    }
+
+    const top = db.prepare('SELECT slug, word FROM words WHERE frequency > 1000 ORDER BY frequency DESC LIMIT 100').all() as { slug: string; word: string }[];
+    const pairs: ComparisonPair[] = [];
     for (let i = 0; i < top.length && pairs.length < limit; i++) {
       for (let j = i + 1; j < top.length && pairs.length < limit; j++) {
-        const [a, b] = [top[i].slug, top[j].slug].sort();
-        pairs.push({ slugA: a, slugB: b });
+        const entries = [top[i], top[j]].sort((a, b) => a.slug.localeCompare(b.slug));
+        pairs.push({
+          slugA: entries[0].slug,
+          slugB: entries[1].slug,
+          wordA: entries[0].word,
+          wordB: entries[1].word,
+        });
       }
     }
     return pairs.slice(0, limit);
@@ -192,4 +217,34 @@ export function getWordCountByLevel(level: string): number {
 
 export function getWordCountByPOS(pos: string): number {
   return (getDbInstance().prepare('SELECT COUNT(*) as c FROM words WHERE pos = ?').get(pos) as { c: number }).c;
+}
+
+// ── Translation lookups ──
+
+export interface TranslationEntry {
+  slug: string;
+  url: string;
+  lang_name: string;
+}
+
+let _translations: Record<string, Record<string, TranslationEntry>> | null = null;
+
+function loadTranslations(): Record<string, Record<string, TranslationEntry>> {
+  if (_translations) return _translations;
+  try {
+    const fs = require('fs');
+    const p = require('path');
+    const filePath = p.join(process.cwd(), 'data', 'translations.json');
+    if (fs.existsSync(filePath)) {
+      _translations = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      return _translations!;
+    }
+  } catch {}
+  _translations = {};
+  return _translations;
+}
+
+export function getTranslations(slug: string): Record<string, TranslationEntry> | null {
+  const map = loadTranslations();
+  return map[slug] || null;
 }

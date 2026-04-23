@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordsByLetter } from "@/lib/db";
 interface Props { params: Promise<{ letter: string }> }
+export const dynamicParams = false;
+
 export function generateStaticParams() { return "abcdefghijklmnopqrstuvwxyz".split("").map((l) => ({ letter: l })); }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { letter } = await params;
-  return { title: `Words Starting With ${letter.toUpperCase()}`, description: `Browse English words starting with ${letter.toUpperCase()}. Definitions and meanings.`, openGraph: { url: `/letter/${letter}` }, alternates: { canonical: `/letter/${letter}` } };
+  return { title: `Words Starting With ${letter.toUpperCase()}`, description: `Browse English words starting with ${letter.toUpperCase()}. Definitions and meanings.`, openGraph: { url: `/letter/${letter}/` }, alternates: { canonical: `/letter/${letter}/` } };
 }
 export default async function LetterPage({ params }: Props) {
   const { letter } = await params;

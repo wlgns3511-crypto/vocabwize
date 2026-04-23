@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Compare Words", description: "Compare confusing English words side by side.", alternates: { canonical: "/compare/" },
+import { getTopComparisons } from "@/lib/db";
+
+const FEATURED_COMPARE_PAIRS = getTopComparisons(24);
+const COMPARE_PAIR_COUNT = getTopComparisons(100).length;
+
+export const metadata: Metadata = { title: "Compare Commonly Confused Words", description: "Compare commonly confused English words side by side in a curated editorial selection.", alternates: { canonical: "/compare/" },
   openGraph: { url: "/compare/" },
 };
 export default function ComparePage() {
-  const pairs = [['affect','effect'],['than','then'],['their','there'],['lose','loose'],['who','whom'],['lay','lie'],['farther','further'],['advice','advise'],['complement','compliment'],['ensure','insure'],['principle','principal'],['stationary','stationery'],['eminent','imminent'],['imply','infer'],['precede','proceed'],['accept','except'],['desert','dessert'],['elicit','illicit'],['allusion','illusion'],['discreet','discrete']];
+  const pairs = FEATURED_COMPARE_PAIRS;
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Commonly Confused Words</h1>
+      <h1 className="text-3xl font-bold mb-2">Commonly Confused Words</h1>
+      <p className="text-slate-500 mb-6">
+        Browse {COMPARE_PAIR_COUNT.toLocaleString()} editorial compare pages covering
+        the English word pairs people most often mix up in writing and speech.
+      </p>
       <div className="grid sm:grid-cols-2 gap-2 text-sm">
-        {pairs.map(([a,b]) => { const [x,y] = [a,b].sort(); return (
-          <a key={a+b} href={`/compare/${x}-vs-${y}`} className="p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-indigo-600 font-medium">{a} vs {b}</a>
+        {pairs.map(({ slugA, slugB, wordA, wordB }) => { return (
+          <a key={`${slugA}-${slugB}`} href={`/compare/${slugA}-vs-${slugB}`} className="p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-indigo-600 font-medium">{wordA || slugA} vs {wordB || slugB}</a>
         ); })}
       </div>
     </div>

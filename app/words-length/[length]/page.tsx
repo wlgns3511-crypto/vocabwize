@@ -4,6 +4,8 @@ import { getWordsByLength, getAvailableLengths } from "@/lib/db";
 
 interface Props { params: Promise<{ length: string }> }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAvailableLengths().map((l) => ({ length: l.toString() }));
 }
@@ -13,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${length} Letter Words - Complete List`,
     description: `Browse ${length} letter words. Perfect for word games, Wordle, Scrabble, and crossword puzzles.`,
-    openGraph: { url: `/words-length/${length}` },
-    alternates: { canonical: `/words-length/${length}` },
+    openGraph: { url: `/words-length/${length}/` },
+    alternates: { canonical: `/words-length/${length}/` },
   };
 }
 

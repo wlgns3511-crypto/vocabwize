@@ -9,11 +9,11 @@ function parseJson(s: string | null): string[] {
   try { return JSON.parse(s); } catch { return []; }
 }
 
-export const dynamicParams = false;
-export const revalidate = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
-  return getTopWords(1000).map(w => ({ slug: w.slug }));
+  return getTopWords(5000).map(w => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${w.word} - Definición, Significado y Uso`,
     description: `${w.word}: ${shortDef}. Aprende la definición, pronunciación, ejemplos y cómo usar "${w.word}" en una oración.`,
-    openGraph: { url: `/es/word/${slug}` },
+    openGraph: { url: `/es/word/${slug}/` },
     alternates: {
-      canonical: `/es/word/${slug}`,
-      languages: { en: `/word/${slug}`, es: `/es/word/${slug}`, "x-default": `/word/${slug}` },
+      canonical: `/es/word/${slug}/`,
+      languages: { en: `/word/${slug}/`, es: `/es/word/${slug}/`, "x-default": `/word/${slug}/` },
     },
   };
 }
@@ -46,14 +46,14 @@ export default async function WordPageEs({ params }: Props) {
   return (
     <div>
       <nav className="text-sm text-slate-500 mb-4">
-        <a href="/es/" className="hover:underline">Inicio</a> / <a href="/es/word" className="hover:underline">Palabras</a> / <span className="text-slate-800">{w.word}</span>
+        <a href="/es/" className="hover:underline">Inicio</a> / <a href="/es/" className="hover:underline">Palabras</a> / <span className="text-slate-800">{w.word}</span>
       </nav>
 
       <h1 className="text-4xl font-bold mb-1">{w.word}</h1>
       {w.phonetic && <p className="text-lg text-slate-500 mb-1">/{w.phonetic}/</p>}
       {w.pos && <p className="text-sm text-indigo-500 mb-2">{w.pos}</p>}
       <p className="text-xs text-slate-400 mb-6">
-        <a href={`/word/${slug}`} className="text-indigo-500 hover:underline">English version</a>
+        <a href={`/word/${slug}/`} className="text-indigo-500 hover:underline">English version</a>
       </p>
 
       {/* Definición */}
@@ -105,7 +105,7 @@ export default async function WordPageEs({ params }: Props) {
                 <h3 className="text-sm font-semibold text-green-600 mb-2">Sinónimos</h3>
                 <div className="flex flex-wrap gap-2">
                   {synonyms.map((s, i) => (
-                    <a key={i} href={`/es/word/${s.toLowerCase().replace(/\s+/g, '-')}`} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm hover:bg-green-100">
+                    <a key={i} href={`/es/word/${s.toLowerCase().replace(/\s+/g, '-')}/`} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm hover:bg-green-100">
                       {s}
                     </a>
                   ))}
@@ -117,7 +117,7 @@ export default async function WordPageEs({ params }: Props) {
                 <h3 className="text-sm font-semibold text-red-600 mb-2">Antónimos</h3>
                 <div className="flex flex-wrap gap-2">
                   {antonyms.map((a, i) => (
-                    <a key={i} href={`/es/word/${a.toLowerCase().replace(/\s+/g, '-')}`} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-sm hover:bg-red-100">
+                    <a key={i} href={`/es/word/${a.toLowerCase().replace(/\s+/g, '-')}/`} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-sm hover:bg-red-100">
                       {a}
                     </a>
                   ))}
@@ -135,7 +135,7 @@ export default async function WordPageEs({ params }: Props) {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             {similar.map((s) => (
               <div key={s.slug} className="p-3 border border-slate-200 rounded-lg">
-                <a href={`/es/word/${s.slug}`} className="font-medium text-indigo-600 hover:underline">{s.word}</a>
+                <a href={`/es/word/${s.slug}/`} className="font-medium text-indigo-600 hover:underline">{s.word}</a>
               </div>
             ))}
           </div>

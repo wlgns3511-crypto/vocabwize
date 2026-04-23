@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Vocabulary Quiz - Test Your Word Knowledge",
   description:
     "Take a fun vocabulary quiz! Match definitions to words and test your English vocabulary. 10 questions per round with instant feedback.",
-  alternates: { canonical: "/quiz" },
+  alternates: { canonical: "/quiz/" },
   openGraph: { url: "/quiz/" },
 };
 
@@ -29,7 +29,7 @@ export default function QuizPage() {
             Browse our full dictionary
           </a>{" "}
           or{" "}
-          <a href="/compare" className="text-indigo-600 hover:underline">
+          <a href="/compare/" className="text-indigo-600 hover:underline">
             compare confusing word pairs
           </a>
           .

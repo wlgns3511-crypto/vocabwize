@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS, getRandomWords } from "@/lib/db";
 import { AdSlot } from "@/components/AdSlot";
@@ -7,9 +7,19 @@ import { faqSchema } from "@/lib/schema";
 
 interface Props { params: Promise<{ slugs: string }> }
 
+const ALLOWED_COMPARISON_SLUGS = new Set(
+  getTopComparisons(100).map(({ slugA, slugB }) => [slugA, slugB].sort().join("-vs-"))
+);
+
 function parseSlugs(s: string): [string, string] | null {
   const m = s.match(/^(.+)-vs-(.+)$/);
   return m ? [m[1], m[2]] : null;
+}
+
+function toCanonicalComparisonSlug(slugs: string): string | null {
+  const parsed = parseSlugs(slugs);
+  if (!parsed) return null;
+  return [parsed[0], parsed[1]].sort().join("-vs-");
 }
 
 function parseJson(s: string | null): string[] {
@@ -18,23 +28,32 @@ function parseJson(s: string | null): string[] {
 }
 
 export const dynamicParams = false;
-export const revalidate = false;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  return getTopComparisons(500).map(c => ({ slugs: c.slugA + '-vs-' + c.slugB }));
+  const params: { slugs: string }[] = [];
+  for (const canonicalSlugs of ALLOWED_COMPARISON_SLUGS) {
+    params.push({ slugs: canonicalSlugs });
+    const parsed = parseSlugs(canonicalSlugs);
+    if (!parsed) continue;
+    const reverseSlugs = `${parsed[1]}-vs-${parsed[0]}`;
+    if (reverseSlugs !== canonicalSlugs) params.push({ slugs: reverseSlugs });
+  }
+  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slugs } = await params;
+  const canonicalSlugs = toCanonicalComparisonSlug(slugs);
   const parsed = parseSlugs(slugs);
-  if (!parsed) return {};
+  if (!parsed || !canonicalSlugs || !ALLOWED_COMPARISON_SLUGS.has(canonicalSlugs)) return {};
   const a = getWordBySlug(parsed[0]), b = getWordBySlug(parsed[1]);
   if (!a || !b) return {};
   return {
     title: `${a.word} vs ${b.word} — What's the Difference?`,
     description: `${a.word} means "${a.definition.substring(0, 60)}..." while ${b.word} means "${b.definition.substring(0, 60)}..." Compare side by side with examples.`,
-    openGraph: { url: `/compare/${slugs}` },
-    alternates: { canonical: `/compare/${slugs}` },
+    openGraph: { url: `/compare/${canonicalSlugs}/` },
+    alternates: { canonical: `/compare/${canonicalSlugs}/` },
   };
 }
 
@@ -42,6 +61,9 @@ export default async function ComparePage({ params }: Props) {
   const { slugs } = await params;
   const parsed = parseSlugs(slugs);
   if (!parsed) notFound();
+  const canonical = [parsed[0], parsed[1]].sort().join("-vs-");
+  if (!ALLOWED_COMPARISON_SLUGS.has(canonical)) notFound();
+  if (slugs !== canonical) redirect(`/compare/${canonical}/`);
   const a = getWordBySlug(parsed[0]), b = getWordBySlug(parsed[1]);
   if (!a || !b) notFound();
 
@@ -78,7 +100,7 @@ export default async function ComparePage({ params }: Props) {
   return (
     <div>
       <nav className="text-sm text-slate-500 mb-4">
-        <a href="/" className="hover:underline">Home</a> / <a href="/compare" className="hover:underline">Compare</a> / <span className="text-slate-800">{a.word} vs {b.word}</span>
+        <a href="/" className="hover:underline">Home</a> / <a href="/compare/" className="hover:underline">Compare</a> / <span className="text-slate-800">{a.word} vs {b.word}</span>
       </nav>
 
       <h1 className="text-3xl font-bold mb-2">{a.word} vs {b.word}</h1>
@@ -378,7 +400,7 @@ export default async function ComparePage({ params }: Props) {
         name: b.word,
         description: b.definition,
       }) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />
+      {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />}
     </div>
   );
 }
