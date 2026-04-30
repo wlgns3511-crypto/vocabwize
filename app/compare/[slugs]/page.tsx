@@ -1,15 +1,18 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopComparisons, getSimilarWords, getWordsBySamePOS, getRandomWords } from "@/lib/db";
+import compareKeepList from "@/lib/generated/compare-keep.json";
 import { AdSlot } from "@/components/AdSlot";
 import { ComparisonBar } from "@/components/ComparisonBar";
 import { faqSchema } from "@/lib/schema";
 
 interface Props { params: Promise<{ slugs: string }> }
 
-const ALLOWED_COMPARISON_SLUGS = new Set(
-  getTopComparisons(100).map(({ slugA, slugB }) => [slugA, slugB].sort().join("-vs-"))
-);
+// HCU 2026-04-24: source of truth = scripts/build-keep-sets.ts output.
+// top-100 by popularity_score + GSC evidence union (10 URLs earning ≥1
+// click in 28d window whose pairs don't exist in comparisons table but
+// whose word halves exist in words table — page renders fine).
+const ALLOWED_COMPARISON_SLUGS = new Set(compareKeepList as string[]);
 
 function parseSlugs(s: string): [string, string] | null {
   const m = s.match(/^(.+)-vs-(.+)$/);

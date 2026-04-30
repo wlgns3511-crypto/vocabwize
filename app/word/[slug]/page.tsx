@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getTopComparisons, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel, getFrequencyPercentile, getWordCountByLevel, getWordCountByPOS, getTranslations } from "@/lib/db";
+import wordKeepList from "@/lib/generated/word-keep.json";
+import compareKeepList from "@/lib/generated/compare-keep.json";
 import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
@@ -27,9 +29,10 @@ import { TableOfContents } from "@/components/upgrades/TableOfContents";
 
 interface Props { params: Promise<{ slug: string }> }
 
-const ALLOWED_COMPARISON_SLUGS = new Set(
-  getTopComparisons(5000).map(({ slugA, slugB }) => [slugA, slugB].sort().join("-vs-"))
-);
+// HCU 2026-04-24: keep-set = top-100 by popularity + GSC evidence union
+// (10 URLs earning ≥1 click in 28d window that the 100-cap would drop).
+// Single source of truth lives in scripts/build-keep-sets.ts output.
+const ALLOWED_COMPARISON_SLUGS = new Set(compareKeepList as string[]);
 
 function parseJson(s: string | null): string[] {
   if (!s) return [];
@@ -43,11 +46,14 @@ const levelColors: Record<string, string> = {
   academic: "bg-purple-100 text-purple-700",
 };
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  return getTopWords(20000).map(w => ({ slug: w.slug }));
+  // HCU 2026-04-24: top-20K by frequency + 10 GSC evidence (8 of which fall
+  // outside the 20K by frequency rank — vixen 24262, xvx 46051 etc.).
+  // Single source of truth = scripts/build-keep-sets.ts output.
+  return (wordKeepList as string[]).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -172,7 +178,7 @@ export default async function WordPage({ params }: Props) {
       <EditorNote note={
         w.level === "academic" ? `"${w.word}" is in the top tier of academic vocabulary — commonly tested on GRE, TOEFL, and IELTS.` :
         w.level === "advanced" ? `"${w.word}" is an advanced word — mastering it will elevate your writing and speaking.` :
-        w.frequency && w.frequency > 5000 ? `"${w.word}" ranks in the top ${Math.round(w.frequency / 100)}% by usage frequency.` :
+        w.frequency && w.frequency > 0 && w.frequency <= 5000 ? `"${w.word}" ranks in the top ${Math.max(1, 100 - getFrequencyPercentile(w.frequency))}% by usage frequency.` :
         `"${w.word}" is a commonly used English word${w.pos ? ` (${w.pos})` : ""} worth adding to your active vocabulary.`
       } />
 
