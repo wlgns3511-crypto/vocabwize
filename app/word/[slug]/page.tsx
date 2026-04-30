@@ -26,6 +26,8 @@ import { DecisionNext } from "@/components/upgrades/DecisionNext";
 import { generateInsights } from "@/lib/insights";
 import { generateWordFaqs } from "@/lib/auto-faqs";
 import { TableOfContents } from "@/components/upgrades/TableOfContents";
+import { WordFrequencyTrend } from "@/components/WordFrequencyTrend";
+import { getWordTrend, buildTrendCommentary } from "@/lib/word-trends";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -185,6 +187,19 @@ export default async function WordPage({ params }: Props) {
       <FrequencyMeter frequency={w.frequency} maxFrequency={maxFreq} />
 
       <WordLevelChecker word={w.word} frequency={w.frequency} pos={w.pos} level={w.level} />
+
+      {/* Google Books NGram 1800-2019 historical trend (Layer 1++ unique data) */}
+      {(() => {
+        const trend = getWordTrend(slug);
+        if (!trend || trend.status === 'no-data') return null;
+        return (
+          <WordFrequencyTrend
+            trend={trend}
+            commentary={buildTrendCommentary(slug, w.word, trend)}
+            word={w.word}
+          />
+        );
+      })()}
 
       {/* Word Insights */}
       <section className="bg-blue-50 rounded-lg p-4 mb-6">
