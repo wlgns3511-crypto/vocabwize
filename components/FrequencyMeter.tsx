@@ -1,11 +1,12 @@
 "use client";
 
-export function FrequencyMeter({ frequency, maxFrequency = 1000000 }: { frequency: number | null; maxFrequency?: number }) {
+export function FrequencyMeter({ frequency, maxFrequency = 50000 }: { frequency: number | null; maxFrequency?: number }) {
   if (frequency === null || frequency === 0) return null;
 
-  const ratio = Math.min(frequency / maxFrequency, 1);
-  const logRatio = Math.log10(1 + ratio * 99) / 2;
-  const pct = Math.round(logRatio * 100);
+  // Rank-form: frequency=1 is the most common word, frequency=maxFrequency
+  // the least common. Convert rank → commonness pct (rank 1 → 100, max → 0).
+  const commonness = Math.max(0, 1 - (frequency - 1) / Math.max(maxFrequency - 1, 1));
+  const pct = Math.round(commonness * 100);
 
   const label = pct >= 75 ? "Very Common" : pct >= 50 ? "Common" : pct >= 25 ? "Uncommon" : "Rare";
   const color = pct >= 75 ? "bg-green-500" : pct >= 50 ? "bg-yellow-500" : pct >= 25 ? "bg-orange-500" : "bg-red-500";

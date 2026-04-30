@@ -206,9 +206,13 @@ export const getMaxFrequency = db.getMaxFrequency;
 // ── Insight ranking functions ──
 
 export function getFrequencyPercentile(freq: number): number {
+  // Rank-form: smaller frequency = more common (rank 1 = top word).
+  // "Less common than this word" → frequency > freq → those count as the
+  // commonness percentile (e.g. "the" rank 1 → ~all 49996 others have higher
+  // rank → percentile 100). Returns 0–100 where higher = more common.
   const total = (getDbInstance().prepare('SELECT COUNT(*) as c FROM words WHERE frequency IS NOT NULL AND frequency > 0').get() as { c: number }).c;
-  const below = (getDbInstance().prepare('SELECT COUNT(*) as c FROM words WHERE frequency IS NOT NULL AND frequency > 0 AND frequency < ?').get(freq) as { c: number }).c;
-  return total > 0 ? Math.round((below / total) * 100) : 50;
+  const lessCommon = (getDbInstance().prepare('SELECT COUNT(*) as c FROM words WHERE frequency IS NOT NULL AND frequency > 0 AND frequency > ?').get(freq) as { c: number }).c;
+  return total > 0 ? Math.round((lessCommon / total) * 100) : 50;
 }
 
 export function getWordCountByLevel(level: string): number {
