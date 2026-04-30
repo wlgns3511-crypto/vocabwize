@@ -36,13 +36,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
-  getTopWords,
   getTopComparisons,
   getAvailableLengths,
 } from '../lib/db';
 import { getAllGuides } from '../lib/guides';
 import { getAllPosts } from '../lib/blog';
 import { getAllInsightArticles } from '../lib/insight-articles';
+import { getAllResearchArticles } from '../lib/research-articles';
+import { TREND_TYPES } from '../lib/word-trends';
+// HCU 2026-04-28: sitemap source MUST match app/word/[slug]/page.tsx generateStaticParams.
+// Previously emitted 46K freq>0 words via getTopWords(50000); page only renders 20K via
+// wordKeepList. The 26K mismatch was leaking 410 Gone URLs into Google's crawl queue —
+// the exact "sitemap promises pages that 410" pattern HCU flags as scaled content abuse.
+import wordKeepList from '../lib/generated/word-keep.json';
 
 const SITE_URL = 'https://vocabwize.com';
 const NOW = new Date().toISOString().split('T')[0];
@@ -81,6 +87,8 @@ for (const [p, pr, cf] of [
   ['/rankings/', '0.8', 'weekly'],
   ['/quiz/', '0.7', 'monthly'],
   ['/insights/', '0.7', 'monthly'],
+  ['/trends/', '0.8', 'weekly'],
+  ['/research/', '0.7', 'monthly'],
   ['/guide/', '0.8', 'weekly'],
   ['/blog/', '0.8', 'weekly'],
   ['/search/', '0.5', 'monthly'],
@@ -111,10 +119,12 @@ for (const len of getAvailableLengths()) {
   add({ url: `${SITE_URL}/words-length/${len}/`, priority: '0.6', changefreq: 'monthly' });
 }
 
-// Words: freq > 0 only (getTopWords filters WHERE frequency > 0).
-// 46,051 real-signal words. Zero-freq 114K dropped — route remains via dynamicParams=true.
-for (const w of getTopWords(50000)) {
-  add({ url: `${SITE_URL}/word/${w.slug}/`, priority: '0.7', changefreq: 'monthly' });
+// Words: 20K from word-keep.json — single source of truth shared with
+// app/word/[slug]/page.tsx generateStaticParams. Anything outside this set
+// is intentionally 410 Gone via middleware keep-set; emitting them in the
+// sitemap was the structural bug fixed 2026-04-28.
+for (const slug of wordKeepList as string[]) {
+  add({ url: `${SITE_URL}/word/${slug}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
 // Comparisons: hard cap 100 — matches /compare/[slugs] ALLOWED_COMPARISON_SLUGS.
@@ -138,6 +148,16 @@ for (const a of getAllInsightArticles()) {
   add({ url: `${SITE_URL}/insights/${a.slug}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
+// Trend cluster pages: 1 hub + 7 status buckets (matches /trends/[type] hardcoded list)
+for (const t of TREND_TYPES) {
+  add({ url: `${SITE_URL}/trends/${t}/`, priority: '0.7', changefreq: 'weekly' });
+}
+
+// Research: data-journalism long-form articles (NGram-based)
+for (const a of getAllResearchArticles()) {
+  add({ url: `${SITE_URL}/research/${a.slug}/`, priority: '0.7', changefreq: 'monthly' });
+}
+
 // Guides
 for (const g of getAllGuides()) {
   add({ url: `${SITE_URL}/guide/${g.slug}/`, priority: '0.7', changefreq: 'monthly' });
@@ -149,11 +169,11 @@ for (const post of getAllPosts()) {
 }
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
-if (entries.length > 60000 && !process.env.SITEMAP_LARGE_OK) {
+if (entries.length > 22000 && !process.env.SITEMAP_LARGE_OK) {
   throw new Error(
-    `vocabwize sitemap has ${entries.length.toLocaleString()} URLs — Option B+ budget is ~46K.\n` +
-      `Did zero-frequency words (114K) or /es/word/ (160K) get re-added?\n` +
-      `That's exactly the loop that caused the original cardinality collapse.\n` +
+    `vocabwize sitemap has ${entries.length.toLocaleString()} URLs — page-keep budget is ~20K.\n` +
+      `Did the source diverge from word-keep.json again?\n` +
+      `Sitemap MUST match app/word/[slug]/page.tsx generateStaticParams source.\n` +
       `Run with SITEMAP_LARGE_OK=1 if you genuinely meant to expand the tier.`,
   );
 }

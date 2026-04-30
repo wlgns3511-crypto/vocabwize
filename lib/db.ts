@@ -60,20 +60,20 @@ function createDb(db: Database.Database) {
     return db.prepare('SELECT * FROM words ORDER BY word').all() as Word[];
   }
   function getTopWords(limit = 3000): Word[] {
-    return db.prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ?').all(limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency ASC LIMIT ?').all(limit) as Word[];
   }
   function getWordCount(): number {
     return (db.prepare('SELECT COUNT(*) as c FROM words').get() as { c: number }).c;
   }
   function getWordSlugsPage(offset: number, limit: number): { slug: string }[] {
-    return db.prepare('SELECT slug FROM words ORDER BY frequency DESC, word ASC LIMIT ? OFFSET ?').all(Number(limit), Number(offset)) as { slug: string }[];
+    return db.prepare('SELECT slug FROM words ORDER BY frequency ASC, word ASC LIMIT ? OFFSET ?').all(Number(limit), Number(offset)) as { slug: string }[];
   }
   function getWordsByLetter(letter: string, limit = 500): Word[] {
-    return db.prepare('SELECT * FROM words WHERE slug LIKE ? ORDER BY frequency DESC, word LIMIT ?').all(letter.toLowerCase() + '%', limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE slug LIKE ? ORDER BY frequency ASC, word LIMIT ?').all(letter.toLowerCase() + '%', limit) as Word[];
   }
   function getSimilarWords(slug: string, limit = 10): Word[] {
     const prefix = slug.substring(0, 3);
-    return db.prepare('SELECT * FROM words WHERE slug LIKE ? AND slug != ? ORDER BY frequency DESC LIMIT ?').all(prefix + '%', slug, limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE slug LIKE ? AND slug != ? ORDER BY frequency ASC LIMIT ?').all(prefix + '%', slug, limit) as Word[];
   }
   function getTopComparisons(limit = 500): ComparisonPair[] {
     try {
@@ -88,7 +88,7 @@ function createDb(db: Database.Database) {
       // Fall back to a deterministic heuristic if the comparisons table is unavailable.
     }
 
-    const top = db.prepare('SELECT slug, word FROM words WHERE frequency > 1000 ORDER BY frequency DESC LIMIT 100').all() as { slug: string; word: string }[];
+    const top = db.prepare('SELECT slug, word FROM words WHERE frequency > 0 AND frequency <= 1000 ORDER BY frequency ASC LIMIT 100').all() as { slug: string; word: string }[];
     const pairs: ComparisonPair[] = [];
     for (let i = 0; i < top.length && pairs.length < limit; i++) {
       for (let j = i + 1; j < top.length && pairs.length < limit; j++) {
@@ -104,7 +104,7 @@ function createDb(db: Database.Database) {
     return pairs.slice(0, limit);
   }
   function getWordsByLength(length: number, limit = 200): Word[] {
-    return db.prepare('SELECT * FROM words WHERE LENGTH(word) = ? ORDER BY frequency DESC LIMIT ?').all(length, limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE LENGTH(word) = ? ORDER BY frequency ASC LIMIT ?').all(length, limit) as Word[];
   }
   function getAvailableLengths(): number[] {
     return (db.prepare('SELECT DISTINCT LENGTH(word) as len FROM words WHERE LENGTH(word) BETWEEN 3 AND 15 ORDER BY len').all() as { len: number }[]).map(r => r.len);
@@ -114,24 +114,24 @@ function createDb(db: Database.Database) {
     if (!word) return [];
     const w = word.word.toLowerCase();
     const suffix = w.length >= 3 ? w.slice(-3) : w.slice(-2);
-    return db.prepare('SELECT * FROM words WHERE word LIKE ? AND slug != ? ORDER BY frequency DESC LIMIT ?')
+    return db.prepare('SELECT * FROM words WHERE word LIKE ? AND slug != ? ORDER BY frequency ASC LIMIT ?')
       .all('%' + suffix, slug, limit) as Word[];
   }
   function getWordsByPOS(pos: string, limit = 200): Word[] {
-    return db.prepare('SELECT * FROM words WHERE pos LIKE ? ORDER BY frequency DESC LIMIT ?')
+    return db.prepare('SELECT * FROM words WHERE pos LIKE ? ORDER BY frequency ASC LIMIT ?')
       .all('%' + pos + '%', limit) as Word[];
   }
   function getPopularWords(limit = 10): Word[] {
-    return db.prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ?').all(limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE frequency > 0 ORDER BY frequency ASC LIMIT ?').all(limit) as Word[];
   }
   function getWordsBySamePOS(pos: string | null, excludeSlug: string, limit = 6): Word[] {
     if (!pos) return [];
-    return db.prepare('SELECT * FROM words WHERE pos = ? AND slug != ? ORDER BY frequency DESC LIMIT ?')
+    return db.prepare('SELECT * FROM words WHERE pos = ? AND slug != ? ORDER BY frequency ASC LIMIT ?')
       .all(pos, excludeSlug, limit) as Word[];
   }
   function getWordsBySameLevel(level: string | null, excludeSlug: string, limit = 6): Word[] {
     if (!level) return [];
-    return db.prepare('SELECT * FROM words WHERE level = ? AND slug != ? ORDER BY frequency DESC LIMIT ?')
+    return db.prepare('SELECT * FROM words WHERE level = ? AND slug != ? ORDER BY frequency ASC LIMIT ?')
       .all(level, excludeSlug, limit) as Word[];
   }
   function getRandomWords(limit = 20): Word[] {
@@ -139,13 +139,13 @@ function createDb(db: Database.Database) {
   }
   function searchWords(query: string, limit = 50): Word[] {
     const q = `%${query}%`;
-    return db.prepare('SELECT * FROM words WHERE word LIKE ? OR definition LIKE ? ORDER BY frequency DESC LIMIT ?')
+    return db.prepare('SELECT * FROM words WHERE word LIKE ? OR definition LIKE ? ORDER BY frequency ASC LIMIT ?')
       .all(q, q, limit) as Word[];
   }
   function getRotatingComparisons(limit = 2000): { slugA: string; slugB: string }[] {
     const week = getCurrentWeek();
     const offset = ((week - 1) % 50) * limit;
-    const top = db.prepare('SELECT slug FROM words WHERE frequency > 0 ORDER BY frequency DESC LIMIT ? OFFSET ?')
+    const top = db.prepare('SELECT slug FROM words WHERE frequency > 0 ORDER BY frequency ASC LIMIT ? OFFSET ?')
       .all(200, offset % 160000) as { slug: string }[];
     const pairs: { slugA: string; slugB: string }[] = [];
     for (let i = 0; i < top.length && pairs.length < limit; i++) {
@@ -157,14 +157,14 @@ function createDb(db: Database.Database) {
     return pairs;
   }
   function getMaxFrequency(): number {
-    const row = db.prepare('SELECT MAX(frequency) as m FROM words').get() as { m: number } | undefined;
+    const row = db.prepare('SELECT MAX(frequency) as m FROM words WHERE frequency > 0').get() as { m: number } | undefined;
     return row?.m || 1;
   }
   function getLongestWords(limit = 50): Word[] {
     return db.prepare('SELECT * FROM words ORDER BY LENGTH(word) DESC LIMIT ?').all(limit) as Word[];
   }
   function getShortestWords(limit = 50): Word[] {
-    return db.prepare('SELECT * FROM words WHERE LENGTH(word) >= 2 ORDER BY LENGTH(word) ASC, frequency DESC LIMIT ?').all(limit) as Word[];
+    return db.prepare('SELECT * FROM words WHERE LENGTH(word) >= 2 ORDER BY LENGTH(word) ASC, frequency ASC LIMIT ?').all(limit) as Word[];
   }
   return {
     getWordBySlug, getAllWords, getTopWords, getWordCount, getWordSlugsPage,
