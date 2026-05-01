@@ -59,6 +59,15 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // /trends/* and /research/* — 410 (reverted 2026-05-01). Layer 1++ NGram
+  // feature shipped in f3ff924 had a data-mismatch bug (rank-form fetch built
+  // against pre-fix DESC SQL pulled the rarest 1,700 words; keep-set is the
+  // most-common 20K → ∩ = 0). 410 deindexes the briefly-listed sitemap URLs
+  // pending NGram re-fetch against the keep-set.
+  if (pathname.startsWith('/trends/') || pathname.startsWith('/research/')) {
+    return new NextResponse('Gone', { status: 410 });
+  }
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
 

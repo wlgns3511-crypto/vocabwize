@@ -42,8 +42,6 @@ import {
 import { getAllGuides } from '../lib/guides';
 import { getAllPosts } from '../lib/blog';
 import { getAllInsightArticles } from '../lib/insight-articles';
-import { getAllResearchArticles } from '../lib/research-articles';
-import { TREND_TYPES } from '../lib/word-trends';
 // HCU 2026-04-28: sitemap source MUST match app/word/[slug]/page.tsx generateStaticParams.
 // Previously emitted 46K freq>0 words via getTopWords(50000); page only renders 20K via
 // wordKeepList. The 26K mismatch was leaking 410 Gone URLs into Google's crawl queue —
@@ -87,8 +85,6 @@ for (const [p, pr, cf] of [
   ['/rankings/', '0.8', 'weekly'],
   ['/quiz/', '0.7', 'monthly'],
   ['/insights/', '0.7', 'monthly'],
-  ['/trends/', '0.8', 'weekly'],
-  ['/research/', '0.7', 'monthly'],
   ['/guide/', '0.8', 'weekly'],
   ['/blog/', '0.8', 'weekly'],
   ['/search/', '0.5', 'monthly'],
@@ -148,15 +144,13 @@ for (const a of getAllInsightArticles()) {
   add({ url: `${SITE_URL}/insights/${a.slug}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
-// Trend cluster pages: 1 hub + 7 status buckets (matches /trends/[type] hardcoded list)
-for (const t of TREND_TYPES) {
-  add({ url: `${SITE_URL}/trends/${t}/`, priority: '0.7', changefreq: 'weekly' });
-}
-
-// Research: data-journalism long-form articles (NGram-based)
-for (const a of getAllResearchArticles()) {
-  add({ url: `${SITE_URL}/research/${a.slug}/`, priority: '0.7', changefreq: 'monthly' });
-}
+// ─── /trends/ × 8 + /research/ × 4 REVERTED 2026-05-01 ────────────────────
+// Layer 1++ NGram feature shipped in f3ff924 had a data-mismatch bug: the
+// 4/29 NGram fetcher used the rank-form-buggy DESC SQL queries and pulled
+// the rarest 1,700 words; the 4/30 keep-set ASC fix produced the most-common
+// 20K. The two sets are disjoint → /trends/ pages emitted 100% 410 outbound
+// links, and WordFrequencyTrend never rendered on any /word/ page. Routes
+// + components removed pending NGram re-fetch against the keep-set.
 
 // Guides
 for (const g of getAllGuides()) {

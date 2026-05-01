@@ -3,8 +3,8 @@
  * commentary across vocabwize. Same input → same output across builds, so
  * cached/edge HTML stays stable. No randomness.
  *
- * Used by `lib/word-trends.ts`, `lib/insight-articles.ts` (potentially), and
- * any per-slug copy block that wants ≥3 textual variants without RNG.
+ * Used by `lib/insight-articles.ts` (potentially) and any per-slug copy
+ * block that wants ≥3 textual variants without RNG.
  */
 
 /**
