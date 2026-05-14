@@ -31,6 +31,37 @@ import { getTopWords, getTopComparisons, getWordBySlug } from '../lib/db';
 const WORD_CAP = 20000;
 const COMPARE_CAP = 100;
 
+// HCU 2026-05-04 — Bing impressions auto-union (separate index from Google).
+const BING_JSON_DIR = path.resolve(__dirname, '..', '..', '_shared', 'data', 'bing_analyze');
+const BING_DOMAIN = 'vocabwize.com';
+const BING_MIN_IMP = 1;
+
+function loadBingSlugs(routeRe: RegExp): string[] {
+  if (!fs.existsSync(BING_JSON_DIR)) return [];
+  const files = fs.readdirSync(BING_JSON_DIR)
+    .filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
+    .sort();
+  if (!files.length) return [];
+  try {
+    const json = JSON.parse(fs.readFileSync(path.join(BING_JSON_DIR, files[files.length - 1]), 'utf8'));
+    const site = json[BING_DOMAIN];
+    if (!site || !Array.isArray(site.pages)) return [];
+    const out = new Map<string, number>();
+    for (const pg of site.pages) {
+      const url = String(pg.url || '');
+      const pathOnly = url.replace(/^https?:\/\/[^/]+/, '');
+      const m = routeRe.exec(pathOnly);
+      if (!m) continue;
+      const slug = decodeURIComponent(m[1]);
+      const imp = Number(pg.impressions) || 0;
+      out.set(slug, (out.get(slug) || 0) + imp);
+    }
+    return [...out.entries()].filter(([, i]) => i >= BING_MIN_IMP).map(([s]) => s);
+  } catch {
+    return [];
+  }
+}
+
 // GSC evidence — /word/ URLs earning ≥1 click in 28d window (2026-03-24 ~
 // 2026-04-21). 8 of 10 below frequency rank 20000 → killed without union.
 const GSC_EVIDENCE_WORDS = [
@@ -78,6 +109,15 @@ for (const slug of GSC_EVIDENCE_WORDS) {
   if (!wordSet.has(slug)) wordAdded++;
   wordSet.add(slug);
 }
+// Bing union — only DB-backed words. /rhymes/[slug] also uses word-keep.json
+// (page.tsx imports it), so union both routes' Bing impressions.
+const bingWords = loadBingSlugs(/^\/word\/([^/]+)\/?$/);
+const bingRhymes = loadBingSlugs(/^\/rhymes\/([^/]+)\/?$/);
+let wordBingAdded = 0;
+for (const slug of [...bingWords, ...bingRhymes]) {
+  if (wordSet.has(slug)) continue;
+  if (getWordBySlug(slug)) { wordSet.add(slug); wordBingAdded++; }
+}
 fs.writeFileSync(
   path.join(OUT_DIR, 'word-keep.json'),
   JSON.stringify(Array.from(wordSet).sort()),
@@ -105,7 +145,7 @@ fs.writeFileSync(
 );
 
 console.log(
-  `✓ word-keep.json: ${wordSet.size} words (${wordBase.length} base + ${wordAdded} GSC new, ${wordSkipped} skipped)`,
+  `✓ word-keep.json: ${wordSet.size} words (${wordBase.length} base + ${wordAdded} GSC + ${wordBingAdded} Bing, ${wordSkipped} skipped)`,
 );
 console.log(
   `✓ compare-keep.json: ${compareSet.size} compares (${compareBase.length} base + ${compareAdded} GSC new, ${compareSkipped} skipped)`,

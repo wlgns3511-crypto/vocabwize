@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getWordBySlug, getRhymingWords, getTopWords } from "@/lib/db";
+import { getWordBySlug, getRhymingWords } from "@/lib/db";
+import wordKeep from "@/lib/generated/word-keep.json";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -8,7 +9,7 @@ export const dynamicParams = false;
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  return getTopWords(5000).map(w => ({ slug: w.slug }));
+  return (wordKeep as string[]).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

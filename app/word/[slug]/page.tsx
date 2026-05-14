@@ -3,7 +3,13 @@ import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getTopComparisons, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel, getFrequencyPercentile, getWordCountByLevel, getWordCountByPOS, getTranslations } from "@/lib/db";
 import wordKeepList from "@/lib/generated/word-keep.json";
 import compareKeepList from "@/lib/generated/compare-keep.json";
-import { breadcrumbSchema, faqSchema, definedTermSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema, definedTermSchema, datasetSchema } from "@/lib/schema";
+import {
+  WORD_VINTAGE,
+  REVIEWER_ORG,
+  SOURCE_AUTHORITIES,
+  PUBLISHER,
+} from "@/lib/authorship";
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
 import { AuthorBox } from "@/components/AuthorBox";
@@ -25,6 +31,10 @@ import { InsightBlock } from "@/components/upgrades/InsightBlock";
 import { DecisionNext } from "@/components/upgrades/DecisionNext";
 import { generateInsights } from "@/lib/insights";
 import { generateWordFaqs } from "@/lib/auto-faqs";
+import { getAwlSublist, getAwlEntry } from "@/lib/awl";
+import { classifyCEFR, cefrLabel } from "@/lib/cefr-tier";
+import { getWordInterpretation } from "@/lib/word-interpretation";
+import { WordInterpretation } from "@/components/upgrades/WordInterpretation";
 import { TableOfContents } from "@/components/upgrades/TableOfContents";
 
 interface Props { params: Promise<{ slug: string }> }
@@ -111,6 +121,24 @@ export default async function WordPage({ params }: Props) {
 
   const faqs = generateWordFaqs(w);
 
+  // PSU lever — Coxhead 2000 AWL sublist (1..10) deterministic lookup.
+  // 570 family static mapping in lib/generated/awl-sublist.json. null if not AWL.
+  const awlSublist = getAwlSublist(w.word);
+  const awlEntry = awlSublist ? getAwlEntry(w.word) : null;
+
+  // PSU 1차 lever — CEFR Difficulty Tier (A1..C2) deterministic classifier.
+  // Composed with AWL into the Word Interpretation Strip.
+  const cefr = classifyCEFR({ word: w.word, frequency: w.frequency, level: w.level });
+  const interpretation = getWordInterpretation({
+    word: w.word,
+    cefr,
+    awlSublist,
+    awlFamilyHead: awlEntry?.head ?? null,
+    frequencyRank: w.frequency,
+    pos: w.pos,
+    synonyms,
+  });
+
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: w.word[0].toUpperCase(), url: `/letter/${w.word[0].toLowerCase()}/` },
@@ -123,6 +151,9 @@ export default async function WordPage({ params }: Props) {
         {breadcrumbs.map((b, i) => (<span key={i}>{i > 0 && " / "}{i < 2 ? <a href={b.url} className="hover:underline">{b.name}</a> : <span className="text-slate-800">{b.name}</span>}</span>))}
       </nav>
 
+      {/* HCU 2026-05-05: Unique-dimension badges surface our calibrated
+          interpretation — frequency band (BNC/COCA percentile) + AWL register
+          flag — visible to readers, not just buried in JSON-LD. */}
       <AnswerHero
         title={w.word}
         subtitle={w.phonetic ? `/${w.phonetic}/` : null}
@@ -132,6 +163,22 @@ export default async function WordPage({ params }: Props) {
           ...(w.level
             ? [{ label: w.level.charAt(0).toUpperCase() + w.level.slice(1), tone: "slate" as const }]
             : []),
+          ...(w.frequency > 0
+            ? (() => {
+                const topPct = Math.max(1, 100 - frequencyPercentile);
+                const label =
+                  topPct <= 1 ? "Top 1% (BNC/COCA)" :
+                  topPct <= 5 ? "Top 5% (BNC/COCA)" :
+                  topPct <= 10 ? "Top 10% (BNC/COCA)" :
+                  topPct <= 25 ? "Top 25% (BNC/COCA)" :
+                  null;
+                return label ? [{ label, tone: "amber" as const }] : [];
+              })()
+            : []),
+          ...(awlSublist
+            ? [{ label: `AWL Sublist ${awlSublist}`, tone: "emerald" as const }]
+            : []),
+          { label: `CEFR ${cefr}`, tone: "indigo" as const },
         ]}
         alternatives={similar.slice(0, 3).map((alt) => ({
           label: alt.word,
@@ -151,6 +198,12 @@ export default async function WordPage({ params }: Props) {
         updated="Latest corpus review"
       />
 
+      <WordInterpretation
+        strip={interpretation}
+        cefr={cefr}
+        awlSublist={awlSublist}
+      />
+
       <InsightBlock
         entityName={w.word}
         insights={generateInsights({
@@ -166,6 +219,32 @@ export default async function WordPage({ params }: Props) {
         })}
       />
 
+      {awlSublist && awlEntry && (
+        <section className="mt-6 mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+          <h2 className="text-base font-semibold text-emerald-900 mb-2">
+            Coxhead Academic Word List — Sublist {awlSublist} of 10
+          </h2>
+          <p className="text-sm text-slate-700 leading-relaxed">
+            <strong>{w.word}</strong> belongs to the <strong>{awlEntry.head}</strong> word family in Sublist {awlSublist}
+            {" "}of the <a href="https://www.eapfoundation.com/vocab/academic/awllists/" className="underline" rel="noopener nofollow">Academic Word List</a>
+            {" "}(Averil Coxhead, 2000). The AWL contains 570 word families derived from a 3.5-million-word corpus
+            of academic writing across arts, commerce, law, and science, and covers roughly 10% of all words in
+            academic texts. Sublist 1 collects the most frequent academic vocabulary; Sublist 10 the least frequent.
+            {awlSublist <= 3
+              ? " This family is among the highest-frequency academic vocabulary — appearing in nearly every academic register."
+              : awlSublist <= 6
+              ? " This family is a mid-frequency academic word — common in formal writing but less so in everyday speech."
+              : " This family is a lower-frequency academic word — useful for advanced reading and writing tasks."}
+          </p>
+          <details className="mt-3 text-xs text-slate-600">
+            <summary className="cursor-pointer hover:text-slate-900">
+              View the full {awlEntry.head} word family ({awlEntry.family.length} forms)
+            </summary>
+            <p className="mt-2 leading-relaxed">{awlEntry.family.join(", ")}</p>
+          </details>
+        </section>
+      )}
+
       <TableOfContents />
 
       {/* Legacy level pill kept as accessible anchor */}
@@ -175,29 +254,28 @@ export default async function WordPage({ params }: Props) {
         </p>
       )}
 
-      <EditorNote note={
-        w.level === "academic" ? `"${w.word}" is in the top tier of academic vocabulary — commonly tested on GRE, TOEFL, and IELTS.` :
-        w.level === "advanced" ? `"${w.word}" is an advanced word — mastering it will elevate your writing and speaking.` :
-        w.frequency && w.frequency > 0 && w.frequency <= 5000 ? `"${w.word}" ranks in the top ${Math.max(1, 100 - getFrequencyPercentile(w.frequency))}% by usage frequency.` :
-        `"${w.word}" is a commonly used English word${w.pos ? ` (${w.pos})` : ""} worth adding to your active vocabulary.`
-      } />
+      {(() => {
+        // HCU 2026-05-14: keep only AWL/frequency data-backed notes.
+        // Generic encouragement branches are intentionally omitted.
+        const note = awlSublist
+          ? `"${w.word}" is in the Coxhead AWL Sublist ${awlSublist} of 10 — formal academic vocabulary commonly tested on TOEFL, IELTS, and the GRE.`
+          : (w.frequency && w.frequency > 0 && w.frequency <= 5000)
+          ? `"${w.word}" ranks in the top ${Math.max(1, 100 - getFrequencyPercentile(w.frequency))}% by usage frequency.`
+          : null;
+        return note ? <EditorNote note={note} /> : null;
+      })()}
 
       <FrequencyMeter frequency={w.frequency} maxFrequency={maxFreq} />
 
       <WordLevelChecker word={w.word} frequency={w.frequency} pos={w.pos} level={w.level} />
 
-      {/* Word Insights */}
+      {/* Word Insights — HCU 2026-05-14: remove length-based generic prose.
+          Keep frequency rank and ECDICT level to AWL cross-reference only. */}
       <section className="bg-blue-50 rounded-lg p-4 mb-6">
         <h2 className="text-lg font-bold mb-2">Word Insights</h2>
         <ul className="space-y-1 text-sm text-slate-700">
           {w.frequency && maxFreq > 0 && <li>This word ranks in the <strong>top {Math.max(1, Math.round((w.frequency / maxFreq) * 100))}%</strong> of most frequently used English words.</li>}
-          {w.word.length < 5 && <li>At <strong>{w.word.length} letters</strong>, this is a relatively short word — easy to remember and commonly used in everyday speech.</li>}
-          {w.word.length >= 5 && w.word.length <= 8 && <li>At <strong>{w.word.length} letters</strong>, this is an average-length word commonly found in both casual and formal writing.</li>}
-          {w.word.length > 8 && <li>At <strong>{w.word.length} letters</strong>, this is a longer word — often used in academic or formal contexts.</li>}
-          {w.level === 'basic' && <li>This is a <strong>basic-level</strong> word — essential for everyday communication.</li>}
-          {w.level === 'intermediate' && <li>This is an <strong>intermediate-level</strong> word — commonly encountered in news articles and professional communication.</li>}
-          {w.level === 'advanced' && <li>This is an <strong>advanced-level</strong> word — typically found in academic texts, literature, or specialized fields.</li>}
-          {w.level === 'academic' && <li>This is an <strong>academic-level</strong> word — used primarily in scholarly writing and research.</li>}
+          {w.level === 'academic' && <li>ECDICT&apos;s heuristic level tag puts this in the <strong>academic</strong> tier (~19,000 entries, including specialist medical Latin). The authoritative academic-register signal is Coxhead AWL membership: {awlSublist ? <>this word is in <strong>AWL Sublist {awlSublist}</strong> (Coxhead 2000).</> : <>this word is <strong>not</strong> in the Coxhead 2000 AWL, so the academic-register claim is the ECDICT heuristic, not a published reference. See <a href="/methodology/" className="text-indigo-600 hover:underline">methodology</a> for the two-tier distinction.</>}</li>}
         </ul>
       </section>
 
@@ -214,71 +292,13 @@ export default async function WordPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Why this word matters — US learner context */}
-      <section className="mb-8" data-upgrade="why-it-matters">
-        <h2 className="text-xl font-bold mb-3">Why &ldquo;{w.word}&rdquo; matters</h2>
-        <div className="rounded-lg border border-slate-200 bg-white p-5 text-slate-700 leading-relaxed space-y-3">
-          {(() => {
-            const isShort = w.word.length <= 5;
-            const isLong = w.word.length >= 10;
-            const highFreq = frequencyPercentile >= 80;
-            const midFreq = frequencyPercentile >= 40 && frequencyPercentile < 80;
+      {/* HCU 2026-05-14: removed the repeated explanatory section.
+          Data-backed surfaces above cover AWL, CEFR, frequency, and interpretation. */}
 
-            // Level-driven primary framing (US context)
-            const primary =
-              w.level === "basic"
-                ? `In American English, "${w.word}" is core everyday vocabulary. You will hear it in casual conversation, see it in emails and news headlines, and meet it on standardized tests like the ACT and TOEFL. Students building a foundation in English should be comfortable using it actively, not just recognizing it.`
-                : w.level === "intermediate"
-                ? `"${w.word}" sits in the mid-tier of English usage — comfortable in news articles, business writing, and classroom discussion. U.S. middle-school and high-school readers encounter it regularly, and it frequently appears on the SAT and ACT verbal sections as part of tested vocabulary.`
-                : w.level === "advanced"
-                ? `"${w.word}" is a college-level word in the United States. It turns up on SAT/ACT reading passages, AP-level writing, and editorial journalism. Using it correctly in an essay or cover letter signals a strong command of written English.`
-                : w.level === "academic"
-                ? `"${w.word}" is an academic register word, the kind found on the Academic Word List used to build GRE, GMAT, and TOEFL preparation material. Expect to see it in scholarly articles, legal briefs, and technical reports rather than casual speech.`
-                : `"${w.word}" appears across contemporary American English at a level that makes it worth knowing for both reading comprehension and careful writing.`;
-
-            // Frequency context (secondary, US-framed)
-            const freqContext = highFreq
-              ? `Its high corpus frequency means you will actually run into it — not a word you can afford to skim past.`
-              : midFreq
-              ? `It is common enough that you will meet it regularly, but uncommon enough that recognizing it on a test or in a professional setting carries weight.`
-              : `Because it is rarer, misusing it is more visible than misusing a common word — worth learning the nuances before relying on it in writing.`;
-
-            // POS context
-            const posContext =
-              w.pos === "noun"
-                ? `As a noun, pay attention to whether it is countable (takes "a/an") or uncountable, and to the adjectives that typically appear alongside it.`
-                : w.pos === "verb"
-                ? `As a verb, the thing to watch is which prepositions it takes and whether its meaning shifts between literal and figurative uses.`
-                : w.pos === "adjective"
-                ? `As an adjective, note its register — some adjectives with similar meanings sound natural in speech, others only in writing.`
-                : w.pos === "adverb"
-                ? `As an adverb, consider where it sits in the sentence — English adverb position changes emphasis.`
-                : null;
-
-            // Length-based study tip
-            const studyTip = isLong
-              ? `At ${w.word.length} letters, "${w.word}" is easier to spell and remember if you break it into recognizable roots or syllables.`
-              : isShort
-              ? `Although "${w.word}" is only ${w.word.length} letters, short English words often carry multiple senses — check the examples below to see which one applies in your context.`
-              : null;
-
-            return (
-              <>
-                <p>{primary}</p>
-                <p>{freqContext}</p>
-                {posContext && <p>{posContext}</p>}
-                {studyTip && <p className="text-sm text-slate-500">{studyTip}</p>}
-              </>
-            );
-          })()}
-        </div>
-      </section>
-
-      <DidYouKnow fact={
-        w.etymology ? `The word "${w.word}" has roots in ${w.etymology.split('.')[0].replace(/^From\s+/i, '')}.` :
-        synonyms.length > 3 ? `"${w.word}" has ${synonyms.length} synonyms — versatile words like this appear in the top 10% of English vocabulary.` :
-        `"${w.word}" has ${w.word.length} letters and ${w.word.split(/[aeiou]/i).length - 1} vowel groups — ${w.word.length > 8 ? "longer words tend to be more specific in meaning" : "short words tend to be among the most frequently used"}.`
-      } />
+      {/* HCU 2026-05-14: render DidYouKnow only for etymology-backed facts. */}
+      {w.etymology && (
+        <DidYouKnow fact={`The word "${w.word}" has roots in ${w.etymology.split('.')[0].replace(/^From\s+/i, '')}.`} />
+      )}
 
       {translations && <TranslationLinks word={w.word} translations={translations} color="indigo" />}
 
@@ -488,7 +508,7 @@ export default async function WordPage({ params }: Props) {
 
           <DataFeedback />
 
-          <AuthorBox />
+          <AuthorBox vintage={WORD_VINTAGE} source="ECDICT + WordNet, BNC/COCA-calibrated" />
 
           <section className="mt-8 p-6 bg-teal-50 rounded-xl border border-teal-100">
         <h3 className="text-lg font-semibold text-teal-900 mb-3">Improve Your English Skills</h3>
@@ -602,9 +622,33 @@ export default async function WordPage({ params }: Props) {
 
       <CrossSiteLinks current="VocabWize" />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ ...definedTermSchema(w.word, w.definition), author: { "@type": "Organization", name: "DataPeek" } }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        ...definedTermSchema(w.word, w.definition),
+        author: { "@type": "Organization", name: PUBLISHER.name, url: PUBLISHER.url },
+        publisher: { "@type": "Organization", name: PUBLISHER.name, url: PUBLISHER.url },
+        reviewedBy: REVIEWER_ORG,
+        isBasedOn: SOURCE_AUTHORITIES,
+        dateModified: WORD_VINTAGE,
+      }) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(breadcrumbs)) }} />
       {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema({
+        name: `${w.word} — English dictionary entry data`,
+        description: `Lexical data for the English word "${w.word}": COCA/BNC frequency rank, Coxhead 2000 AWL membership, CEFR difficulty tier derived from corpus-frequency cutoffs, part of speech, IPA phonetic, Princeton WordNet synonym/antonym graph, and ECDICT base definition. Pure deterministic derivation from open lexical corpora — no editorial paraphrase.`,
+        url: `/word/${slug}/`,
+        dateModified: WORD_VINTAGE,
+        creatorIndex: 3,
+        variableMeasured: [
+          "CEFR difficulty tier (A1-C2, deterministic over COCA/BNC rank)",
+          "Coxhead 2000 AWL sublist membership",
+          "COCA frequency rank",
+          "BNC frequency rank",
+          "Princeton WordNet synonyms",
+          "Princeton WordNet antonyms",
+          "ECDICT inflection forms",
+        ],
+        keywords: [w.word, "english dictionary", "CEFR", "AWL", "COCA", "WordNet"],
+      })) }} />
     </div>
   );
 }

@@ -1,10 +1,29 @@
 import { siteConfig } from "@/site.config";
-import { EDITORIAL_TEAM, PUBLISHER } from "@/lib/authorship";
-import { getDataVintageLabel, getReviewedAt } from "@/lib/seo";
+import {
+  EDITORIAL_TEAM,
+  PUBLISHER,
+  SOURCE_AUTHORITIES,
+  WORD_VINTAGE,
+} from "@/lib/authorship";
 
-export function AuthorBox() {
-  const reviewedAt = getReviewedAt();
-  const dataVintage = getDataVintageLabel();
+const SOURCE_LABELS: Record<string, string> = {
+  "ECDICT (English-Chinese Dictionary)": "ECDICT",
+  "Princeton WordNet": "WordNet",
+  "British National Corpus (BNC)": "BNC",
+  "Corpus of Contemporary American English (COCA)": "COCA",
+  "Academic Word List (AWL)": "AWL",
+};
+
+type AuthorBoxProps = {
+  /** Per-page reviewed/updated date (ISO YYYY-MM-DD). Defaults to WORD_VINTAGE. */
+  vintage?: string;
+  /** Per-page data-source label override. Defaults to siteConfig.dataVintage. */
+  source?: string;
+};
+
+export function AuthorBox({ vintage, source }: AuthorBoxProps = {}) {
+  const reviewedAt = vintage ?? WORD_VINTAGE;
+  const dataVintage = source ?? siteConfig.dataVintage ?? String(siteConfig.dataSource.year);
 
   return (
     <div className="mt-10 p-5 bg-slate-50 border border-slate-200 rounded-xl">
@@ -17,7 +36,7 @@ export function AuthorBox() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-slate-900 text-sm">
-            Data verified by {EDITORIAL_TEAM.name}
+            Reviewed by {EDITORIAL_TEAM.name}
           </div>
           <div className="text-xs text-slate-500 mt-0.5">
             Part of the <a href={PUBLISHER.url} className="text-slate-700 hover:underline" rel="noopener">{PUBLISHER.name}</a>
@@ -25,15 +44,36 @@ export function AuthorBox() {
         </div>
       </div>
       <p className="text-xs text-slate-600 leading-relaxed mb-3">
-        {siteConfig.name} is maintained by an editorial workflow that audits public data sources and verifies dates, values, and methodology on every page. We publish as an organization — no individual bylines — and disclose our data vintage and review dates openly.
+        Definitions, parts of speech, and inflection forms on {siteConfig.name} are pulled from{" "}
+        <strong>ECDICT</strong> (CC-BY-licensed open-source dictionary). Synonym and antonym
+        relationships layer in <strong>Princeton WordNet</strong>. Word-frequency rankings are
+        calibrated against the <strong>British National Corpus (BNC)</strong> and the{" "}
+        <strong>Corpus of Contemporary American English (COCA)</strong>; academic-register
+        flags use the <strong>Academic Word List (AWL)</strong>. Our editorial team audits
+        the build pipeline and publishes review dates per page.
       </p>
+      <div className="mb-3">
+        <div className="text-[11px] uppercase tracking-wide text-slate-500 mb-1.5 font-semibold">
+          Verified against upstream sources
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {SOURCE_AUTHORITIES.map((s) => (
+            <a
+              key={s.name}
+              href={s.url}
+              target="_blank"
+              rel="noopener nofollow"
+              title={s.name}
+              className="inline-flex items-center px-2 py-0.5 rounded-full bg-white border border-slate-200 text-[11px] text-slate-700 hover:border-indigo-300 hover:text-indigo-700"
+            >
+              {SOURCE_LABELS[s.name] ?? s.name}
+            </a>
+          ))}
+        </div>
+      </div>
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-        {reviewedAt && (
-          <>
-            <span>Last verified: <time dateTime={reviewedAt}>{reviewedAt}</time></span>
-            <span className="text-slate-300">·</span>
-          </>
-        )}
+        <span>Last reviewed: <time dateTime={reviewedAt}>{reviewedAt}</time></span>
+        <span className="text-slate-300">·</span>
         <span>Data vintage: {dataVintage}</span>
         <span className="text-slate-300">·</span>
         <a href="https://datapeekfacts.com/editorial-policy/" className="underline underline-offset-2 hover:text-slate-900" rel="noopener">Editorial policy</a>

@@ -10,12 +10,15 @@ const WORD_KEEP_SET: Set<string> = new Set(wordKeepList as string[]);
 const COMPARE_KEEP_SET: Set<string> = new Set(compareKeepList as string[]);
 
 /**
- * HCU 2026-04-24 cleanup — 410 Gone for pruned /word/ and /compare/ URLs.
+ * HCU 2026-04-24 cleanup — 410 Gone for pruned /word/, /es/, and /compare/ URLs.
  *
  * Pre-prune: words table has 160,521 rows; /word/ prior-pass capped at 20K
  * by frequency. That cap killed 8 of the 10 /word/ GSC earners — obscure
  * words like xvx/kreel/hemingwayesque earn clicks precisely because low
  * competition on long-tail. GSC evidence union rescues them.
+ *
+ * /es/* is fully retired. Keep it crawlable in robots.txt so Googlebot can
+ * see 410 and age out the old Spanish URL inventory.
  *
  * /compare/ capped at 100 from 2,515-row comparisons table; 10 GSC compare
  * earners don't exist in comparisons table (historical artifacts) but all
@@ -40,8 +43,13 @@ function isComparePathKept(slugs: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // /word/<slug>/ and /es/word/<slug>/ — 410 if not in 20K + GSC keep-set
-  const wordMatch = pathname.match(/^\/(?:es\/)?word\/([^/]+)\/?$/);
+  // /es/* is intentionally gone. Do not robots-block it; let Googlebot see 410.
+  if (pathname === '/es' || pathname.startsWith('/es/')) {
+    return new NextResponse('Gone', { status: 410 });
+  }
+
+  // /word/<slug>/ — 410 if not in 20K + GSC keep-set
+  const wordMatch = pathname.match(/^\/word\/([^/]+)\/?$/);
   if (wordMatch) {
     const slug = wordMatch[1];
     if (slug && !WORD_KEEP_SET.has(slug)) {

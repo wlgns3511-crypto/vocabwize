@@ -12,9 +12,9 @@ export const siteConfig = {
   dbPath: './data/vocab.db',
   methodologyUrl: '/methodology/',
   publisherMode: 'organization',
-  dataVintage: 'Lexical sources verified',
+  dataVintage: 'ECDICT + WordNet, frequency calibrated against BNC/COCA',
   reviewedAt: '2026-04-19',
-  reviewedBy: 'DataPeek Research Network',
+  reviewedBy: 'VocabWize Editorial Team',
   gaId: 'G-KGNDY9231R',
   adsenseId: 'ca-pub-5724806562146685',
   entity: {
@@ -31,8 +31,8 @@ export const siteConfig = {
     comparePrerenderLimit: 2000,
   },
   dataSource: {
-    name: 'English lexical and corpus sources',
-    url: 'https://www.merriam-webster.com/',
+    name: 'ECDICT open-source dictionary (BNC/COCA-calibrated)',
+    url: 'https://github.com/skywind3000/ECDICT',
     year: 2024,
   },
   colors: {

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllGuides, getGuideBySlug } from '@/lib/guides';
-import { breadcrumbSchema, faqSchema, articleSchema } from '@/lib/schema';
+import { breadcrumbSchema, faqSchema, articleSchema, datasetSchema } from '@/lib/schema';
 import { AuthorBox } from '@/components/AuthorBox';
 import { CrossSiteLinks } from '@/components/CrossSiteLinks';
 import { TrustBlock } from '@/components/upgrades/TrustBlock';
@@ -48,11 +48,51 @@ export default async function GuidePage({ params }: Props) {
     { name: guide.title, url: `/guide/${slug}/` },
   ];
 
+  const dataGuideMap: Record<string, { creatorIndex: 0 | 1 | 2 | 3 | 4; variableMeasured: string[]; keywords: string[] }> = {
+    'cefr-difficulty-tiers': {
+      creatorIndex: 3,
+      variableMeasured: [
+        'CEFR tier band (A1/A2/B1/B2/C1/C2)',
+        'COCA frequency rank cutoffs',
+        'Morphological-depth correction (suffix-driven tier bump)',
+      ],
+      keywords: ['CEFR', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'COCA', 'BNC', 'difficulty tier', 'Council of Europe'],
+    },
+    'awl-academic-word-list-sublists': {
+      creatorIndex: 4,
+      variableMeasured: [
+        'Coxhead 2000 AWL sublist (1-10)',
+        'Word-family membership',
+        'Academic-register flag',
+      ],
+      keywords: ['AWL', 'Academic Word List', 'Coxhead', 'sublist', 'academic English', 'TOEFL', 'IELTS', 'GRE'],
+    },
+    'corpus-frequency-rank-methodology': {
+      creatorIndex: 3,
+      variableMeasured: [
+        'COCA frequency rank',
+        'BNC frequency rank',
+        'Register-balanced corpus weighting',
+      ],
+      keywords: ['COCA', 'BNC', 'corpus linguistics', 'frequency rank', 'Mark Davies', 'Brigham Young University'],
+    },
+  };
+  const dataGuide = dataGuideMap[slug];
+
   return (
     <article className="prose prose-slate max-w-3xl mx-auto">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(crumbs)) }} />
       {guide.faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(guide.faqs)) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema({ title: guide.title, description: guide.description, slug: `guide/${slug}`, publishedAt: guide.updatedAt, updatedAt: guide.updatedAt, category: guide.category })) }} />
+      {dataGuide && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema({
+        name: guide.title,
+        description: guide.description,
+        url: `/guide/${slug}/`,
+        dateModified: guide.updatedAt,
+        creatorIndex: dataGuide.creatorIndex,
+        variableMeasured: dataGuide.variableMeasured,
+        keywords: dataGuide.keywords,
+      })) }} />}
 
       <nav className="not-prose text-sm text-slate-500 mb-4">
         <Link href="/" className="hover:text-indigo-700">Home</Link>

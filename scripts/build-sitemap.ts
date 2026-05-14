@@ -20,7 +20,7 @@
  *         Static pages (/, /rankings/, /quiz/, /search/, /compare/, /word/, etc.)
  *
  *   DROP: 114,470 zero-frequency /word/[slug] (route stays live via dynamicParams=true)
- *         160,521 /es/word/[slug] thin translations (keep /es/ homepage only)
+ *         160,521 /es/word/[slug] thin translations
  *         /rhymes/[slug] — derivative content, route stays live for clicks
  *
  * GROWTH PROTOCOL:
@@ -42,6 +42,14 @@ import {
 import { getAllGuides } from '../lib/guides';
 import { getAllPosts } from '../lib/blog';
 import { getAllInsightArticles } from '../lib/insight-articles';
+import {
+  WORD_VINTAGE,
+  GUIDE_VINTAGE,
+  METHODOLOGY_VINTAGE,
+  ABOUT_VINTAGE,
+  SITE_VINTAGE,
+  LEGAL_VINTAGES,
+} from '../lib/authorship';
 // HCU 2026-04-28: sitemap source MUST match app/word/[slug]/page.tsx generateStaticParams.
 // Previously emitted 46K freq>0 words via getTopWords(50000); page only renders 20K via
 // wordKeepList. The 26K mismatch was leaking 410 Gone URLs into Google's crawl queue —
@@ -49,7 +57,10 @@ import { getAllInsightArticles } from '../lib/insight-articles';
 import wordKeepList from '../lib/generated/word-keep.json';
 
 const SITE_URL = 'https://vocabwize.com';
-const NOW = new Date().toISOString().split('T')[0];
+// HCU 2026-05-05: per-entity vintages, NOT a single sitewide NOW. Single
+// sitewide lastmod is the caloriewize anti-pattern AdSense reviewers flag as
+// "auto-generated freshness." Each route bucket gets its own honest date from
+// authorship.ts.
 const SHARD_SIZE = 40000;
 const OUT_DIR = path.resolve(__dirname, '..', 'public');
 
@@ -59,7 +70,7 @@ const POS_LIST = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition
 interface Entry { url: string; lastmod?: string; priority?: string; changefreq?: string; }
 
 function urlTag(e: Entry): string {
-  return `  <url><loc>${e.url}</loc><lastmod>${e.lastmod ?? NOW}</lastmod><changefreq>${e.changefreq ?? 'monthly'}</changefreq><priority>${e.priority ?? '0.6'}</priority></url>`;
+  return `  <url><loc>${e.url}</loc><lastmod>${e.lastmod ?? SITE_VINTAGE}</lastmod><changefreq>${e.changefreq ?? 'monthly'}</changefreq><priority>${e.priority ?? '0.6'}</priority></url>`;
 }
 
 function writeShard(id: number, es: Entry[]) {
@@ -73,46 +84,49 @@ const seen = new Set<string>();
 const entries: Entry[] = [];
 function add(e: Entry) { if (!seen.has(e.url)) { seen.add(e.url); entries.push(e); } }
 
-// Static pages + hubs + /es/ home
-for (const [p, pr, cf] of [
-  ['/', '1.0', 'weekly'],
-  ['/es/', '0.5', 'monthly'],
-  ['/word/', '0.9', 'weekly'],
-  ['/compare/', '0.9', 'monthly'],
-  ['/letter/', '0.8', 'monthly'],
-  ['/pos/', '0.8', 'monthly'],
-  ['/words-length/', '0.8', 'monthly'],
-  ['/rankings/', '0.8', 'weekly'],
-  ['/quiz/', '0.7', 'monthly'],
-  ['/insights/', '0.7', 'monthly'],
-  ['/guide/', '0.8', 'weekly'],
-  ['/blog/', '0.8', 'weekly'],
-  ['/search/', '0.5', 'monthly'],
-  ['/about/', '0.3', 'yearly'],
-  ['/methodology/', '0.4', 'yearly'],
-  ['/editorial-policy/', '0.3', 'yearly'],
-  ['/corrections-policy/', '0.3', 'yearly'],
-  ['/contact/', '0.3', 'yearly'],
-  ['/privacy/', '0.2', 'yearly'],
-  ['/terms/', '0.2', 'yearly'],
-  ['/disclaimer/', '0.2', 'yearly'],
-] as [string, string, string][]) {
-  add({ url: `${SITE_URL}${p}`, priority: pr, changefreq: cf });
+// Static pages + hubs.
+// vintages: legal pages get LEGAL_VINTAGES per-doc; methodology gets
+// METHODOLOGY_VINTAGE; about/editorial/contact get ABOUT_VINTAGE; word/compare
+// hubs get WORD_VINTAGE (DB rebuild date); structural hubs get SITE_VINTAGE.
+const STATIC_PAGES: Array<[string, string, string, string]> = [
+  ['/', '1.0', 'weekly', SITE_VINTAGE],
+  ['/word/', '0.9', 'weekly', WORD_VINTAGE],
+  ['/compare/', '0.9', 'monthly', WORD_VINTAGE],
+  ['/letter/', '0.8', 'monthly', SITE_VINTAGE],
+  ['/pos/', '0.8', 'monthly', SITE_VINTAGE],
+  ['/words-length/', '0.8', 'monthly', SITE_VINTAGE],
+  ['/rankings/', '0.8', 'weekly', WORD_VINTAGE],
+  ['/quiz/', '0.7', 'monthly', SITE_VINTAGE],
+  ['/insights/', '0.7', 'monthly', SITE_VINTAGE],
+  ['/guide/', '0.8', 'weekly', GUIDE_VINTAGE],
+  ['/blog/', '0.8', 'weekly', SITE_VINTAGE],
+  ['/search/', '0.5', 'monthly', SITE_VINTAGE],
+  ['/about/', '0.3', 'yearly', ABOUT_VINTAGE],
+  ['/methodology/', '0.4', 'yearly', METHODOLOGY_VINTAGE],
+  ['/editorial-policy/', '0.3', 'yearly', ABOUT_VINTAGE],
+  ['/corrections-policy/', '0.3', 'yearly', ABOUT_VINTAGE],
+  ['/contact/', '0.3', 'yearly', ABOUT_VINTAGE],
+  ['/privacy/', '0.2', 'yearly', LEGAL_VINTAGES.privacy],
+  ['/terms/', '0.2', 'yearly', LEGAL_VINTAGES.terms],
+  ['/disclaimer/', '0.2', 'yearly', LEGAL_VINTAGES.disclaimer],
+];
+for (const [p, pr, cf, lm] of STATIC_PAGES) {
+  add({ url: `${SITE_URL}${p}`, priority: pr, changefreq: cf, lastmod: lm });
 }
 
 // Letter hubs: 26 a-z
 for (const letter of 'abcdefghijklmnopqrstuvwxyz'.split('')) {
-  add({ url: `${SITE_URL}/letter/${letter}/`, priority: '0.6', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/letter/${letter}/`, priority: '0.6', changefreq: 'monthly', lastmod: SITE_VINTAGE });
 }
 
 // POS hubs: 8 (matches app/pos/[pos] hard list)
 for (const pos of POS_LIST) {
-  add({ url: `${SITE_URL}/pos/${pos}/`, priority: '0.6', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/pos/${pos}/`, priority: '0.6', changefreq: 'monthly', lastmod: SITE_VINTAGE });
 }
 
 // Length hubs: dynamic from DB (3..15)
 for (const len of getAvailableLengths()) {
-  add({ url: `${SITE_URL}/words-length/${len}/`, priority: '0.6', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/words-length/${len}/`, priority: '0.6', changefreq: 'monthly', lastmod: SITE_VINTAGE });
 }
 
 // Words: 20K from word-keep.json — single source of truth shared with
@@ -120,7 +134,7 @@ for (const len of getAvailableLengths()) {
 // is intentionally 410 Gone via middleware keep-set; emitting them in the
 // sitemap was the structural bug fixed 2026-04-28.
 for (const slug of wordKeepList as string[]) {
-  add({ url: `${SITE_URL}/word/${slug}/`, priority: '0.7', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/word/${slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: WORD_VINTAGE });
 }
 
 // Comparisons: hard cap 100 — matches /compare/[slugs] ALLOWED_COMPARISON_SLUGS.
@@ -128,20 +142,21 @@ for (const slug of wordKeepList as string[]) {
 // ones that render. 404-safe.
 for (const cmp of getTopComparisons(100)) {
   const canonical = [cmp.slugA, cmp.slugB].sort().join('-vs-');
-  add({ url: `${SITE_URL}/compare/${canonical}/`, priority: '0.7', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/compare/${canonical}/`, priority: '0.7', changefreq: 'monthly', lastmod: WORD_VINTAGE });
 }
 
-// ─── /es/word/[slug] × 160,521 DROPPED 2026-04-22 ─────────────────────────
+// ─── /es/* DROPPED 2026-04-22 ─────────────────────────────────────────────
 // Thin Spanish translations, zero GSC signal, competes with real ES dictionaries.
-// /es/ homepage kept for language-switch UX.
+// Keep crawlable in robots.txt so middleware can return 410 and deindex old URLs.
 
 // ─── /rhymes/[slug] × 5,000 DROPPED 2026-04-22 ────────────────────────────
 // Derivative content (list of rhyming words). Route stays live via
 // dynamicParams=true; candidates for whitelist if GSC shows rhyme-intent clicks.
 
-// Insights: data-journalism articles (small, editorial)
+// Insights: data-journalism articles (small, editorial). Each carries its
+// own publication date (article.date), surfaced as lastmod.
 for (const a of getAllInsightArticles()) {
-  add({ url: `${SITE_URL}/insights/${a.slug}/`, priority: '0.7', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/insights/${a.slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: a.date ?? SITE_VINTAGE });
 }
 
 // ─── /trends/ × 8 + /research/ × 4 REVERTED 2026-05-01 ────────────────────
@@ -152,14 +167,19 @@ for (const a of getAllInsightArticles()) {
 // links, and WordFrequencyTrend never rendered on any /word/ page. Routes
 // + components removed pending NGram re-fetch against the keep-set.
 
-// Guides
+// Guides — use guide.updatedAt for honest per-page freshness.
 for (const g of getAllGuides()) {
-  add({ url: `${SITE_URL}/guide/${g.slug}/`, priority: '0.7', changefreq: 'monthly' });
+  add({ url: `${SITE_URL}/guide/${g.slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: g.updatedAt ?? GUIDE_VINTAGE });
 }
 
-// Blog
+// Blog — post.updatedAt is optional; fall back to publishedAt or SITE_VINTAGE.
 for (const post of getAllPosts()) {
-  add({ url: `${SITE_URL}/blog/${post.slug}/`, priority: '0.7', changefreq: 'monthly' });
+  const lm =
+    (post as unknown as { updatedAt?: string; date?: string; publishedAt?: string }).updatedAt
+    ?? (post as unknown as { date?: string }).date
+    ?? (post as unknown as { publishedAt?: string }).publishedAt
+    ?? SITE_VINTAGE;
+  add({ url: `${SITE_URL}/blog/${post.slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: lm });
 }
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
@@ -189,7 +209,7 @@ if (shardCount <= 1) {
   const indexXml =
     '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     Array.from({ length: shardCount }, (_, i) =>
-      `  <sitemap><loc>${SITE_URL}/sitemap-${i}.xml</loc><lastmod>${NOW}</lastmod></sitemap>`
+      `  <sitemap><loc>${SITE_URL}/sitemap-${i}.xml</loc><lastmod>${WORD_VINTAGE}</lastmod></sitemap>`
     ).join('\n') + '\n</sitemapindex>\n';
   fs.writeFileSync(path.join(OUT_DIR, 'sitemap.xml'), indexXml);
 }

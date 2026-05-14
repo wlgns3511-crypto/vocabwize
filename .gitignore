@@ -46,3 +46,10 @@ data/vocab.db
 data/vocab.db-wal
 data/vocab.db-shm
 data/vocab.db-journal
+
+# DB backups + empty placeholders (added 2026-05-14 — kept on disk for safety
+# but not versioned: vocab.db is the canonical 102MB tracked DB)
+data/*.bak
+data/vocab-fr.db
+data/vocabwize.db
+data/main.db

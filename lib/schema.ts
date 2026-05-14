@@ -1,5 +1,5 @@
 import { breadcrumbSchema as _breadcrumb, faqSchema, definedTermSchema } from './core-schema';
-import { PUBLISHER, EDITORIAL_TEAM } from './authorship';
+import { PUBLISHER, EDITORIAL_TEAM, SOURCE_AUTHORITIES } from './authorship';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vocabwize.com';
 
@@ -43,6 +43,65 @@ export function articleSchema(args: {
       '@id': url,
     },
     ...(args.category ? { articleSection: args.category } : {}),
+  };
+}
+
+/**
+ * Dataset JSON-LD for VocabWize entries and reference guides.
+ *
+ * Trap #105 — creator is the upstream data origin (the organization that
+ * produced the underlying dataset), publisher is the site that hosts the
+ * presentation, and reviewedBy is the editorial team. Per schema.org spec.
+ *
+ * Default creator is SOURCE_AUTHORITIES[0] (ECDICT, the primary lexical
+ * corpus). Pages whose underlying signal comes from a different upstream
+ * pass an index: COCA = 3, Coxhead AWL = 4, Princeton WordNet = 1, BNC = 2.
+ */
+export function datasetSchema(args: {
+  name: string;
+  description: string;
+  url: string; // page URL relative to site root, e.g. "/word/excellent/"
+  dateModified: string;
+  variableMeasured?: string[];
+  keywords?: string[];
+  creatorIndex?: 0 | 1 | 2 | 3 | 4;
+}) {
+  const fullUrl = `${SITE_URL}${args.url}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: args.name,
+    description: args.description,
+    url: fullUrl,
+    dateModified: args.dateModified,
+    creator: {
+      '@type': 'Organization',
+      // Trap #105: creator inline SOURCE_AUTHORITIES[0]/[1]/[2]/[3]/[4] honest origin
+      name: SOURCE_AUTHORITIES[args.creatorIndex ?? 0].name,
+      url: SOURCE_AUTHORITIES[args.creatorIndex ?? 0].url,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: PUBLISHER.name,
+      url: PUBLISHER.url,
+    },
+    reviewedBy: {
+      '@type': 'Organization',
+      name: EDITORIAL_TEAM.name,
+      url: EDITORIAL_TEAM.url,
+    },
+    sourceOrganization: SOURCE_AUTHORITIES.map((s) => ({
+      '@type': 'Organization',
+      name: s.name,
+      url: s.url,
+    })),
+    ...(args.variableMeasured && args.variableMeasured.length > 0
+      ? { variableMeasured: args.variableMeasured }
+      : {}),
+    ...(args.keywords && args.keywords.length > 0
+      ? { keywords: args.keywords.join(', ') }
+      : {}),
+    license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 }
 

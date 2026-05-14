@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { METHODOLOGY_VINTAGE } from "@/lib/authorship";
 
 export const metadata: Metadata = {
   title: "Our Methodology — How VocabWize Builds Its Dictionary",
@@ -81,6 +82,22 @@ export default function MethodologyPage() {
         &ldquo;basic&rdquo;; words primarily seen in scholarly writing,
         standardized tests, or specialized domains get &ldquo;academic&rdquo;.
         The mapping is rule-based and fully reproducible from the data.
+      </p>
+
+      <h2>AWL Sublist tagging (Coxhead 2000)</h2>
+      <p>
+        On top of the basic/academic level flag, every entry is independently
+        checked against the original 10-sublist table from Coxhead&apos;s 2000
+        Academic Word List. The static lookup table covers all 570 word
+        families and their inflections; if your word appears in any family, the
+        entry page shows an &ldquo;AWL Sublist <em>N</em>&rdquo; badge (1 = most
+        frequent in academic prose, 10 = least). The AWL signal is the
+        authoritative published reference and is separate from our DB
+        <code>level=academic</code> heuristic. See our{" "}
+        <a href="/guide/awl-academic-word-list-sublists/">
+          AWL Sublists Explained guide
+        </a>{" "}
+        for the full 570-family breakdown and a recommended study order.
       </p>
 
       <h2>Build and update process</h2>
@@ -197,6 +214,79 @@ export default function MethodologyPage() {
         </li>
       </ul>
 
+      <h2>The CEFR Difficulty Tier classifier (A1-C2)</h2>
+      <p>
+        Every word entry on VocabWize carries a CEFR tier badge: A1, A2, B1, B2,
+        C1, or C2. The Common European Framework of Reference is a published
+        proficiency framework from the Council of Europe and is the de facto
+        standard for describing English vocabulary difficulty in test prep
+        (Cambridge English, IELTS, Pearson PTE), in published reference lists
+        (English Vocabulary Profile from Cambridge University Press, Oxford 3000
+        and Oxford 5000 from Oxford University Press), and in language teaching
+        worldwide. CEFR itself does not classify individual words — that work is
+        done by the published reference lists that map CEFR levels to specific
+        vocabulary. We do not have access to the proprietary EVP, Oxford 3000,
+        or Pearson Global Scale of English classifications.
+      </p>
+      <p>
+        Our CEFR tag is a deterministic derivation from the COCA and BNC
+        corpus-frequency rank already on every entry, calibrated against the
+        published EVP and Oxford 3000/5000 cutoff bands. The cutoff table: A1 =
+        COCA rank 1-1,000; A2 = COCA rank 1,001-2,000; B1 = COCA rank
+        2,001-5,000; B2 = COCA rank 5,001-15,000; C1 = COCA rank 15,001-50,000;
+        C2 = COCA rank 0 (unranked in COCA / BNC) or beyond 50,000. A
+        morphological-depth correction bumps the tier up by one when the word
+        is in a top-frequency band but has length ≥ 10 letters and a
+        low-frequency derivational suffix (-tion, -graph, -ology, -ize,
+        -ferous, -escence) — the COCA rank captures the lemma family while the
+        surface form can be harder than the rank suggests. The cutoffs are
+        VocabWize heuristics over the Council of Europe framework, not an
+        official Council of Europe rating; every word entry surfaces this
+        distinction in the CEFR reader-help block. The full classifier
+        documentation is on the dedicated{" "}
+        <a href="/guide/cefr-difficulty-tiers/">CEFR Difficulty Tiers</a> guide.
+      </p>
+
+      <h2>Coxhead AWL signal — the academic-register layer</h2>
+      <p>
+        On top of the CEFR tier, every word entry checks membership in the
+        Coxhead Academic Word List (Averil Coxhead, 2000) — a closed,
+        published list of 570 word families derived from a 3.5-million-word
+        corpus of academic writing across arts, commerce, law, and science.
+        The Coxhead AWL is the published reference cited by virtually every
+        TOEFL, IELTS, and GRE preparation curriculum, and it is the
+        authoritative source for "academic register" claims about a word. We
+        check each headword (and its inflections) against a static lookup
+        compiled directly from the 2000 sublist tables — no edits, no
+        additions, no synthetic family expansion. A word that is in the
+        Coxhead AWL appears with an "AWL Sublist N" badge; a word that is not
+        in the AWL is honestly labelled outside the academic register
+        (regardless of how "academic" it might sound). The CEFR tier and the
+        Coxhead AWL sublist are orthogonal signals — see{" "}
+        <a href="/guide/awl-academic-word-list-sublists/">the AWL guide</a>{" "}
+        and{" "}
+        <a href="/guide/cefr-difficulty-tiers/">the CEFR guide</a> for the
+        published references behind each layer.
+      </p>
+
+      <h2>Two-tier honesty: DB level= heuristic vs published reference</h2>
+      <p>
+        Our internal database (ECDICT-derived) tags every word with a coarse
+        <code>level</code> field — basic, intermediate, advanced, or academic.
+        That tag is heuristic: it was assigned by ECDICT compilers using a mix
+        of frequency and dictionary-cross-reference signals, and it is noisy in
+        the academic bucket (~19,000 medical Latin entries are tagged
+        academic). We expose the ECDICT level tag for transparency, but the
+        authoritative signals on every entry are the published references: the
+        COCA / BNC corpus frequency rank (Mark Davies, BYU / Oxford University
+        Computing Services), the Coxhead AWL membership (Averil Coxhead,
+        Victoria University of Wellington, 2000), and the Princeton WordNet
+        synonym graph (George A. Miller et al., Princeton University). Where
+        the ECDICT level tag disagrees with the COCA rank or with Coxhead AWL
+        membership, the published reference takes priority on the visible
+        reader-help block.
+      </p>
+
       <h2>Corrections and feedback</h2>
       <p>
         If you find an incorrect definition, a missing sense, or a level
@@ -206,7 +296,7 @@ export default function MethodologyPage() {
       </p>
 
       <p className="text-sm text-slate-500 border-t pt-4 mt-8">
-        This methodology page was last reviewed in March 2026. Substantive
+        Last reviewed: <time dateTime={METHODOLOGY_VINTAGE}>{new Date(METHODOLOGY_VINTAGE).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time>. Substantive
         changes to how we build the dataset will be reflected here before they
         reach production data.
       </p>
