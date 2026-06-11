@@ -38,28 +38,34 @@ const BING_MIN_IMP = 1;
 
 function loadBingSlugs(routeRe: RegExp): string[] {
   if (!fs.existsSync(BING_JSON_DIR)) return [];
+  // 2026-05-15 patch: scan files newest-first, pick first that has THIS domain.
+  // Some snapshots are partial (only N sites refreshed that day) — picking
+  // the absolute-latest file would yield 0 Bing slugs for sites not in it.
   const files = fs.readdirSync(BING_JSON_DIR)
     .filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
-    .sort();
-  if (!files.length) return [];
-  try {
-    const json = JSON.parse(fs.readFileSync(path.join(BING_JSON_DIR, files[files.length - 1]), 'utf8'));
-    const site = json[BING_DOMAIN];
-    if (!site || !Array.isArray(site.pages)) return [];
-    const out = new Map<string, number>();
-    for (const pg of site.pages) {
-      const url = String(pg.url || '');
-      const pathOnly = url.replace(/^https?:\/\/[^/]+/, '');
-      const m = routeRe.exec(pathOnly);
-      if (!m) continue;
-      const slug = decodeURIComponent(m[1]);
-      const imp = Number(pg.impressions) || 0;
-      out.set(slug, (out.get(slug) || 0) + imp);
+    .sort()
+    .reverse();
+  for (const fname of files) {
+    try {
+      const json = JSON.parse(fs.readFileSync(path.join(BING_JSON_DIR, fname), 'utf8'));
+      const site = json[BING_DOMAIN];
+      if (!site || !Array.isArray(site.pages)) continue;
+      const out = new Map<string, number>();
+      for (const pg of site.pages) {
+        const url = String(pg.url || '');
+        const pathOnly = url.replace(/^https?:\/\/[^/]+/, '');
+        const m = routeRe.exec(pathOnly);
+        if (!m) continue;
+        const slug = decodeURIComponent(m[1]);
+        const imp = Number(pg.impressions) || 0;
+        out.set(slug, (out.get(slug) || 0) + imp);
+      }
+      return [...out.entries()].filter(([, i]) => i >= BING_MIN_IMP).map(([s]) => s);
+    } catch {
+      // try next file
     }
-    return [...out.entries()].filter(([, i]) => i >= BING_MIN_IMP).map(([s]) => s);
-  } catch {
-    return [];
   }
+  return [];
 }
 
 // GSC evidence — /word/ URLs earning ≥1 click in 28d window (2026-03-24 ~
@@ -118,8 +124,22 @@ for (const slug of [...bingWords, ...bingRhymes]) {
   if (wordSet.has(slug)) continue;
   if (getWordBySlug(slug)) { wordSet.add(slug); wordBingAdded++; }
 }
+// 2026-05-15: no-regression contract — carry over existing keep-set so the
+// new build never SHRINKS the index. Pass --reset to opt out.
+const WORD_KEEP_PATH = path.join(OUT_DIR, 'word-keep.json');
+const RESET = process.argv.includes('--reset');
+let wordCarryAdded = 0;
+if (!RESET && fs.existsSync(WORD_KEEP_PATH)) {
+  try {
+    const prior = JSON.parse(fs.readFileSync(WORD_KEEP_PATH, 'utf8')) as string[];
+    for (const slug of prior) {
+      if (wordSet.has(slug)) continue;
+      if (getWordBySlug(slug)) { wordSet.add(slug); wordCarryAdded++; }
+    }
+  } catch { /* ignore */ }
+}
 fs.writeFileSync(
-  path.join(OUT_DIR, 'word-keep.json'),
+  WORD_KEEP_PATH,
   JSON.stringify(Array.from(wordSet).sort()),
 );
 
@@ -139,14 +159,30 @@ for (const [a, b] of GSC_EVIDENCE_COMPARES) {
   if (!compareSet.has(canonical)) compareAdded++;
   compareSet.add(canonical);
 }
+// no-regression carry for compares too
+const COMPARE_KEEP_PATH = path.join(OUT_DIR, 'compare-keep.json');
+let compareCarryAdded = 0;
+if (!RESET && fs.existsSync(COMPARE_KEEP_PATH)) {
+  try {
+    const prior = JSON.parse(fs.readFileSync(COMPARE_KEEP_PATH, 'utf8')) as string[];
+    for (const canonical of prior) {
+      if (compareSet.has(canonical)) continue;
+      const m = canonical.match(/^(.+)-vs-(.+)$/);
+      if (!m) continue;
+      if (!getWordBySlug(m[1]) || !getWordBySlug(m[2])) continue;
+      compareSet.add(canonical);
+      compareCarryAdded++;
+    }
+  } catch { /* ignore */ }
+}
 fs.writeFileSync(
-  path.join(OUT_DIR, 'compare-keep.json'),
+  COMPARE_KEEP_PATH,
   JSON.stringify(Array.from(compareSet).sort()),
 );
 
 console.log(
-  `✓ word-keep.json: ${wordSet.size} words (${wordBase.length} base + ${wordAdded} GSC + ${wordBingAdded} Bing, ${wordSkipped} skipped)`,
+  `✓ word-keep.json: ${wordSet.size} words (${wordBase.length} base + ${wordAdded} GSC + ${wordBingAdded} Bing + ${wordCarryAdded} carry, ${wordSkipped} skipped)`,
 );
 console.log(
-  `✓ compare-keep.json: ${compareSet.size} compares (${compareBase.length} base + ${compareAdded} GSC new, ${compareSkipped} skipped)`,
+  `✓ compare-keep.json: ${compareSet.size} compares (${compareBase.length} base + ${compareAdded} GSC new + ${compareCarryAdded} carry, ${compareSkipped} skipped)`,
 );
