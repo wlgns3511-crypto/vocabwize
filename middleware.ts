@@ -27,17 +27,35 @@ const COMPARE_KEEP_SET: Set<string> = new Set(compareKeepList as string[]);
  * 410 instead of notFound()'s 404 signals intentional deletion →
  * faster deindex vs. Google's month-long 404 recrawl dance.
  */
-function isComparePathKept(slugs: string): boolean {
-  if (COMPARE_KEEP_SET.has(slugs)) return true;
+/**
+ * Returns the canonical (alphabetically sorted) `-vs-` slug if `slugs`
+ * matches any keep-set entry under either direction. Returns `null` if
+ * the URL is not in the keep-set.
+ *
+ * Why canonical-form return (not just boolean):
+ *   `generateStaticParams` in app/compare/[slugs]/page.tsx pre-renders
+ *   BOTH `X-vs-Y` AND `Y-vs-X` so internal/external links land on a
+ *   real page. The page body calls `redirect()` for the reverse case,
+ *   BUT — per Next.js 16 docs — `redirect()` inside an SSG streaming
+ *   context emits a client-side meta-tag, NOT an HTTP 308. Crawlers
+ *   read 200 + canonical-link-tag and bucket the reverse URL into
+ *   GSC's "alternate page (canonical)" report (~38K URLs as of
+ *   2026-05-14). Returning the canonical here lets middleware emit
+ *   a real edge-level 308 BEFORE the page renders, which crawlers do
+ *   follow → flushes that bucket.
+ */
+function findCanonicalCompare(slugs: string): string | null {
+  if (COMPARE_KEEP_SET.has(slugs)) return slugs;
   const marker = '-vs-';
   let idx = slugs.indexOf(marker);
   while (idx !== -1) {
     const a = slugs.slice(0, idx);
     const b = slugs.slice(idx + marker.length);
-    if (COMPARE_KEEP_SET.has([a, b].sort().join(marker))) return true;
+    const sorted = [a, b].sort().join(marker);
+    if (COMPARE_KEEP_SET.has(sorted)) return sorted;
     idx = slugs.indexOf(marker, idx + 1);
   }
-  return false;
+  return null;
 }
 
 export function middleware(request: NextRequest) {
@@ -57,14 +75,32 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // /compare/<slugs>/ — 410 if not in keep-set (either ordering)
+  // /compare/<slugs>/ — 410 if not in keep-set; 308 if reverse-direction.
+  // The 308 is critical: page.tsx's `redirect()` in SSG streaming context
+  // only emits an in-HTML NEXT_REDIRECT signal that crawlers ignore.
+  // Edge middleware gives a true HTTP 308 BEFORE render. See
+  // findCanonicalCompare() docstring.
   if (pathname.startsWith('/compare/')) {
     const raw = pathname.slice(9).replace(/\/$/, '');
     if (raw && !raw.includes('/') && raw.includes('-vs-')) {
-      if (!isComparePathKept(raw)) {
+      const canonical = findCanonicalCompare(raw);
+      if (!canonical) {
         return new NextResponse('Gone', { status: 410 });
       }
+      if (raw !== canonical) {
+        const url = request.nextUrl.clone();
+        url.pathname = `/compare/${canonical}/`;
+        return NextResponse.redirect(url, 308);
+      }
     }
+  }
+
+  // /rhymes/* — 410 (thin pages, Google classified as Soft 404 per 2026-05-14
+  // GSC export — 10% of Soft 404 9,807 bucket. Sitemap already excludes
+  // /rhymes/ as of 2026-04-19. Same retire pattern as /es/, /trends/,
+  // /research/. Internal links removed in app/page.tsx + app/word/[slug]/page.tsx.
+  if (pathname.startsWith('/rhymes/') || pathname === '/rhymes') {
+    return new NextResponse('Gone', { status: 410 });
   }
 
   // /trends/* and /research/* — 410 (reverted 2026-05-01). Layer 1++ NGram
@@ -79,9 +115,20 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
+
+  // /search/ with ?q= param — noindex (parameterized variants found in GSC
+  // alt-canonical bucket as /search/?q=happy, /search/?q=nature etc.).
+  // Page still renders for users; only block indexing of query-string variants.
+  // Base /search/ landing page stays indexable.
+  if ((pathname === '/search' || pathname === '/search/') &&
+      request.nextUrl.searchParams.has('q')) {
+    response.headers.set('X-Robots-Tag', 'noindex, follow');
+  }
+
+  return response;
 }
 
 export const config = {

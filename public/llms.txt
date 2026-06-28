@@ -1,0 +1,30 @@
+# VocabWize
+
+> Word Definitions, Meanings & Comparisons
+
+Look up definitions, meanings, and usage for 160,000+ English words. Compare confusing words side by side.
+
+## Core pages
+- [Methodology and data sources](https://vocabwize.com/methodology/): how every figure is derived, with primary-source citations
+- [Words directory](https://vocabwize.com/word/): browse every word we cover
+- [Rankings](https://vocabwize.com/rankings/): words ranked by the key metric
+- [Compare](https://vocabwize.com/compare/): side-by-side comparison
+- [About and editorial standards](https://vocabwize.com/about/): authorship and review policy
+
+## Key words
+- [A](https://vocabwize.com/letter/a/)
+- [B](https://vocabwize.com/letter/b/)
+- [C](https://vocabwize.com/letter/c/)
+- [D](https://vocabwize.com/letter/d/)
+- [E](https://vocabwize.com/letter/e/)
+- [F](https://vocabwize.com/letter/f/)
+- [G](https://vocabwize.com/letter/g/)
+- [H](https://vocabwize.com/letter/h/)
+- [I](https://vocabwize.com/letter/i/)
+- [J](https://vocabwize.com/letter/j/)
+- [K](https://vocabwize.com/letter/k/)
+- [L](https://vocabwize.com/letter/l/)
+
+## Data
+- Primary sources: ECDICT, Princeton WordNet, COCA, ECDICT (English-Chinese Dictionary)
+- All figures are derived from these primary sources; see /methodology/ for derivation and vintage.

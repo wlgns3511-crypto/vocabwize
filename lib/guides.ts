@@ -1,409 +1,47 @@
-/**
- * Long-form evergreen guides — vocabulary learning methodology.
- * Hub pages that link deep into the word/compare/quiz matrix.
- * Each guide targets a high-intent keyword and answers a complete question.
- */
-
+// lib/guides.ts — stub after /guide/* HCU kill (2026-05-27).
+// Real guide content + routes removed; this stub keeps external imports
+// (sitemap loops, orphan components, etc.) type-safe by returning an empty
+// array. All Guide fields are optional so any orphaned consumer that reads
+// guide.readingTime / .lastModified / .content compiles. At runtime the
+// array is empty so those accesses never execute.
 export interface Guide {
   slug: string;
   title: string;
   description: string;
-  intro: string; // HTML
-  sections: Array<{ heading: string; html: string }>;
-  faqs: Array<{ question: string; answer: string }>;
-  category: string;
-  updatedAt: string;
+  intro?: string;
+  sections?: Array<{ heading: string; html: string }>;
+  faqs?: Array<{ question: string; answer: string }>;
+  category?: string;
+  updatedAt?: string;
+  // Optional fields observed in portfolio orphan-component consumers:
+  date?: string;
+  publishedAt?: string;
+  lastModified?: string;
+  content?: string;
+  readingTime?: number;
+  tags?: string[];
+  level?: string;
+  excerpt?: string;
+  image?: string;
+  author?: string;
+  metaDesc?: string;
+  oneLine?: string;
+  screener?: string;
+  name?: string;
+  categoryLabel?: string;
+  titleLabel?: string;
 }
 
-const u = '2026-04-09';
-
-export const guides: Guide[] = [
-  {
-    slug: 'how-to-learn-1000-english-words',
-    title: 'How to Learn 1000 English Words in 30 Days (Without Burning Out)',
-    description: 'A systematic 30-day plan to add 1000 active English words to your vocabulary using spaced repetition, chunking, and context reading. Based on proven memory research.',
-    category: 'Study Plans',
-    updatedAt: u,
-    intro: `<p>Adding 1000 English words to your vocabulary in 30 days sounds impossible — but the math works. You only need to actively learn about 35 new words per day, review previous days' words briefly, and consolidate each week. The hard part is not the quantity; it is avoiding the three mistakes that cause most people to quit by day 7.</p><p>This guide gives you the exact daily schedule, the memory science behind why it works, and what to do when your brain feels saturated. Every technique here is backed by research on spaced repetition, the testing effect, and retrieval practice.</p>`,
-    sections: [
-      {
-        heading: 'The 30-day plan at a glance',
-        html: `<ul><li><strong>Days 1-7 (Foundation)</strong> — Learn 35 words per day from a high-frequency list. Focus on recognition, not production.</li><li><strong>Days 8-14 (Expansion)</strong> — 35 new words per day, plus 10-minute review of days 1-7.</li><li><strong>Days 15-21 (Consolidation)</strong> — 30 new words per day. Add sentence-writing practice for the 50 most useful words so far.</li><li><strong>Days 22-30 (Activation)</strong> — 30 new words per day. Start reading short texts that reuse target words. This moves them from passive to active vocabulary.</li></ul><p>Total: roughly 1,000 new words exposed, about 600-750 retained at 30 days, and 400-500 actively usable in conversation within 3 months.</p>`,
-      },
-      {
-        heading: 'The 3 mistakes that kill most attempts',
-        html: `<ol><li><strong>Starting too hard.</strong> Beginners pick academic or literary word lists before learning the 2,000 most common words. Without the frequency base, rare words have no mental hooks. Always master the first 2,000 frequency band first — see our <a href="/rankings/">word rankings</a> for the most common English words.</li><li><strong>Cramming without spacing.</strong> Reading a word once does almost nothing. You need to meet it again at increasing intervals: 1 day, 3 days, 7 days, 14 days. This is called spaced repetition, and it is the single most important idea in vocabulary learning.</li><li><strong>Recognition-only practice.</strong> Recognizing a word when you see it is 4x easier than producing it when you need it. If you only ever do flashcard-style recognition, most words will never become usable.</li></ol>`,
-      },
-      {
-        heading: 'A working daily routine (25 minutes)',
-        html: `<ul><li><strong>10 minutes</strong> — Learn 35 new words. For each word: read the definition, see one example sentence, and close your eyes and try to recall the meaning before moving on.</li><li><strong>8 minutes</strong> — Review yesterday's 35 words. If you can recall the meaning without looking, mark it "known." If you cannot, put it in the review pile for tomorrow.</li><li><strong>5 minutes</strong> — Review the oldest pile (words from 7-14 days ago). This is what converts short-term memory to long-term.</li><li><strong>2 minutes</strong> — Write two sentences using two new words from today. This is the single most powerful activation technique.</li></ul><p>Use our <a href="/quiz/">vocabulary quiz</a> to test recall instead of just recognition. Quizzing is 3x more effective than re-reading.</p>`,
-      },
-      {
-        heading: 'How to pick the right words',
-        html: `<p>Not all words are equally useful. Learning 1000 random words is roughly half as useful as learning the 1000 most frequent ones in your target context.</p><ul><li><strong>General English</strong> — start with the General Service List or our <a href="/rankings/">top-ranked words</a>. The most common 2,000 words cover about 80% of everyday speech.</li><li><strong>Academic English</strong> — after the top 2,000, move to the Academic Word List (570 word families). This covers another 10% of academic writing.</li><li><strong>Domain-specific</strong> — if you need business, medical, or legal vocabulary, use a domain corpus — but only after you have the general 3,000-word base.</li></ul>`,
-      },
-      {
-        heading: 'What to do when you plateau',
-        html: `<p>Most learners hit a wall around day 10-14. The brain is saturated and new words feel slippery. Three recovery tactics:</p><ol><li><strong>Drop new-word count to 20/day for 3 days.</strong> Use freed time for review and sentence writing. You will feel the old words "click" into place.</li><li><strong>Switch from flashcards to reading.</strong> Find a text at your level (look for stories marked B1 or B2) and read passively. You will re-meet recent words in context, which solidifies them.</li><li><strong>Sleep.</strong> Memory consolidation happens during sleep. If you short-changed sleep for a few days, even doubling your study time will not help until you catch up.</li></ol>`,
-      },
-      {
-        heading: 'Passive vs active vocabulary',
-        html: `<p>You have two vocabularies: passive (words you recognize) and active (words you can produce on demand). The gap is enormous — most fluent non-native speakers have a passive vocabulary 3-4x larger than their active one.</p><p>To convert passive words to active, you must <strong>retrieve them from memory under pressure</strong>. Three ways:</p><ul><li>Write short paragraphs forcing yourself to use 5 target words</li><li>Speak aloud describing what you see around you, using target words</li><li>Take <a href="/quiz/">quick quizzes</a> that require typing the word, not picking it from a list</li></ul>`,
-      },
-    ],
-    faqs: [
-      { question: 'Can I really learn 1000 words in 30 days?', answer: 'You can expose yourself to 1000 words and retain 60-75% of them at 30 days. Of those retained, roughly 60% will become actively usable within 3 months if you keep reading and using the language. So "1000 words" is real in terms of input, but "1000 usable words" takes closer to 90 days.' },
-      { question: 'What is the best app for spaced repetition?', answer: 'Anki is the most powerful free option, but requires setup. Quizlet is easier but less effective long-term. Our <a href="/quiz/">built-in quiz</a> is the fastest for quick daily sessions without setup.' },
-      { question: 'How many words should a beginner know?', answer: 'The 2,000 most frequent words cover about 80% of everyday conversation. After that, each additional 1,000 words adds diminishing comprehension — 3,000 covers 85%, 5,000 covers 90%. The first 2,000 are the highest ROI.' },
-      { question: 'Should I learn words in sentences or by themselves?', answer: 'Both, in sequence. Learn the isolated definition first (fast), then immediately see 1-2 example sentences (context). Sentence-only learning is slow, and word-only learning does not stick. The 10-second pattern "meaning + one example" beats both.' },
-      { question: 'Why do I forget words I just learned?', answer: 'Forgetting within 24 hours is normal — your brain is deciding what is worth keeping. The fix is spaced review: meet the word again 1, 3, 7, and 14 days later. After four spaced reviews, retention typically jumps to over 80%.' },
-      { question: 'Is it better to learn synonyms together or separately?', answer: 'Separately, in different sessions. Learning "big, huge, enormous, massive" at once creates interference — your brain mixes them up. Learn one, use it for a few days, then add the next. Our <a href="/compare/">comparison tool</a> helps you distinguish nuances once you know the core word.' },
-    ],
-  },
-  {
-    slug: 'spaced-repetition-method-explained',
-    title: 'Spaced Repetition: The Science of Remembering Vocabulary Forever',
-    description: 'How spaced repetition works, why it beats cramming 10x for long-term retention, and how to apply it without expensive apps. A practical guide based on memory research.',
-    category: 'Memory Science',
-    updatedAt: u,
-    intro: `<p>Spaced repetition is the single most important discovery in vocabulary learning. Reviewing a word at increasing intervals — 1 day, 3 days, 7 days, 14 days, 30 days — locks it into long-term memory 10x more efficiently than studying the same word multiple times in one sitting. This guide explains exactly how it works and how to apply it without complex software.</p>`,
-    sections: [
-      {
-        heading: 'The forgetting curve',
-        html: `<p>In 1885, German psychologist Hermann Ebbinghaus ran one of the most cited experiments in memory science. He memorized nonsense syllables and tested himself at intervals. The result: without review, you forget roughly 50% of new information within 1 hour, and 70% within 24 hours.</p><p>But here is the key finding: each time you successfully recall a memory, the forgetting curve flattens. A word you recall after 1 day lasts longer. A word you recall after 3 days lasts even longer. By the fourth successful recall, many memories become essentially permanent.</p>`,
-      },
-      {
-        heading: 'The optimal schedule',
-        html: `<p>For each new word, review at these intervals after first learning:</p><ol><li>Same day, 10 minutes later (while it is still in working memory)</li><li>Next day (this is the critical review — it takes the word out of the "24-hour forget" zone)</li><li>3 days later</li><li>7 days later</li><li>14 days later</li><li>30 days later</li></ol><p>After the 30-day review, most words enter long-term storage and need only occasional refreshing.</p>`,
-      },
-      {
-        heading: 'How to implement it without apps',
-        html: `<p>You do not need software. The classic "Leitner box" system works with index cards and 5 piles:</p><ul><li><strong>Pile 1</strong> — new and recently missed cards. Review daily.</li><li><strong>Pile 2</strong> — cards you got right once. Review every 2 days.</li><li><strong>Pile 3</strong> — cards you got right twice. Review every 4 days.</li><li><strong>Pile 4</strong> — cards you got right three times. Review weekly.</li><li><strong>Pile 5</strong> — mastered. Review monthly.</li></ul><p>When you miss a card, it goes back to Pile 1 regardless of where it was. That is the feedback loop that makes the system work.</p>`,
-      },
-      {
-        heading: 'Common mistakes',
-        html: `<ul><li><strong>Re-reading instead of recalling.</strong> Looking at the word and its definition is 3x less effective than trying to recall the meaning from memory first. Always attempt recall before revealing the answer.</li><li><strong>Reviewing too often.</strong> If you review every day, you never let the forgetting curve start. That means each review is "easy" and builds weak memory. Spacing is uncomfortable — that is the point.</li><li><strong>Reviewing too late.</strong> Skipping the 1-day review loses most of the benefit. The 1-day mark is the single most important checkpoint.</li></ul>`,
-      },
-      {
-        heading: 'Why cramming fails',
-        html: `<p>Cramming 50 words in one 2-hour session produces 10-20% retention at one week. Spacing the same 50 words across 10 short sessions over two weeks produces 70-85% retention. The total study time is similar — only the distribution changes.</p><p>This is because memory consolidation happens between sessions, not during them. Sleep especially is when the brain moves short-term memories into long-term storage. Cramming denies your brain the off-time it needs to do this work.</p>`,
-      },
-    ],
-    faqs: [
-      { question: 'How long does each review session need to be?', answer: '5-15 minutes is ideal. Sessions longer than 20 minutes produce diminishing returns because attention drops. Three 10-minute sessions per day beat one 30-minute session.' },
-      { question: 'What if I miss a day?', answer: 'Do the missed review the next day, then continue the original schedule. One missed day is not fatal. Missing 3+ days means words in the "1-day" pile will need to restart.' },
-      { question: 'Is Anki better than paper flashcards?', answer: 'Anki is more efficient (automatic scheduling, stats) but requires setup. Paper is simpler and tactile. Both work. The best system is the one you actually use daily.' },
-      { question: 'Can I do spaced repetition with reading instead of flashcards?', answer: 'Yes — graded readers reuse target words at spaced intervals naturally. Reading is less precise than flashcards but more enjoyable, which matters for sustainability.' },
-      { question: 'How many cards per day is realistic?', answer: 'Beginners: 20-30 new cards per day plus 80-120 review cards. Intermediate learners handle 40-50 new per day. Over 50 new per day leads to review burnout within 2 weeks for most people.' },
-    ],
-  },
-  {
-    slug: 'active-vs-passive-vocabulary',
-    title: 'Active vs Passive Vocabulary: How to Convert Words You Know into Words You Use',
-    description: 'The gap between recognizing a word and using it fluently is the main reason learners feel stuck. This guide explains the difference and gives you five proven conversion techniques.',
-    category: 'Learning Methods',
-    updatedAt: u,
-    intro: `<p>Most English learners have 3-4 times more passive vocabulary (words they understand) than active vocabulary (words they can produce fluently). This gap is the main reason people feel "stuck" — they have learned plenty of words but cannot reach them when speaking or writing. Closing this gap is mostly about a single idea: retrieval practice.</p>`,
-    sections: [
-      {
-        heading: 'What passive and active actually mean',
-        html: `<ul><li><strong>Passive vocabulary</strong> — words you recognize when you read or hear them. You can understand the sentence, but you would not have chosen that word yourself.</li><li><strong>Active vocabulary</strong> — words you produce from memory when speaking or writing. You do not have to think about them; they come out naturally.</li></ul><p>The typical gap: a fluent non-native speaker might have 12,000 passive words but only 3,000-4,000 active. That is why they can read a newspaper comfortably but still pause when speaking.</p>`,
-      },
-      {
-        heading: 'Why recognition is easier than production',
-        html: `<p>Recognition is a multiple-choice test — your brain sees the word and picks from existing connections. Production is a fill-in-the-blank test — your brain has to generate the word from meaning alone, with no cue.</p><p>Neuroscience research shows that production engages roughly 4x more neural pathways than recognition. Every time you successfully produce a word, you strengthen the memory trace much more than just recognizing it.</p>`,
-      },
-      {
-        heading: 'Five conversion techniques',
-        html: `<ol><li><strong>Productive flashcards.</strong> Instead of "see word → recall meaning," flip it: "see meaning → produce word." This is harder and 3x more effective.</li><li><strong>Forced output.</strong> Pick 5 words you just learned. Write three sentences using all five. The struggle is the point.</li><li><strong>Shadow speaking.</strong> Listen to a native speaker (podcast, video) and repeat each sentence aloud immediately. This activates the word at spoken-production speed.</li><li><strong>Re-telling.</strong> Read a paragraph, close the text, and re-tell it in your own words. You will reach for target vocabulary because you need it.</li><li><strong>Substitution drill.</strong> Take a simple sentence like "I like it." Replace "like" with 5 synonyms (enjoy, appreciate, adore, fancy, favor). Repeat the exercise daily with different base sentences.</li></ol>`,
-      },
-      {
-        heading: 'How long does conversion take',
-        html: `<p>For words you recognize clearly: 5-10 deliberate production attempts will usually move them to active status. For words you "half-know": 15-20 attempts. For words that feel foreign despite recognition: they probably need to go back into the learning pile.</p><p>A practical benchmark: if you do 10 minutes of focused retrieval practice per day, you will typically convert 50-80 words from passive to active per month.</p>`,
-      },
-    ],
-    faqs: [
-      { question: 'Why do I forget words I just learned when I try to use them?', answer: 'Because recognition and production use different memory pathways. Being able to understand a word does not mean you can recall it under pressure. Only production practice builds the production pathway.' },
-      { question: 'How big should my active vocabulary be?', answer: 'For comfortable conversation: 2,000-3,000 active words. For professional use: 4,000-5,000. Native speakers typically have 15,000-20,000 active words. You do not need to match that to be fluent.' },
-      { question: 'Is reading enough to build active vocabulary?', answer: 'Reading builds passive vocabulary efficiently but does not convert it to active. You need production practice — writing, speaking, or retrieval drills — to cross the gap.' },
-      { question: 'Should I worry about words I recognize but cannot produce?', answer: 'Only if you need them. Passive vocabulary is valuable by itself — it lets you understand more. Convert only the words you actually want to use in speech or writing.' },
-    ],
-  },
-  {
-    slug: 'which-english-words-to-learn-first',
-    title: 'Which English Words Should You Learn First? (With Data)',
-    description: 'Not all words are equally useful. This data-backed guide tells you exactly which 2,000 words to learn first, in what order, and how to skip the filler.',
-    category: 'Word Selection',
-    updatedAt: u,
-    intro: `<p>The single biggest time-saver in vocabulary learning is choosing the right words. The 2,000 most frequent English words cover about 80% of everyday speech. The next 1,000 adds only another 5%. The word <em>the</em> alone accounts for roughly 7% of all English text. This means the order you learn matters enormously.</p>`,
-    sections: [
-      {
-        heading: 'Frequency beats everything',
-        html: `<p>English has roughly 170,000 words in current use, but a native speaker only uses about 20,000 regularly, and only 2,000-3,000 actively in conversation. For a learner, this is great news: you do not need all the words, just the right ones.</p><p>Research on word frequency shows:</p><ul><li>Top 100 words → 50% of all English text</li><li>Top 1,000 words → 75% of spoken English</li><li>Top 2,000 words → 80-85% of spoken English, 80% of most novels</li><li>Top 5,000 words → 90% of spoken English</li><li>Top 10,000 words → 95% of written English</li></ul><p>Browse our <a href="/rankings/">word rankings</a> to see the most frequent words in order.</p>`,
-      },
-      {
-        heading: 'The 5 tiers of priority',
-        html: `<ol><li><strong>Tier 1: The top 500 (1-4 weeks)</strong> — function words (the, is, of), basic verbs (go, do, make), common nouns (time, year, person), essential adjectives (good, small, important). Without these, you cannot form a sentence.</li><li><strong>Tier 2: Words 501-2000 (2-4 months)</strong> — the working vocabulary of everyday conversation. After this tier, you can understand 80% of casual speech.</li><li><strong>Tier 3: Words 2001-5000 (6-12 months)</strong> — the difference between "survival English" and "fluent English." Adds nuance, register, and the ability to read mainstream media.</li><li><strong>Tier 4: Academic Word List (570 word families)</strong> — if you study or work in English, this list covers 10% of academic writing not covered by the top 2,000.</li><li><strong>Tier 5: Domain-specific (medical, legal, business)</strong> — learn these only when you need them, after Tier 3.</li></ol>`,
-      },
-      {
-        heading: 'How to find frequency lists',
-        html: `<p>Good sources (free):</p><ul><li><strong>General Service List (GSL)</strong> — the original 2,000 most useful words, still a solid starting point</li><li><strong>New General Service List (NGSL)</strong> — updated version based on 273 million words of modern text</li><li><strong>Oxford 3000 / 5000</strong> — Oxford's curated lists, balanced for learners</li><li><strong>Our <a href="/rankings/">word rankings page</a></strong> — free, browsable, organized by part of speech</li></ul>`,
-      },
-      {
-        heading: 'What to skip (for now)',
-        html: `<ul><li><strong>Rare academic words</strong> like <em>obfuscate</em>, <em>perspicacious</em>, <em>ameliorate</em> — impressive but <strong>useless until you have the base 3,000</strong></li><li><strong>Archaic or literary words</strong> from Shakespeare or Victorian novels — fun to know but not worth study time</li><li><strong>Slang and idioms</strong> — these should come after Tier 2, and from exposure rather than lists</li><li><strong>Domain jargon</strong> (medical, legal) you do not need for your actual life</li></ul>`,
-      },
-      {
-        heading: 'Verifying a list is worth learning',
-        html: `<p>Before committing to a word list, check three things:</p><ol><li><strong>Recency.</strong> Lists from before 2000 may overweight words like <em>telegram</em> and <em>cassette</em>. Look for lists updated after 2010.</li><li><strong>Source corpus.</strong> A list based on news articles skews differently from one based on fiction or conversation. Pick a corpus that matches your goals.</li><li><strong>Coverage claim.</strong> A list claiming "learn these 200 words to speak English" is almost certainly marketing. Real coverage milestones start at 2,000 words.</li></ol>`,
-      },
-    ],
-    faqs: [
-      { question: 'How many words do I need for conversational English?', answer: 'Around 2,000-3,000 active words. This covers 80-85% of everyday speech. You will still encounter unknown words, but context usually makes the meaning clear.' },
-      { question: 'Should I learn British or American English words first?', answer: 'They differ in only about 100-200 common words. Pick one to match your goals (work, travel, media preference) and learn the other as exceptions later. The frequency lists are 98% identical.' },
-      { question: 'Is it worth learning uncommon words for exams like TOEFL or IELTS?', answer: 'Only after the base 3,000 is solid. Exam-specific vocabulary gives you 50-150 bonus words, but cannot substitute for the foundation.' },
-      { question: 'How do I know which words I already know?', answer: 'Take a placement quiz based on a frequency list. Our <a href="/quiz/">vocabulary quiz</a> can sample words across tiers to show you your active level.' },
-    ],
-  },
-  {
-    slug: 'context-learning-reading-for-vocabulary',
-    title: 'Context Learning: Why Reading Beats Word Lists (If You Do It Right)',
-    description: 'Reading builds vocabulary naturally — but only if you choose the right level, do not stop every 30 seconds to look up words, and re-read strategically. Here is how.',
-    category: 'Learning Methods',
-    updatedAt: u,
-    intro: `<p>Reading is the most natural way to expand vocabulary, but most learners do it wrong — they pick texts that are too hard, stop every sentence to look up words, and never re-read anything. Done correctly, 30 minutes of reading per day can add more active vocabulary than 2 hours of flashcards. This guide explains why, and gives you a practical reading protocol.</p>`,
-    sections: [
-      {
-        heading: 'Why context beats isolated definitions',
-        html: `<p>Dictionary definitions give you a word's meaning. Context gives you its <em>behavior</em> — what it combines with, what register it lives in, what feelings it carries. The word <em>destroy</em> and the word <em>demolish</em> both "mean" to break something, but they are not interchangeable. A dictionary cannot easily explain this. Seeing both words in 10 different texts does.</p><p>Research on incidental learning (picking up words from reading without deliberate study) shows learners retain about 10-15% of unknown words per exposure. That sounds low until you realize that a single book can expose you to 2,000+ word tokens — and the words that matter appear dozens of times.</p>`,
-      },
-      {
-        heading: 'The 98% rule',
-        html: `<p>For a text to be useful for incidental vocabulary learning, you should know about 98% of the words on the page — meaning only 1 unknown word per 50. That is not "your reading level" — that is "your comfortable level, minus a notch."</p><ul><li><strong>90% known</strong> — frustrating, you lose comprehension and cannot guess from context</li><li><strong>95% known</strong> — slow going, you need the dictionary</li><li><strong>98% known</strong> — comfortable, you can guess most unknowns from context</li><li><strong>100% known</strong> — no new vocabulary is being learned</li></ul><p>The 98% sweet spot is why graded readers (books written for language learners at specific levels) are so effective.</p>`,
-      },
-      {
-        heading: 'The reading protocol',
-        html: `<ol><li><strong>Pick a text at or slightly below your level.</strong> Use CEFR-graded readers, or articles aimed at children or language learners.</li><li><strong>First pass: do not stop.</strong> Read for gist. Tolerate 5-10 unknown words per page. Guess from context.</li><li><strong>Mark the words you meet 2+ times but cannot guess.</strong> These are the highest priority — the text is telling you they matter.</li><li><strong>Look up only the marked words.</strong> Add them to your study pile.</li><li><strong>Re-read the same text the next day.</strong> The words you just learned will now be in context, reinforcing memory.</li></ol>`,
-      },
-      {
-        heading: 'Where to find the right texts',
-        html: `<ul><li><strong>Graded readers</strong> — "Penguin Readers," "Cambridge English Readers," "Oxford Bookworms" — each series has 6+ difficulty levels</li><li><strong>News sites for learners</strong> — News in Levels, VOA Learning English, BBC Learning English</li><li><strong>Children's chapter books</strong> — "Magic Tree House," "Boxcar Children" — simple vocabulary, engaging stories</li><li><strong>Audiobooks paired with text</strong> — reading and hearing a word simultaneously activates both memory channels</li></ul>`,
-      },
-      {
-        heading: 'Extensive vs intensive reading',
-        html: `<p>Two reading modes, both necessary:</p><ul><li><strong>Extensive reading</strong> — lots of easy text, read fast, do not stop for dictionaries. Builds fluency, reinforces known vocabulary, natural context exposure. Aim for 15-30 pages per session.</li><li><strong>Intensive reading</strong> — short difficult text, looked up carefully, analyzed sentence by sentence. Builds new vocabulary and grammar knowledge. Aim for 1-2 pages per session.</li></ul><p>Most learners over-do intensive and under-do extensive. The ideal ratio is about 5:1 extensive to intensive time.</p>`,
-      },
-    ],
-    faqs: [
-      { question: 'How many pages per day should I read?', answer: 'For extensive reading: 15-30 pages of easy text. For intensive: 1-2 pages of slightly harder text. Total time: 20-30 minutes daily produces measurable vocabulary gains within 3 weeks.' },
-      { question: 'Should I read on paper or digitally?', answer: 'Digital has instant dictionary lookup, which is convenient but breaks flow. Paper forces you to guess from context more, which is better for extensive reading. Use both.' },
-      { question: 'What if I do not know enough words to read anything comfortably?', answer: 'Start with children\'s books or graded readers at level A1-A2. They are written specifically for learners. Once you can read A2 comfortably, move to B1, and so on.' },
-      { question: 'Is reading fiction or non-fiction better for vocabulary?', answer: 'Fiction gives you more varied vocabulary (description, emotion, dialogue). Non-fiction gives you more abstract and academic words. Read both, with a slight tilt toward whatever you enjoy — enjoyment determines consistency.' },
-      { question: 'How long before I see results?', answer: 'Noticeable recognition improvement in 2-3 weeks of daily reading. Active vocabulary gains take 2-3 months because new words need time to move from passive to active.' },
-    ],
-  },
-  {
-    slug: 'awl-academic-word-list-sublists',
-    title: 'The Academic Word List (AWL) Sublists Explained: 570 Families, 10 Tiers',
-    description: 'How Averil Coxhead\'s Academic Word List groups 570 word families into 10 frequency sublists, why it covers about 10% of any academic text, and how VocabWize maps each sublist to your reading priorities.',
-    category: 'Reference',
-    updatedAt: '2026-05-11',
-    intro: `<p>The Academic Word List (AWL) is a fixed published reference of 570 word families that appear with high frequency across academic prose in every discipline — arts, commerce, law, and science. It was compiled by Averil Coxhead at Victoria University of Wellington and published in 2000, based on a 3.5-million-word corpus of academic texts. The 570 families cover roughly 10% of all words you will read in academic writing, sitting on top of the most common 2,000 general-purpose English words (which cover the bottom 80%). For TOEFL, IELTS, and undergraduate-level reading, mastering the AWL is one of the highest-leverage vocabulary investments available.</p><p>Coxhead grouped the 570 families into 10 sublists, ordered by frequency in her corpus: Sublist 1 holds the 60 most common academic families, Sublist 10 the 30 rarest. VocabWize tags every word in our dictionary against the original 2000 sublist tables — no edits, no additions, no opinions. This page explains what each sublist contains and how to use the ordering in your study plan.</p>`,
-    sections: [
-      {
-        heading: 'What a "word family" means in the AWL',
-        html: `<p>A word family is a headword plus its inflections (plurals, verb tenses) and its closest derivations (the noun, adjective, and adverb formed from the same root). For example, the family headed by <code>analyse</code> contains 16 forms: <em>analyse, analysed, analyser, analysers, analyses, analysing, analysis, analyst, analysts, analytic, analytical, analytically, analyze, analyzed, analyzes, analyzing</em>. Coxhead built families using Bauer and Nation\'s 1993 Level 6 derivation rules — so &ldquo;-er&rdquo; agent nouns and &ldquo;-ly&rdquo; adverbs are family members, but loosely related words (&ldquo;analog&rdquo; ↔ &ldquo;analyse&rdquo;) are not.</p><p>The practical implication for learners: when you learn one AWL headword, you have effectively learned 5-15 related forms. This is why the 570 families translate into a much larger number of inflected forms in real text.</p>`,
-      },
-      {
-        heading: 'Sublists 1-3: the highest-frequency academic vocabulary',
-        html: `<p>The first three sublists contain the 180 most common academic word families — these alone cover roughly 4% of any academic text. If you read journal articles or textbooks, you will meet these words on almost every page.</p><ul><li><strong>Sublist 1 (60 families)</strong> — analyse, approach, area, assess, assume, authority, available, benefit, concept, consist, constitute, context, contract, create, data, define, derive, distribute, economy, environment, establish, estimate, evident, export, factor, finance, formula, function, identify, income, indicate, individual, interpret, involve, issue, labour, legal, legislate, major, method, occur, percent, period, policy, principle, proceed, process, require, research, respond, role, section, sector, significant, similar, source, specific, structure, theory, vary.</li><li><strong>Sublist 2 (60 families)</strong> — achieve, acquire, administrate, affect, appropriate, aspect, assist, category, chapter, commission, community, complex, compute, conclude, conduct, consequent, construct, consume, credit, culture, design, distinct, element, equate, evaluate, feature, final, focus, impact, injure, institute, invest, item, journal, maintain, normal, obtain, participate, perceive, positive, potential, previous, primary, purchase, range, region, regulate, relevant, reside, resource, restrict, secure, seek, select, site, strategy, survey, text, tradition, transfer.</li><li><strong>Sublist 3 (60 families)</strong> — alternative, circumstance, comment, compensate, component, consent, considerable, constant, constrain, contribute, convene, coordinate, core, corporate, correspond, criteria, deduce, demonstrate, document, dominate, emphasis, ensure, exclude, framework, fund, illustrate, immigrate, imply, initial, instance, interact, justify, layer, link, locate, maximise, minor, negate, outcome, partner, philosophy, physical, proportion, publish, react, register, rely, remove, scheme, sequence, sex, shift, specify, sufficient, task, technical, technique, technology, valid, volume.</li></ul>`,
-      },
-      {
-        heading: 'Sublists 4-6: mid-frequency academic register',
-        html: `<p>The middle tier adds another 180 families. These words appear regularly in academic writing but less so in general newspapers or everyday speech.</p><ul><li><strong>Sublist 4 (60 families)</strong> — access, adequate, annual, apparent, approximate, attitude, attribute, civil, code, commit, communicate, concentrate, confer, contrast, cycle, debate, despite, dimension, domestic, emerge, error, ethnic, goal, grant, hence, hypothesis, implement, implicate, impose, integrate, internal, investigate, job, label, mechanism, obvious, occupy, option, output, overall, parallel, parameter, phase, predict, principal, prior, professional, project, promote, regime, resolve, retain, series, statistic, status, stress, subsequent, sum, summary, undertake.</li><li><strong>Sublist 5 (60 families)</strong> — academy, adjust, alter, amend, aware, capacity, challenge, clause, compound, conflict, consult, contact, decline, discrete, draft, enable, energy, enforce, entity, equivalent, evolve, expand, expose, external, facilitate, fundamental, generate, generation, image, liberal, license, logic, margin, medical, mental, modify, monitor, network, notion, objective, orient, perspective, precise, prime, psychology, pursue, ratio, reject, revenue, stable, style, substitute, sustain, symbol, target, transit, trend, version, welfare, whereas.</li><li><strong>Sublist 6 (60 families)</strong> — abstract, accurate, acknowledge, aggregate, allocate, assign, attach, author, bond, brief, capable, cite, cooperate, discriminate, display, diverse, domain, edit, enhance, estate, exceed, expert, explicit, federal, fee, flexible, furthermore, gender, ignorance, incentive, incidence, incorporate, index, inhibit, initiate, input, instruct, intelligence, interval, lecture, migrate, minimum, ministry, motive, neutral, nevertheless, overseas, precede, presume, rational, recover, reveal, scope, subsidy, tape, trace, transform, transport, underlie, utilise.</li></ul>`,
-      },
-      {
-        heading: 'Sublists 7-10: lower-frequency academic register',
-        html: `<p>The bottom four sublists hold 210 families that appear less often but remain useful for advanced academic reading. They include connectives (&ldquo;albeit&rdquo;, &ldquo;nonetheless&rdquo;, &ldquo;whereby&rdquo;) and precise terms common in graduate-level writing.</p><ul><li><strong>Sublist 7 (60 families)</strong> — adapt, adult, advocate, aid, channel, chemical, classic, comprehensive, comprise, confirm, contrary, convert, couple, decade, definite, deny, differentiate, dispose, dynamic, eliminate, empirical, equip, extract, file, finite, foundation, globe, grade, guarantee, hierarchy, identical, ideology, infer, innovate, insert, intervene, isolate, media, mode, paradigm, phenomenon, priority, prohibit, publication, quote, release, reverse, simulate, sole, somewhat, submit, successor, survive, thesis, topic, transmit, ultimate, unique, visible, voluntary.</li><li><strong>Sublist 8 (60 families)</strong> — abandon, accompany, accumulate, ambiguous, append, appreciate, arbitrary, automate, bias, chart, clarify, commodity, complement, conform, contemporary, contradict, crucial, currency, denote, detect, deviate, displace, drama, eventual, exhibit, exploit, fluctuate, guideline, highlight, implicit, induce, inevitable, infrastructure, inspect, intense, manipulate, minimise, nuclear, offset, paragraph, plus, practitioner, predominant, prospect, radical, random, reinforce, restore, revise, schedule, tense, terminate, theme, thereby, uniform, vehicle, via, virtual, visual, widespread.</li><li><strong>Sublist 9 (60 families)</strong> — accommodate, analogy, anticipate, assure, attain, behalf, bulk, cease, coherence, coincide, commence, compatible, concurrent, confine, controversy, converse, device, devote, diminish, distort, duration, erode, ethic, format, found, inherent, insight, integral, intermediate, manual, mature, mediate, medium, military, minimal, mutual, norm, overlap, passive, portion, preliminary, protocol, qualitative, refine, relax, restrain, revolution, rigid, route, scenario, sphere, subordinate, supplement, suspend, team, temporary, trigger, unify, violate, vision.</li><li><strong>Sublist 10 (30 families)</strong> — adjacent, albeit, assemble, collapse, colleague, compile, conceive, convince, depress, encounter, enormous, forthcoming, incline, integrity, intrinsic, invoke, levy, likewise, nonetheless, notwithstanding, odd, ongoing, panel, persist, pose, reluctance, so-called, straightforward, undergo, whereby.</li></ul>`,
-      },
-      {
-        heading: 'How VocabWize maps your word to a sublist',
-        html: `<p>Every English word in our dictionary is checked against a static lookup table compiled from Coxhead\'s original 2000 sublist tables. If your word — or one of its inflected/derived forms — appears in any of the 570 families, the entry page shows an &ldquo;AWL Sublist N&rdquo; badge next to the part-of-speech tag, with N being the sublist number (1-10). Below the badge, a short reader-help paragraph explains where the word sits in the academic register and lists every form in its family.</p><p>Two clarifications worth emphasising:</p><ul><li><strong>The AWL is not a CEFR level.</strong> CEFR (A1-C2) tracks general English proficiency; AWL sublists track academic register specifically. A word can be high CEFR but absent from the AWL (&ldquo;astonishing&rdquo;), or vice versa (&ldquo;data&rdquo; is in Sublist 1 but appears in everyday speech).</li><li><strong>Our DB <code>level=academic</code> tag is separate.</strong> The dictionary database flags many Latin/scientific terms as &ldquo;academic&rdquo; based on a heuristic; the AWL sublist signal is the authoritative published reference and takes priority on the entry page.</li></ul>`,
-      },
-      {
-        heading: 'A study order based on AWL sublists',
-        html: `<p>If you are preparing for TOEFL, IELTS, the GRE, or any undergraduate academic reading task, work the sublists in order. The frequency ordering means earlier sublists pay off faster: knowing Sublist 1 affects nearly every academic paragraph you read; knowing Sublist 10 occasionally helps with precise diction.</p><ol><li><strong>Master the 2,000 most common general English words first.</strong> See our <a href="/rankings/">word rankings</a> for the highest-frequency band. The AWL assumes you already know these.</li><li><strong>Study Sublist 1, then 2, then 3 in that order.</strong> Aim for active production, not just recognition — use our <a href="/quiz/">quiz tool</a> to test recall.</li><li><strong>Move through Sublists 4-6 in your second pass.</strong> By this point the headwords should feel familiar; focus on derivations (&ldquo;categorisation&rdquo; from &ldquo;category&rdquo;, &ldquo;institutionally&rdquo; from &ldquo;institute&rdquo;).</li><li><strong>Sublists 7-10 are for advanced learners.</strong> If your goal is to publish academic writing or pass C1/C2 exams, these are worth the time — but only after the first six sublists are solid.</li></ol>`,
-      },
-    ],
-    faqs: [
-      { question: 'How many AWL words should I know for TOEFL or IELTS?', answer: 'For a competitive TOEFL or IELTS score, plan to actively know Sublists 1-3 (180 families) and have passive recognition of Sublists 4-6 (another 180). That gets you to about 360 of the 570 families, which covers most of the academic vocabulary you will meet on the test.' },
-      { question: 'Is the AWL still current — it was published in 2000?', answer: 'Yes. The AWL is a closed list and has not been updated since 2000. Newer alternatives exist (the New Academic Vocabulary List by Gardner & Davies, 2014) but the AWL remains the most widely cited reference in test prep, ESL coursebooks, and university English support programs.' },
-      { question: 'Why is "data" in Sublist 1 if everyone uses it in everyday speech?', answer: 'Coxhead built the AWL from academic texts only. "Data" was extremely frequent in that corpus, so it earned a Sublist 1 spot — even though it is also common in everyday speech. The AWL ranks words by their frequency in academic prose, not by how rare or specialised they sound.' },
-      { question: 'Where can I download the original AWL?', answer: 'The original sublist tables are mirrored on <a href="https://www.eapfoundation.com/vocab/academic/awllists/" rel="noopener nofollow">eapfoundation.com</a> (sublist-by-sublist) and on Victoria University of Wellington\'s site. Our internal mapping file in <code>lib/generated/awl-sublist.json</code> reproduces the same 570 families.' },
-      { question: 'Does AWL membership mean a word is "advanced"?', answer: 'Not necessarily. Many AWL words ("area", "issue", "method") are intermediate-level. AWL membership signals "frequent in academic writing" — useful for academic reading and writing, but not a difficulty rating in the CEFR sense.' },
-      { question: 'How does the AWL relate to the General Service List?', answer: 'The General Service List (GSL) covers the most common 2,000 English word families overall. The AWL was designed to start where the GSL ends: AWL families are NOT in the GSL. Together, GSL (80% coverage) + AWL (10% coverage) account for about 90% of any academic text.' },
-    ],
-  },
-  {
-    slug: 'cefr-difficulty-tiers',
-    title: 'CEFR Difficulty Tiers (A1-C2) for English Vocabulary: How VocabWize Classifies Every Word',
-    description: 'The Common European Framework of Reference (CEFR) ranks English vocabulary across six tiers from A1 to C2. This guide explains the corpus-rank cutoffs, the morphological-depth correction, and how the published English Vocabulary Profile and Oxford 3000/5000 align with our deterministic classifier.',
-    category: 'Reference',
-    updatedAt: '2026-05-11',
-    intro: `<p>The <strong>Common European Framework of Reference for Languages (CEFR)</strong> is the de facto standard for describing language proficiency in Europe and increasingly worldwide. It defines six tiers — A1, A2, B1, B2, C1, C2 — from absolute beginner to near-native proficient. The framework was developed by the Council of Europe and published as the <em>CEFR Companion Volume</em> in 2001 (updated 2018, 2020), and is the published reference behind nearly every modern English exam: Cambridge English, IELTS, Pearson PTE, and the European reading-comprehension levels used by Goethe, Alliance Française, and many academic admissions tests.</p><p>VocabWize tags every English word in our dictionary with a CEFR tier (A1-C2) derived from the COCA and BNC corpus frequency rank, the surface-form length, and a suffix-morphology check. The tagging is deterministic — same corpus rank and same surface form always produce the same tier. This guide documents the exact cutoffs, the morphological correction rule, and how to interpret a CEFR tag on a word entry page.</p>`,
-    sections: [
-      {
-        heading: 'What CEFR actually measures',
-        html: `<p>CEFR is a published proficiency framework, not a frequency list. Each tier describes what a learner at that level <em>can do</em> with the language — read, write, listen, speak — rather than a fixed vocabulary count. The Council of Europe deliberately avoided tying CEFR to specific word lists because vocabulary needs vary by domain.</p><p>However, several published reference lists align with CEFR levels:</p><ul><li><strong>English Vocabulary Profile (EVP)</strong> — Cambridge University Press, maps individual words and senses to CEFR levels based on Cambridge Learner Corpus data. The most-cited published English-CEFR alignment.</li><li><strong>Oxford 3000 / Oxford 5000</strong> — Oxford University Press, lists 3,000 core words at A1-B2 and 5,000 broader words covering A1-C1. Built from the Oxford English Corpus.</li><li><strong>Pearson Global Scale of English</strong> — Pearson, a 10-90 scale that maps to CEFR. Each word in their dictionary carries a GSE level.</li></ul><p>These reference lists do not perfectly agree, but they converge on the same broad cutoffs: roughly 1,000 most-frequent words = A1/A2, next 2,000 = B1/B2, next 5,000 = C1, beyond = C2.</p>`,
-      },
-      {
-        heading: 'How VocabWize derives the CEFR tag (cutoff table)',
-        html: `<p>We do not have access to the proprietary EVP, Oxford 3000, or Pearson GSE classifications. Instead, we derive each CEFR tag deterministically from two published-corpus signals:</p><ol><li><strong>COCA / BNC frequency rank</strong> — the position of the word in the Corpus of Contemporary American English (Davies, BYU; 1B+ words) or the British National Corpus (Oxford; 100M words). Lower rank = more common.</li><li><strong>Morphological-depth correction</strong> — if the word is in a top-frequency band but has length ≥ 10 letters and a low-frequency derivational suffix (-tion, -graph, -ology, -ize, -ferous, -escence), bump the tier up by one. The corpus rank captures the lemma family; the surface form can be harder than the rank suggests.</li></ol><p>The cutoff table:</p><ul><li><strong>A1</strong> — corpus rank 1 - 1,000 (most-frequent everyday core)</li><li><strong>A2</strong> — corpus rank 1,001 - 2,000 (common everyday vocabulary)</li><li><strong>B1</strong> — corpus rank 2,001 - 5,000 (independent-user vocabulary)</li><li><strong>B2</strong> — corpus rank 5,001 - 15,000 (upper-intermediate)</li><li><strong>C1</strong> — corpus rank 15,001 - 50,000 (advanced)</li><li><strong>C2</strong> — corpus rank 0 / unranked, or beyond 50,000 (proficient / specialist / rare)</li></ul><p>These cutoffs are VocabWize heuristics calibrated against the EVP and Oxford 3000/5000 alignments published by Cambridge and Oxford. They are <em>not</em> an official Council of Europe rating, and every word entry page surfaces this distinction in the CEFR reader-help block.</p>`,
-      },
-      {
-        heading: 'CEFR vs Coxhead AWL — what each signal tells you',
-        html: `<p>CEFR and the Coxhead Academic Word List measure orthogonal things:</p><ul><li><strong>CEFR</strong> — proficiency level. Tracks general English fluency from A1 to C2 along a learning sequence: beginner to proficient.</li><li><strong>Coxhead AWL</strong> — academic register. Tracks whether a word is frequent in academic writing specifically, regardless of overall difficulty.</li></ul><p>This is why a single word can carry both signals independently:</p><ul><li><code>data</code> — CEFR A2 (extremely frequent in general English) <em>and</em> AWL Sublist 1 (one of the most frequent academic words). Easy AND academic.</li><li><code>astonishing</code> — CEFR B2 (upper-intermediate) but <em>not</em> in the AWL. Useful word, but for general expression rather than academic writing.</li><li><code>paradigm</code> — CEFR C1 (advanced) and AWL Sublist 7 (lower-frequency academic). Genuinely advanced AND academic.</li></ul><p>On every word entry page, both signals are shown side-by-side in the Interpretation Strip — they answer different questions, so they should not be collapsed into a single difficulty score.</p>`,
-      },
-      {
-        heading: 'How to read a CEFR tag in your study plan',
-        html: `<p>A CEFR tag on a word entry is a study-priority signal, not a verdict on whether the word is "worth learning":</p><ul><li><strong>A1 / A2 words</strong> — these must be active vocabulary (you produce them, not just recognize them) before any B-level vocabulary is worth investing in. A learner who skips the 2,000 most-frequent words to chase advanced lexis ends up with broken fluency.</li><li><strong>B1 / B2 words</strong> — these become the bulk of working vocabulary for independent communication. Focus shifts from "what does it mean" to "what does it collocate with, and in which register". Pair B-level words with reading practice.</li><li><strong>C1 / C2 words</strong> — these are extensive-reading territory. The most-efficient way to acquire them is to read at the right level (graded readers, news, academic prose) and let the corpus expose them naturally, then log register and collocations.</li></ul><p>The CEFR tag is the published-framework name; what matters is the underlying corpus-frequency signal it encodes, plus the surface-form difficulty correction. Treat the tag as guidance for sequencing your study, not as an absolute label.</p>`,
-      },
-      {
-        heading: 'Limits of the classifier — when to trust the tag less',
-        html: `<p>The classifier is deterministic but it has known limits, documented here so a reader can judge when to weight other signals more heavily:</p><ul><li><strong>Polysemy</strong> — many English words have multiple senses across multiple CEFR levels. "Run" as in "exercise" is A1; "run" as in "run a business" is B2; "run" as in "a run on the bank" is C1. Our tag uses the lemma's overall rank, which biases toward the most-frequent sense.</li><li><strong>Domain-specific lexis</strong> — a medical or legal term may be rare in COCA / BNC but core within its domain. The classifier tags by general-language rank, not by domain.</li><li><strong>Corpus-unranked forms</strong> — words with rank 0 fall into C2 by default. This pulls many rare inflected forms and specialist terms into C2 even when the lemma is well-known.</li><li><strong>Morphological correction is heuristic</strong> — the suffix list (-tion, -graph, -ology, -ize, -ferous, -escence, -archy, -ocracy, -aceous, -logical) is a fixed published-derivation set, not a learned model.</li></ul><p>When the CEFR tag conflicts with your own sense of the word's difficulty, the most likely reason is polysemy or domain-specificity. Cross-check against the Coxhead AWL signal (academic register) and the WordNet synonym list (sense overlap) on the same page.</p>`,
-      },
-    ],
-    faqs: [
-      { question: 'Is the CEFR tag an official Council of Europe rating?', answer: 'No. The CEFR framework itself is published by the Council of Europe, but it does not classify individual words — that work is done by the English Vocabulary Profile, Oxford 3000/5000, Pearson GSE, and others. Our tag is a deterministic derivation from the COCA/BNC corpus frequency rank, calibrated against those published reference lists, but it is not an EVP or Oxford classification.' },
-      { question: 'Why do some C2 words look easy?', answer: 'Most C2-tagged words on VocabWize have corpus rank 0 (unranked in COCA / BNC), which the classifier interprets as "rare or specialist". Some of those forms are inflections of common lemmas, or surface variants that are familiar but didn\'t make the corpus rank cutoff. Cross-check against the lemma\'s base form for a fairer reading.' },
-      { question: 'How does the morphological-depth correction work?', answer: 'If the word ends in a low-frequency derivational suffix (-tion, -graph, -ology, -ize, -escence, -ferous, etc.) and its surface length is ≥ 10 letters, the classifier bumps the CEFR tier UP by one. This catches cases where the lemma is common but the surface form (e.g. "decentralization") is harder to recognize than the rank suggests.' },
-      { question: 'What corpus does the rank come from?', answer: 'Primarily the Corpus of Contemporary American English (COCA, Mark Davies / BYU, 1B+ words 1990–present). For words better attested in British English, we fall back to the British National Corpus (BNC, 100M words). Both are well-established published corpora and cited as the reference frequency source for most modern English-language teaching materials.' },
-      { question: 'Why not use the official English Vocabulary Profile directly?', answer: 'The English Vocabulary Profile is a Cambridge University Press product released under a non-redistributable license. We cannot include EVP data in our open dictionary. Our deterministic classifier reproduces the EVP\'s cutoff bands from publicly available COCA/BNC corpus rank data, with explicit documentation of how the cutoffs differ.' },
-      { question: 'Where can I find the CEFR descriptors in detail?', answer: 'The CEFR Companion Volume (Council of Europe, 2018 update) is the canonical reference. It describes each level\'s "can-do" statements for reading, writing, listening, and speaking. The Companion Volume is published as a free PDF on the Council of Europe website.' },
-      { question: 'Does VocabWize plan to update the cutoffs?', answer: 'The cutoffs are tied to the COCA / BNC corpus rank, both of which are updated periodically. When the underlying corpus is republished and our rank database is reingested, the cutoffs are revisited as part of the editorial review. Any change to the cutoff bands themselves is documented on the corrections page.' },
-    ],
-  },
-  {
-    slug: 'cross-reference-synonyms-register',
-    title: 'WordNet Synonyms vs Register-Equivalent Swaps: Why "big" and "enormous" Are Not Interchangeable',
-    description: 'WordNet records sense-overlap synonyms — pairs of words that share a meaning. But sense overlap is not stylistic equivalence: each synonym carries a different register (formal, neutral, informal), a different collocation profile, and a different connotation. This guide explains how to read the synonym list on a word page and when a synonym is a safe swap.',
-    category: 'Reference',
-    updatedAt: '2026-05-11',
-    intro: `<p>Every word entry on VocabWize lists WordNet synonyms — words that share at least one sense with the headword according to the Princeton WordNet lexical database. The list is short, factual, and useful, but it is easy to misread. WordNet records <strong>sense overlap</strong>; it does not record <strong>register equivalence</strong>. In English, register (formal vs informal), collocation (which words a synonym pairs with), and connotation (positive, neutral, negative emotional load) often differ even between near-perfect synonyms — and substituting one for another in writing can change the tone of a sentence even when the literal meaning is preserved.</p><p>This guide explains the difference, shows how to use the synonym list on a VocabWize entry productively, and lays out the published references behind our synonym data.</p>`,
-    sections: [
-      {
-        heading: 'What WordNet synonymy actually records',
-        html: `<p>Princeton WordNet, originally compiled by George A. Miller and his collaborators at Princeton University, organises English vocabulary into <strong>synsets</strong> — sets of words that are interchangeable in at least one context. WordNet 3.1 (the latest published release) contains 117,659 synsets covering nouns, verbs, adjectives, and adverbs. Each synset has a gloss (short definition) and may carry example sentences.</p><p>WordNet was built for computational linguistics and lexical research, not for writing instruction. Its synonymy relation is binary: two words are either in the same synset or they are not. It records the fact of overlap, not the degree, frequency, or stylistic context. That makes WordNet a <em>descriptive</em> lexicographic resource: it documents what English speakers have used as substitutes, without judging whether any pair is a good or bad swap in a given context.</p>`,
-      },
-      {
-        heading: 'Why register matters more than sense overlap',
-        html: `<p>Register is the level of formality and the social context a word belongs to. Most English content words sit on a register spectrum from <em>formal</em> (academic, legal, technical) through <em>neutral</em> (general journalism, professional writing) to <em>informal</em> (conversation, casual writing) to <em>slang</em> (in-group, ephemeral). WordNet synonyms can sit anywhere on that spectrum:</p><ul><li><code>big</code>, <code>large</code>, <code>huge</code>, <code>enormous</code>, <code>massive</code>, <code>gigantic</code>, <code>vast</code> — all in the same WordNet synset, but very different register. "Big" is neutral; "vast" is literary; "huge" is informal; "enormous" is neutral-to-formal; "gigantic" leans informal-emphatic; "massive" is informal-to-neutral; "large" is neutral-to-formal.</li><li><code>tired</code>, <code>fatigued</code>, <code>exhausted</code>, <code>weary</code>, <code>knackered</code> — share a sense, but you would not write "the patient appeared knackered" in a clinical note. Register and dialect (knackered is British informal) constrain the swap.</li><li><code>buy</code>, <code>purchase</code>, <code>acquire</code>, <code>procure</code> — share a sense, but each pulls a different surrounding register. "Buy a coffee" sounds natural; "purchase a coffee" sounds bureaucratic; "procure a coffee" is bureaucratic-to-comic.</li></ul><p>Swapping a WordNet synonym without considering register can produce text that is technically correct but reads as stylistically off. The synonym list on a VocabWize entry is a starting point for <em>candidate</em> swaps; the actual swap requires a register judgment that the dictionary does not make for you.</p>`,
-      },
-      {
-        heading: 'Collocation — the second axis WordNet does not capture',
-        html: `<p>Collocation is the set of words that a target word pairs with in natural English. Two synonyms can have very different collocation profiles, even when they share a sense:</p><ul><li><code>strong</code> vs <code>powerful</code> — "strong coffee" but not usually "powerful coffee"; "powerful engine" but not usually "strong engine". The same noun does not always accept both synonyms.</li><li><code>fast</code> vs <code>quick</code> — "fast car" but "quick decision"; "fast food" but "quick break".</li><li><code>begin</code> vs <code>start</code> — both are correct verbs of inception, but "begin to" is more formal than "start to", and certain idiomatic frames take only one ("begin the meeting" is fine; "start the meeting" is fine; "begin a war" tends to collocate differently from "start a war").</li></ul><p>The Oxford Collocations Dictionary for Students of English (Oxford University Press, second edition 2009) and Mark Davies\' COCA collocation database are the published references for English collocations. WordNet does not contain collocation data. On a VocabWize entry, the synonym list will not flag collocation differences — that judgment lives in the example sentences and your own reading.</p>`,
-      },
-      {
-        heading: 'Connotation — the third axis',
-        html: `<p>Connotation is the emotional or evaluative load a word carries beyond its literal meaning. Several WordNet synonyms differ only in connotation:</p><ul><li><code>thin</code> (neutral) vs <code>slender</code> (positive) vs <code>skinny</code> (mildly negative) vs <code>emaciated</code> (strongly negative, clinical).</li><li><code>old</code> (neutral) vs <code>elderly</code> (respectful, formal) vs <code>aged</code> (formal, often legal) vs <code>ancient</code> (literary, often pejorative when applied to people).</li><li><code>cheap</code> (mildly negative) vs <code>inexpensive</code> (neutral) vs <code>affordable</code> (positive) vs <code>budget</code> (neutral-marketing).</li></ul><p>Connotation is even more reader-dependent than register: a word that reads as neutral to one English speaker may read as charged to another, especially across dialects and across generations. When the connotation matters (writing about people, marketing copy, persuasive writing), pick the synonym whose connotation matches your intent — not the one WordNet happens to list first.</p>`,
-      },
-      {
-        heading: 'How to use the VocabWize synonym list productively',
-        html: `<p>Treat the synonym list on a word entry as a <strong>candidate set</strong>, not a swap-in dictionary:</p><ol><li><strong>Read the gloss first.</strong> The headword definition tells you the sense. WordNet synonyms only overlap on at least one sense, not all senses.</li><li><strong>Check register.</strong> Is your sentence formal, neutral, or informal? Pick the synonym whose register matches. The Oxford Learner\'s Dictionary marks register on most entries (informal / formal / literary / slang).</li><li><strong>Test collocation.</strong> Put the candidate synonym into the surrounding noun phrase and check whether the combination is attested. Mark Davies\' COCA collocation interface is free and the fastest published-corpus check for English collocation.</li><li><strong>Reflect on connotation.</strong> If you are writing about people, products, places, or politics, the synonym\'s connotation matters more than its literal sense. When in doubt, pick the neutral-register option.</li><li><strong>When in doubt, do not swap.</strong> A word that reads naturally is better than a "more sophisticated" word that misfires. Sophistication in English writing comes from sentence structure and idea density, not from synonym density.</li></ol>`,
-      },
-    ],
-    faqs: [
-      { question: 'Are all WordNet synonyms interchangeable?', answer: 'No. WordNet records sense overlap — two words share at least one meaning. It does not record register, collocation, or connotation differences. Two WordNet synonyms can be perfectly interchangeable in one sentence and wildly inappropriate in another.' },
-      { question: 'Where can I find a register-tagged synonym list?', answer: 'The Oxford Learner\'s Dictionary and the Cambridge Advanced Learner\'s Dictionary tag most entries with register labels (informal, formal, literary, slang). For collocation specifically, the Oxford Collocations Dictionary for Students of English is the most-cited published reference.' },
-      { question: 'How big is the synonym list on a VocabWize entry?', answer: 'It varies. Common words have 5-20 WordNet synonyms; rare or specialist words may have 0-2. We show the entire WordNet synset overlap, not a curated subset — so the list is descriptive (what WordNet records) rather than prescriptive (what we recommend).' },
-      { question: 'Should I memorise synonym lists for vocabulary study?', answer: 'Not as raw lists. Learning "big, huge, enormous, vast, gigantic" in one session produces interference — your brain stops distinguishing them. Learn each word in context with one or two example sentences, then compare to its near-synonyms only after each is stable on its own.' },
-      { question: 'Why are some synonyms missing for a common word?', answer: 'Our synonym extraction comes from the Princeton WordNet 3.1 synset graph. If a word\'s synset is small (or if the word is a closed-class function word like "the" or "to"), there may be no synonyms to list. Absence in WordNet is descriptive — it reflects how WordNet was compiled, not whether substitutes exist.' },
-      { question: 'Are antonyms more reliable than synonyms for register?', answer: 'Slightly. Antonym pairs in WordNet (good/bad, big/small) tend to be register-balanced — both members usually sit in similar register tiers. But the same caveats apply for collocation and connotation. Use antonyms in pairs (good vs bad in the same sentence) rather than as register-free swaps.' },
-      { question: 'Does the synonym list change when WordNet is updated?', answer: 'WordNet 3.1 (2011) is the last published Princeton WordNet release. Several derivative projects (Open English WordNet, MultiWordNet) continue updates. Our internal data is locked to WordNet 3.1 to keep the synonym list stable across releases; we will document any switch on the corrections page.' },
-    ],
-  },
-  {
-    slug: 'etymology-family-decomposer',
-    title: 'Etymology Family Decomposer: Greek, Latin, and Germanic Roots in English Vocabulary',
-    description: 'Roughly 60% of English vocabulary comes from Latin or Greek, 25% from Germanic roots, and the rest from French, Norse, and modern borrowings. This guide shows how to decompose a word into its prefix-root-suffix layers and how the published references (Etymonline, Oxford World Encyclopedia of Word Origins) document English etymology.',
-    category: 'Reference',
-    updatedAt: '2026-05-11',
-    intro: `<p>English vocabulary is a layered borrowing record. The Germanic core (~25% of the modern vocabulary) carries everyday speech: <em>house, water, run, eat, mother, day</em>. The Latin layer (~30%) entered through Norman French after 1066 and through scholarly borrowing in the Renaissance: <em>nation, science, doctor, university, public</em>. The Greek layer (~20%) entered later as a technical / scientific vocabulary: <em>biology, telescope, democracy, philosophy</em>. The remainder is French, Old Norse, and modern borrowings from every continent. Knowing which layer a word comes from is one of the most efficient ways to chunk unfamiliar long words into known parts.</p><p>This guide explains how etymology decomposition works, which published references VocabWize consults, and how the etymology layer interacts with the CEFR and AWL signals on a word entry page.</p>`,
-    sections: [
-      {
-        heading: 'Why etymology matters for vocabulary learning',
-        html: `<p>If you can identify the Greek root <em>bio-</em> ("life") and the Greek combining form <em>-logy</em> ("study of"), you can guess <em>biology, biography, biochemistry, biomechanics, biopsy, biosphere</em>, and dozens more. The same root-and-suffix logic works for Latin (<em>port-</em> "to carry" → <em>transport, import, export, portable, portage, deport, support</em>) and Germanic (<em>-ness</em> "state of" → <em>happiness, kindness, weakness, darkness</em>).</p><p>Etymology is therefore not antiquarian — it is a chunking tool. Published research on second-language vocabulary acquisition (Paul Nation, Norbert Schmitt) repeatedly finds that learners who know the most-frequent Greek and Latin roots can passively recognize 10-15× more low-frequency academic vocabulary than learners who memorise only surface forms.</p>`,
-      },
-      {
-        heading: 'The three big layers and their typical suffix signatures',
-        html: `<ul><li><strong>Germanic layer.</strong> Short surface forms, irregular plurals, monosyllabic stems. Typical suffixes: -ness, -ful, -less, -ly, -hood, -ship, -dom, -wise. Sample stems: <em>house, water, run, time, day, life, work, hand, foot</em>. Concentrated in CEFR A1-B1.</li><li><strong>Latin layer.</strong> Polysyllabic, regular pluralisation, recognizable prefix + root + suffix. Typical prefixes: ab-, ad-, com-, de-, dis-, ex-, in-, inter-, pre-, pro-, re-, sub-, super-, trans-. Typical suffixes: -tion, -sion, -ment, -ity, -able, -ible, -ous, -ate, -ize. Concentrated in CEFR B1-C1 and in the Coxhead AWL.</li><li><strong>Greek layer.</strong> Often longer than Latin, frequently scientific or philosophical, combining forms attached without separator (-ology, -graph, -archy, -ocracy). Typical combining forms: bio-, geo-, photo-, tele-, micro-, macro-, neuro-, psycho-, demo-, theo-, philo-. Concentrated in CEFR B2-C2 and in technical / academic domains.</li></ul><p>The suffix signature is the fastest layer-identification tool. A word ending in -ology is almost certainly Greek; a word ending in -tion is almost certainly Latin; a word ending in -ness is almost certainly Germanic. Cross-checking the prefix and the stem confirms the layer.</p>`,
-      },
-      {
-        heading: 'Published references for English etymology',
-        html: `<p>Three published references are the standard sources for English word origins. VocabWize cites and links out to them rather than hosting fabricated etymology data:</p><ul><li><strong>Etymonline (Online Etymology Dictionary, Douglas Harper).</strong> Free, regularly updated, with dated first attestations from Old English texts forward. The most-cited free etymology reference in academic and learner contexts.</li><li><strong>Oxford World Encyclopedia of Word Origins.</strong> Print + digital, edited by Julia Cresswell. The most-cited published encyclopedia of English etymology after the OED.</li><li><strong>Oxford English Dictionary (OED).</strong> The canonical historical dictionary of English. Subscription-based; we link to it for nuance lookup but do not import its data.</li></ul><p>Where we surface an etymology note on a word entry page, it is sourced from Etymonline or from the Oxford World Encyclopedia of Word Origins. Etymology for words without published documentation (rare modern coinages, regional slang) is omitted rather than fabricated.</p>`,
-      },
-      {
-        heading: 'Limits of etymology decomposition',
-        html: `<p>The decomposer is useful but not universal:</p><ul><li><strong>Coverage is uneven.</strong> Roughly 60-70% of English content words have a clean prefix-root-suffix decomposition. The rest are unanalyzable (single Germanic stems, foreign borrowings without productive morphology, proper-noun derivatives).</li><li><strong>Semantic drift.</strong> Many Latin and Greek roots have shifted meaning in English. <em>Awful</em> originally meant "full of awe" (positive); <em>nice</em> originally meant "foolish" (Latin <em>nescius</em>, "ignorant"). Decomposing into roots can mislead when meaning has drifted.</li><li><strong>False friends.</strong> Two words can share a surface morpheme without sharing an etymology. <em>Carpet</em> and <em>carpenter</em> look related but come from different roots; <em>peninsula</em> and <em>penitent</em> share <em>pen-</em> but trace to different sources.</li><li><strong>Compound words.</strong> Modern English compounds (<em>laptop, smartphone, podcast</em>) decompose by transparent meaning rather than by classical roots. The decomposer treats these as English compounds, not as Latin or Greek derivatives.</li></ul><p>When the decomposition is unclear, the VocabWize entry page falls back to a length-and-suffix description rather than guessing a root.</p>`,
-      },
-      {
-        heading: 'How VocabWize integrates etymology into the word page',
-        html: `<p>On every word entry, the etymology layer surfaces in three places:</p><ol><li><strong>Word Insights section.</strong> A short note on length, layer (Latin / Greek / Germanic / other), and any productive suffix detected. Sourced from the published references above.</li><li><strong>Morphology paragraph of the Interpretation Strip.</strong> Identifies the surface suffix (when detected) and its origin (Latin -tionem, Greek -logia, Old English -nes, etc.). Used to explain why the CEFR classifier applied a morphological-depth correction.</li><li><strong>External link to Etymonline.</strong> A link from the related-words area takes you to Etymonline\'s full entry for the same word. Reading the Etymonline entry is the fastest way to confirm or extend our short surface description.</li></ol><p>For technical or specialist vocabulary, pair the etymology layer with the AWL Sublist signal (academic register) and the WordNet synonym list (sense overlap). Each layer tells you something different about the word; the combination is more informative than any single signal alone.</p>`,
-      },
-    ],
-    faqs: [
-      { question: 'What percentage of English vocabulary is Latin or Greek?', answer: 'Roughly 60% of English content vocabulary derives from Latin (about 30%) and Greek (about 20%), with the balance from French intermediary borrowings. The exact split varies by register: in everyday speech, Germanic dominates; in academic prose, Latin and Greek combined account for over 70% of the content words.' },
-      { question: 'How can I learn Greek and Latin roots efficiently?', answer: 'Start with the 30 most-productive roots and 20 most-productive prefixes / suffixes. References: Donald Ayers\' English Words from Latin and Greek Elements (University of Arizona Press), or the Memrise / Anki "GRE roots" decks which align well with the AWL. Avoid memorising rare roots before the productive ones — the ROI drops sharply.' },
-      { question: 'Why are some Latin words easy and others hard?', answer: 'Frequency is the main driver. High-frequency Latinate words (people, public, family, nature) entered English through Norman French after 1066 and are now part of the everyday register. Lower-frequency Latinate words entered later through scholarly borrowing and remain marked as formal or academic. The CEFR classifier captures the frequency split; the etymology layer captures the borrowing pathway.' },
-      { question: 'Is the etymology on VocabWize sourced from the OED?', answer: 'No — the OED is a subscription resource and we do not redistribute its data. Our etymology notes derive from Etymonline (Douglas Harper, online and free) and the Oxford World Encyclopedia of Word Origins (Julia Cresswell, Oxford University Press). For deeper research, we link out to the OED rather than reproduce its content.' },
-      { question: 'What if the etymology is unknown?', answer: 'For modern coinages, regional slang, and a small number of pre-Old English words, the published references record the origin as uncertain or unknown. In those cases the VocabWize entry says "etymology not documented in published references" rather than guessing — fabricated etymology would compromise the audit chain.' },
-      { question: 'Does etymology predict CEFR level?', answer: 'Loosely. Germanic core words are usually A1-A2; Latinate words concentrate in B1-C1; Greek combining forms are usually C1-C2 unless they entered everyday speech (e.g. telephone, electric). But etymology is a covariate, not a primary classifier. The COCA / BNC frequency rank remains the strongest single predictor of CEFR level.' },
-    ],
-  },
-  {
-    slug: 'corpus-frequency-rank-methodology',
-    title: 'Corpus Frequency Rank: How COCA and BNC Define "Most Common" English Words',
-    description: 'Every word entry on VocabWize shows a corpus frequency rank — the position of the word in the Corpus of Contemporary American English (COCA) or the British National Corpus (BNC). This guide explains how corpus rank is built, why rank 1 vs rank 5,000 vs rank 50,000 matters, and how the rank flows into the CEFR and AWL signals.',
-    category: 'Reference',
-    updatedAt: '2026-05-11',
-    intro: `<p>Frequency rank is the most useful single signal we have about an English word. Rank 1 (<code>the</code>) appears in nearly every sentence; rank 5,000 (<code>algorithm</code>) appears in roughly one of every fifty academic articles; rank 50,000 (<code>coruscate</code>) appears in maybe one specialist text per thousand. Knowing the rank tells you how often you will meet the word, how likely a learner needs to know it, and how to sequence your study plan.</p><p>VocabWize uses two published corpora to derive the rank for each entry: the <strong>Corpus of Contemporary American English (COCA)</strong> compiled by Mark Davies at Brigham Young University, and the <strong>British National Corpus (BNC)</strong> maintained by Oxford University Computing Services. This guide explains how each corpus is built, why their rankings sometimes disagree, and how the rank drives the CEFR and AWL signals on every word entry page.</p>`,
-    sections: [
-      {
-        heading: 'What a corpus is and how it gets a frequency rank',
-        html: `<p>A <strong>corpus</strong> in linguistics is a structured collection of texts — usually millions of words — sampled to represent a language as it is actually used. A corpus is not a dictionary; it is the raw data a dictionary draws on. Modern English corpora are tagged at the word level (part of speech, lemma) and queryable through software interfaces. The most-cited published English corpora:</p><ul><li><strong>COCA</strong> (Davies, BYU, 1B+ words, 1990-present) — balanced across spoken, fiction, magazine, newspaper, academic, web. The standard reference for modern American English.</li><li><strong>BNC</strong> (Oxford, 100M words, 1980s-1990s) — balanced across written and spoken British English. The standard reference for late 20th-century British English.</li><li><strong>GloWbE</strong> (Davies, BYU, 1.9B words, 2012-2013) — global web English across 20 English-speaking countries.</li><li><strong>iWeb</strong> (Davies, BYU, 14B words, 2017) — web English at very large scale.</li></ul><p>To compute a <strong>frequency rank</strong>, every word in the corpus is tagged for its lemma (base form: <em>run</em> is the lemma of <em>ran, running, runs, runner</em>), and lemmas are counted. The most-frequent lemma is ranked 1, the second 2, and so on. Modern English corpora typically rank 60,000-80,000 lemmas before counts drop to under 10 per million words (the threshold below which rank is statistically unreliable).</p>`,
-      },
-      {
-        heading: 'How VocabWize derives its rank',
-        html: `<p>Our internal database stores a frequency rank for each word as follows:</p><ol><li>The base frequency comes from the <strong>ECDICT</strong> open-source dictionary (the lexical core of our database), which incorporates BNC and COCA ranks for over 110,000 English forms.</li><li>Where ECDICT and COCA rank diverge by more than 1,000 positions, we recompute using the COCA top-60K list directly. American English is the dominant register for our user base.</li><li>Forms with no corpus attestation (rare medical Latin, archaic spellings, specialist scientific terms) are stored with rank 0 and flagged as "corpus-unranked".</li></ol><p>The rank is a single integer per word. We do not split rank across parts of speech (running-verb vs running-noun) — we rank by lemma, following the COCA convention. The Coxhead AWL, the WordNet synonym graph, and the CEFR classifier all read this single rank as their primary frequency signal.</p>`,
-      },
-      {
-        heading: 'How rank flows into CEFR and AWL',
-        html: `<p>The corpus frequency rank is the input to two derived signals on every entry:</p><ul><li><strong>CEFR Difficulty Tier (A1-C2).</strong> Computed from rank bands. Rank 1-1,000 = A1; rank 1,001-2,000 = A2; rank 2,001-5,000 = B1; rank 5,001-15,000 = B2; rank 15,001-50,000 = C1; rank 0 or beyond 50,000 = C2. A morphological-depth correction can bump the tier up by one for long words with low-frequency suffixes. See <a href="/guide/cefr-difficulty-tiers/">the CEFR guide</a> for the full classifier rules.</li><li><strong>Coxhead AWL Sublist (1-10).</strong> NOT directly derived from rank — the AWL is a static published reference list. But rank correlates strongly: most AWL words have rank between 1,000 and 30,000, and AWL Sublist 1 words tend to have lower (more frequent) ranks than Sublist 10 words. See <a href="/guide/awl-academic-word-list-sublists/">the AWL guide</a> for the published reference.</li></ul><p>Together, the rank, the CEFR tier, and the AWL sublist (when applicable) give you three orthogonal signals for any word — frequency, proficiency tier, and academic register.</p>`,
-      },
-      {
-        heading: 'Why ranks sometimes disagree across corpora',
-        html: `<p>The same word can have very different ranks across corpora because corpora sample different registers and time periods:</p><ul><li><strong>British vs American spelling.</strong> "Colour" is high-frequency in BNC, very low in COCA; "color" is the reverse. We normalize to the COCA spelling for the rank.</li><li><strong>Time period.</strong> "Email" is high-frequency in COCA (1990-present) but barely attested in BNC (1980s-1990s). "Telegram" is the inverse.</li><li><strong>Register balance.</strong> The Spoken section of COCA boosts ranks of conversational words (yeah, gonna, kinda); the Academic section of COCA boosts ranks of formal vocabulary. A balanced rank averages across all five COCA registers.</li><li><strong>Domain-specific vocabulary.</strong> Medical, legal, and scientific terms can have very high domain frequency but very low general-corpus frequency. Our rank is the general-corpus rank — it does not boost domain-specific terms.</li></ul><p>When in doubt, the rank we show is the general-purpose English rank, weighted across COCA registers. The CEFR tier and the AWL sublist are designed to capture register and academic-specificity separately.</p>`,
-      },
-      {
-        heading: 'How to use the rank in your study plan',
-        html: `<p>Rank gives you a study-priority signal that is more granular than the CEFR tier:</p><ul><li><strong>Rank 1-500</strong> — the absolute core of English. If you do not know one of these words, the gap is felt in every paragraph.</li><li><strong>Rank 500-2,000</strong> — A2-equivalent vocabulary; you will meet every word here in any English text.</li><li><strong>Rank 2,000-5,000</strong> — B1-equivalent; the bulk of news, journal, and professional vocabulary lives here. The single highest-leverage band to push from passive to active recognition.</li><li><strong>Rank 5,000-15,000</strong> — B2-equivalent; you will meet words at this rank a few times per article. Active recall is rarely required; passive recognition is enough.</li><li><strong>Rank 15,000-50,000</strong> — C1-equivalent; specialist or literary vocabulary. Pick words you actually encounter rather than studying the band as a list.</li><li><strong>Rank 0 (unranked)</strong> — usually a rare inflection, a specialist term, or a word the corpus did not capture. Treat the absence of a rank as a "use only in context where you have seen it" signal.</li></ul>`,
-      },
-    ],
-    faqs: [
-      { question: 'Why is "the" rank 1 if it has no real meaning?', answer: 'Frequency rank counts every appearance of a word, including function words (articles, prepositions, conjunctions). "The" appears in nearly every English sentence, so it ranks first by raw frequency. The CEFR and AWL classifiers handle this honestly: "the" is A1 in CEFR (essential for basic reading) but not in the AWL (which only includes content words).' },
-      { question: 'How does VocabWize handle words with multiple parts of speech?', answer: 'We rank by lemma, not by part of speech. "Run" as a noun and "run" as a verb share the same rank. This follows the COCA convention. For words where the noun and verb senses diverge sharply, the entry page shows both with separate definition blocks but the frequency rank is the combined lemma rank.' },
-      { question: 'What does "rank 0" or "unranked" mean?', answer: 'It means the word was not attested with high enough frequency in our reference corpora (COCA and BNC) to receive a rank. The classifier interprets rank 0 as C2 vocabulary unless contradicted by a DB level=basic tag. Some rank-0 words are common in domain-specific corpora (medical, legal) — the general-purpose rank does not capture domain frequency.' },
-      { question: 'Can I trust the rank for archaic or rare words?', answer: 'Yes, with the caveat that absence of a rank is informative on its own. If a word is rank 0 in both COCA and BNC, it is rare in modern English regardless of how productive the form may have been historically. For historical attestation, the Oxford English Dictionary remains the canonical reference; the OED is linked from the entry page where relevant.' },
-      { question: 'How often is the rank updated?', answer: 'COCA is updated quarterly with new texts from the most recent year. Our ingest pipeline pulls the latest published COCA top-60K list when we rebuild the database; rank changes for individual words are typically small (10-50 positions) between releases. The rank shown on a word entry is the latest stable build; the entry footer records the build date.' },
-      { question: 'Why not use Google n-gram frequency?', answer: 'Google Books n-grams cover printed text from 1500-2020 but are not register-balanced and over-represent published books versus contemporary speech and web text. For modern English, COCA and BNC are the published-standard references. We do not use Google n-gram data for our ranks.' },
-    ],
-  },
-];
+export const guides: Guide[] = [];
 
 export function getAllGuides(): Guide[] {
-  return guides;
+  return [];
 }
 
-export function getGuideBySlug(slug: string): Guide | undefined {
-  return guides.find((g) => g.slug === slug);
+export function getGuideBySlug(_slug: string): Guide | undefined {
+  return undefined;
 }
+
+// Some sites use these alias function names — keep all surfaces stub-compatible.
+export const getAllStaticGuides = getAllGuides;
+export const getGuide = getGuideBySlug;

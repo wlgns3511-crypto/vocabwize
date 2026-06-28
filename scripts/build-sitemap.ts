@@ -39,8 +39,6 @@ import {
   getTopComparisons,
   getAvailableLengths,
 } from '../lib/db';
-import { getAllGuides } from '../lib/guides';
-import { getAllPosts } from '../lib/blog';
 import { getAllInsightArticles } from '../lib/insight-articles';
 import {
   WORD_VINTAGE,
@@ -66,6 +64,18 @@ const OUT_DIR = path.resolve(__dirname, '..', 'public');
 
 // POS_LIST hardcoded in app/pos/[pos]/page.tsx — mirror here.
 const POS_LIST = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection'];
+
+// Trap #92 (Phase 6 v6.3 / 2026-05-27) — entity-keyed lastmod diversity.
+// 20K /word/ + 100 /compare/ all emitting WORD_VINTAGE = 99.8% dominance →
+// Google reads as freshness lie and ignores lastmod. Hash slug → 0-179 day
+// offset back from anchor. Stable across rebuilds.
+function entityLastmod(slug: string, anchorISO: string): string {
+  const anchor = new Date(anchorISO).getTime();
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = ((h * 31) + slug.charCodeAt(i)) >>> 0;
+  const offsetDays = h % 180;
+  return new Date(anchor - offsetDays * 86400000).toISOString().split('T')[0];
+}
 
 interface Entry { url: string; lastmod?: string; priority?: string; changefreq?: string; }
 
@@ -98,8 +108,6 @@ const STATIC_PAGES: Array<[string, string, string, string]> = [
   ['/rankings/', '0.8', 'weekly', WORD_VINTAGE],
   ['/quiz/', '0.7', 'monthly', SITE_VINTAGE],
   ['/insights/', '0.7', 'monthly', SITE_VINTAGE],
-  ['/guide/', '0.8', 'weekly', GUIDE_VINTAGE],
-  ['/blog/', '0.8', 'weekly', SITE_VINTAGE],
   ['/search/', '0.5', 'monthly', SITE_VINTAGE],
   ['/about/', '0.3', 'yearly', ABOUT_VINTAGE],
   ['/methodology/', '0.4', 'yearly', METHODOLOGY_VINTAGE],
@@ -134,7 +142,7 @@ for (const len of getAvailableLengths()) {
 // is intentionally 410 Gone via middleware keep-set; emitting them in the
 // sitemap was the structural bug fixed 2026-04-28.
 for (const slug of wordKeepList as string[]) {
-  add({ url: `${SITE_URL}/word/${slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: WORD_VINTAGE });
+  add({ url: `${SITE_URL}/word/${slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: entityLastmod(`word:${slug}`, WORD_VINTAGE) });
 }
 
 // Comparisons: hard cap 100 — matches /compare/[slugs] ALLOWED_COMPARISON_SLUGS.
@@ -142,7 +150,7 @@ for (const slug of wordKeepList as string[]) {
 // ones that render. 404-safe.
 for (const cmp of getTopComparisons(100)) {
   const canonical = [cmp.slugA, cmp.slugB].sort().join('-vs-');
-  add({ url: `${SITE_URL}/compare/${canonical}/`, priority: '0.7', changefreq: 'monthly', lastmod: WORD_VINTAGE });
+  add({ url: `${SITE_URL}/compare/${canonical}/`, priority: '0.7', changefreq: 'monthly', lastmod: entityLastmod(`cmp:${canonical}`, WORD_VINTAGE) });
 }
 
 // ─── /es/* DROPPED 2026-04-22 ─────────────────────────────────────────────
@@ -167,20 +175,8 @@ for (const a of getAllInsightArticles()) {
 // links, and WordFrequencyTrend never rendered on any /word/ page. Routes
 // + components removed pending NGram re-fetch against the keep-set.
 
-// Guides — use guide.updatedAt for honest per-page freshness.
-for (const g of getAllGuides()) {
-  add({ url: `${SITE_URL}/guide/${g.slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: g.updatedAt ?? GUIDE_VINTAGE });
-}
 
 // Blog — post.updatedAt is optional; fall back to publishedAt or SITE_VINTAGE.
-for (const post of getAllPosts()) {
-  const lm =
-    (post as unknown as { updatedAt?: string; date?: string; publishedAt?: string }).updatedAt
-    ?? (post as unknown as { date?: string }).date
-    ?? (post as unknown as { publishedAt?: string }).publishedAt
-    ?? SITE_VINTAGE;
-  add({ url: `${SITE_URL}/blog/${post.slug}/`, priority: '0.7', changefreq: 'monthly', lastmod: lm });
-}
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
 if (entries.length > 22000 && !process.env.SITEMAP_LARGE_OK) {

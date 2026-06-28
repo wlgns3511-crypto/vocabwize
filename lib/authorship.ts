@@ -71,6 +71,16 @@ export const REVIEWER_ORG = {
  * link to them from /methodology/ for nuance lookup, but we do not import
  * their data, so they don't belong in `reviewedBy`.
  */
+// Compact {name, url} list for above-fold TrustBlock — derived from SOURCE_AUTHORITIES.
+// Short labels for visual fit; full schema objects remain in SOURCE_AUTHORITIES.
+export const TRUST_BLOCK_SOURCES: ReadonlyArray<{ name: string; url: string }> = [
+  { name: 'ECDICT', url: 'https://github.com/skywind3000/ECDICT' },
+  { name: 'Princeton WordNet', url: 'https://wordnet.princeton.edu/' },
+  { name: 'BNC', url: 'https://www.natcorp.ox.ac.uk/' },
+  { name: 'COCA', url: 'https://www.english-corpora.org/coca/' },
+  { name: 'AWL', url: 'https://www.eapfoundation.com/vocab/academic/awllists/' },
+];
+
 export const SOURCE_AUTHORITIES = [
   {
     '@type': 'CreativeWork',

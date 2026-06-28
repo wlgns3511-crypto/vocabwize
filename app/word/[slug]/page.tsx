@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWordBySlug, getTopWords, getTopComparisons, getSimilarWords, getPopularWords, getRandomWords, getMaxFrequency, getWordsBySamePOS, getWordsBySameLevel, getFrequencyPercentile, getWordCountByLevel, getWordCountByPOS, getTranslations } from "@/lib/db";
 import wordKeepList from "@/lib/generated/word-keep.json";
-import compareKeepList from "@/lib/generated/compare-keep.json";
+import { isHotComparePair } from "@/lib/static-paths";
 import { breadcrumbSchema, faqSchema, definedTermSchema, datasetSchema } from "@/lib/schema";
 import {
   WORD_VINTAGE,
@@ -34,15 +34,18 @@ import { generateWordFaqs } from "@/lib/auto-faqs";
 import { getAwlSublist, getAwlEntry } from "@/lib/awl";
 import { classifyCEFR, cefrLabel } from "@/lib/cefr-tier";
 import { getWordInterpretation } from "@/lib/word-interpretation";
+import { decodeWordCrosswalk, buildWordP1Title, wordVariableMeasured } from "@/lib/crosswalk-vocabwize";
 import { WordInterpretation } from "@/components/upgrades/WordInterpretation";
 import { TableOfContents } from "@/components/upgrades/TableOfContents";
+import { calculateProprietaryMetrics } from "@/lib/proprietary-metrics";
+import { ProprietaryMetricsBlock } from "@/components/upgrades/ProprietaryMetricsBlock";
 
 interface Props { params: Promise<{ slug: string }> }
 
 // HCU 2026-04-24: keep-set = top-100 by popularity + GSC evidence union
 // (10 URLs earning ≥1 click in 28d window that the 100-cap would drop).
-// Single source of truth lives in scripts/build-keep-sets.ts output.
-const ALLOWED_COMPARISON_SLUGS = new Set(compareKeepList as string[]);
+// Single source of truth lives in scripts/build-keep-sets.ts output; the
+// /compare/ keep-set is wrapped by isHotComparePair() in lib/static-paths.ts.
 
 function parseJson(s: string | null): string[] {
   if (!s) return [];
@@ -75,12 +78,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const synCount = (() => { try { return w.synonyms ? (JSON.parse(w.synonyms) as unknown[]).length : 0; } catch { return 0; } })();
   const firstDef = w.definition.split(';')[0].trim().slice(0, 60);
   const pos = w.pos || '';
-  const title = `${w.word}: ${defsCount} definitions, ${pos}, ${exCount} examples, ${synCount} synonyms`;
-  const description = `${w.word} (${pos}) — ${firstDef}. Definitions: ${defsCount}. Examples: ${exCount}. Synonyms: ${synCount}. Level: ${w.level || 'standard'}. English dictionary.`;
+  // Phase 7 P1 — verdict-in-title via §3.3 CrosswalkResult wrapper.
+  // Layout suffix " | VocabWize" is 12c (9-12 sub-band per playbook §4.0
+  // table). Longest entity (20c "uncharacteristically") + longest verdict body
+  // (~25c "Academic (AWL Sublist 10)") = 45c; with suffix = 57c, 3c off the
+  // 60c cap — so title.absolute is the safer call. Worst measured 45c gives
+  // 15c margin without the suffix.
+  const crosswalk = decodeWordCrosswalk({ word: w.word, frequency: w.frequency, level: w.level });
+  const verdictTitle = buildWordP1Title(w.word, crosswalk);
+  const fallbackTitle = pos
+    ? `${w.word} — Meaning, ${pos} · ${crosswalk.tierTag}`
+    : `${w.word} — Meaning · ${crosswalk.tierTag}`;
+  const absoluteTitle = verdictTitle ?? fallbackTitle;
+
+  const frequencyPercentile = w.frequency > 0 ? getFrequencyPercentile(w.frequency) : 50;
+  const metrics = calculateProprietaryMetrics(
+    w.word,
+    slug,
+    w.level,
+    frequencyPercentile,
+    synCount > 0,
+    exCount > 0
+  );
+
+  const description = `[Lexical Value: Complexity ${metrics.complexityScore}/100, Grade ${metrics.overallGrade}] ${w.word} (${pos}) — ${firstDef}. ${crosswalk.verdict} (${crosswalk.tierTag}). ${defsCount} definitions, ${exCount} examples, ${synCount} synonyms. English dictionary.`;
   return {
-    title,
+    title: { absolute: absoluteTitle },
     description,
-    openGraph: { url: `/word/${slug}/` },
+    openGraph: { title: absoluteTitle, description, url: `/word/${slug}/` },
+    twitter: { title: absoluteTitle, description },
     alternates: {
       canonical: `/word/${slug}/`,
       languages: (() => {
@@ -117,7 +143,9 @@ export default async function WordPage({ params }: Props) {
   const posCount = w.pos ? getWordCountByPOS(w.pos) : 0;
   const compareTargetSlug = synonyms[0]?.toLowerCase().replace(/\s+/g, "-") ?? null;
   const compareTargetPair = compareTargetSlug ? [slug, compareTargetSlug].sort().join("-vs-") : null;
-  const canShowCompareCard = compareTargetPair ? ALLOWED_COMPARISON_SLUGS.has(compareTargetPair) : false;
+  // Guard via the shared keep-set helper: synonyms[0] is an arbitrary pair, so
+  // only link it when a static /compare/ page actually exists (dynamicParams=false).
+  const canShowCompareCard = compareTargetSlug ? isHotComparePair(slug, compareTargetSlug) : false;
 
   const faqs = generateWordFaqs(w);
 
@@ -129,6 +157,11 @@ export default async function WordPage({ params }: Props) {
   // PSU 1차 lever — CEFR Difficulty Tier (A1..C2) deterministic classifier.
   // Composed with AWL into the Word Interpretation Strip.
   const cefr = classifyCEFR({ word: w.word, frequency: w.frequency, level: w.level });
+
+  // Phase 7 P0 — §3.3 CrosswalkResult wrapping CEFR × AWL × frequency into a
+  // single 4-band verdict (Core / General / Academic / Specialist). The
+  // verdict also drives title.absolute (P1) and Dataset.variableMeasured (P4).
+  const crosswalk = decodeWordCrosswalk({ word: w.word, frequency: w.frequency, level: w.level });
   const interpretation = getWordInterpretation({
     word: w.word,
     cefr,
@@ -145,15 +178,31 @@ export default async function WordPage({ params }: Props) {
     { name: w.word, url: `/word/${slug}/` },
   ];
 
+  const metrics = calculateProprietaryMetrics(
+    w.word,
+    slug,
+    w.level,
+    frequencyPercentile,
+    synonyms.length > 0,
+    examples.length > 0
+  );
+
   return (
-    <div>
-      <nav className="text-sm text-slate-500 mb-4">
+    <article data-toc-root>
+      <nav className="text-sm text-slate-500 mb-4 font-sans">
         {breadcrumbs.map((b, i) => (<span key={i}>{i > 0 && " / "}{i < 2 ? <a href={b.url} className="hover:underline">{b.name}</a> : <span className="text-slate-800">{b.name}</span>}</span>))}
       </nav>
 
       {/* HCU 2026-05-05: Unique-dimension badges surface our calibrated
           interpretation — frequency band (BNC/COCA percentile) + AWL register
           flag — visible to readers, not just buried in JSON-LD. */}
+      <div className={`mb-6 inline-flex items-start gap-3 rounded-lg border ${crosswalk.tone.border} ${crosswalk.tone.bg} px-4 py-2.5`}>
+        <span className={`text-xs font-bold uppercase tracking-wide ${crosswalk.tone.text}`}>
+          Band {crosswalk.band} · {crosswalk.verdict} ({crosswalk.tierTag})
+        </span>
+        <span className="text-xs text-slate-700 leading-snug">{crosswalk.blurb}</span>
+      </div>
+
       <AnswerHero
         title={w.word}
         subtitle={w.phonetic ? `/${w.phonetic}/` : null}
@@ -197,6 +246,8 @@ export default async function WordPage({ params }: Props) {
         ]}
         updated="Latest corpus review"
       />
+
+      <ProprietaryMetricsBlock {...metrics} />
 
       <WordInterpretation
         strip={interpretation}
@@ -382,9 +433,6 @@ export default async function WordPage({ params }: Props) {
       )}
 
       <div className="flex gap-3 mb-8">
-        <a href={`/rhymes/${slug}`} className="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm">
-          Words that rhyme with {w.word}
-        </a>
         <a href={`/words-length/${w.word.length}`} className="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm">
           {w.word.length}-letter words
         </a>
@@ -610,13 +658,6 @@ export default async function WordPage({ params }: Props) {
             cta: "See more words",
             tone: "emerald" as const,
           },
-          {
-            title: `Rhymes with ${w.word}`,
-            blurb: `Find words that rhyme — useful for writing, mnemonics, and memory.`,
-            href: `/rhymes/${slug}/`,
-            cta: "View rhymes",
-            tone: "amber" as const,
-          },
         ]}
       />
 
@@ -637,18 +678,15 @@ export default async function WordPage({ params }: Props) {
         description: `Lexical data for the English word "${w.word}": COCA/BNC frequency rank, Coxhead 2000 AWL membership, CEFR difficulty tier derived from corpus-frequency cutoffs, part of speech, IPA phonetic, Princeton WordNet synonym/antonym graph, and ECDICT base definition. Pure deterministic derivation from open lexical corpora — no editorial paraphrase.`,
         url: `/word/${slug}/`,
         dateModified: WORD_VINTAGE,
-        creatorIndex: 3,
         variableMeasured: [
-          "CEFR difficulty tier (A1-C2, deterministic over COCA/BNC rank)",
-          "Coxhead 2000 AWL sublist membership",
-          "COCA frequency rank",
-          "BNC frequency rank",
+          ...wordVariableMeasured(crosswalk),
           "Princeton WordNet synonyms",
           "Princeton WordNet antonyms",
           "ECDICT inflection forms",
+          "IPA phonetic transcription",
         ],
         keywords: [w.word, "english dictionary", "CEFR", "AWL", "COCA", "WordNet"],
       })) }} />
-    </div>
+    </article>
   );
 }

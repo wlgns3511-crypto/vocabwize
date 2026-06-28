@@ -53,17 +53,23 @@ export function articleSchema(args: {
  * produced the underlying dataset), publisher is the site that hosts the
  * presentation, and reviewedBy is the editorial team. Per schema.org spec.
  *
- * Default creator is SOURCE_AUTHORITIES[0] (ECDICT, the primary lexical
- * corpus). Pages whose underlying signal comes from a different upstream
- * pass an index: COCA = 3, Coxhead AWL = 4, Princeton WordNet = 1, BNC = 2.
+ * Phase 7 P4 (2026-05-20) — creator widened from SOURCE_AUTHORITIES[creatorIndex]
+ * singleton to Organization[] crediting EACH primary-source authority
+ * (ECDICT + WordNet + BNC + COCA + Coxhead AWL). Satisfies Trap #110
+ * publisher-diversity gate (≥2 distinct host TLDs — github.com, princeton.edu,
+ * ox.ac.uk, english-corpora.org, eapfoundation.com = 5 distinct) and gives
+ * Google's crawler the full provenance chain. variableMeasured widened to
+ * accept structured PropertyValue objects in addition to plain strings, so
+ * Phase 7 P0 verdict can be emitted as a structured datum.
  */
 export function datasetSchema(args: {
   name: string;
   description: string;
   url: string; // page URL relative to site root, e.g. "/word/excellent/"
   dateModified: string;
-  variableMeasured?: string[];
+  variableMeasured?: ReadonlyArray<string | Record<string, unknown>>;
   keywords?: string[];
+  /** @deprecated kept for backward compat — Phase 7 P4 widens creator to all SOURCE_AUTHORITIES. */
   creatorIndex?: 0 | 1 | 2 | 3 | 4;
 }) {
   const fullUrl = `${SITE_URL}${args.url}`;
@@ -74,12 +80,11 @@ export function datasetSchema(args: {
     description: args.description,
     url: fullUrl,
     dateModified: args.dateModified,
-    creator: {
+    creator: SOURCE_AUTHORITIES.map((s) => ({
       '@type': 'Organization',
-      // Trap #105: creator inline SOURCE_AUTHORITIES[0]/[1]/[2]/[3]/[4] honest origin
-      name: SOURCE_AUTHORITIES[args.creatorIndex ?? 0].name,
-      url: SOURCE_AUTHORITIES[args.creatorIndex ?? 0].url,
-    },
+      name: s.name,
+      url: s.url,
+    })),
     publisher: {
       '@type': 'Organization',
       name: PUBLISHER.name,
@@ -92,6 +97,11 @@ export function datasetSchema(args: {
     },
     sourceOrganization: SOURCE_AUTHORITIES.map((s) => ({
       '@type': 'Organization',
+      name: s.name,
+      url: s.url,
+    })),
+    isBasedOn: SOURCE_AUTHORITIES.map((s) => ({
+      '@type': 'Dataset',
       name: s.name,
       url: s.url,
     })),

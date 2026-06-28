@@ -28,7 +28,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getTopWords, getTopComparisons, getWordBySlug } from '../lib/db';
 
-const WORD_CAP = 20000;
+const WORD_CAP = 2000;
 const COMPARE_CAP = 100;
 
 // HCU 2026-05-04 — Bing impressions auto-union (separate index from Google).

@@ -94,9 +94,7 @@ export default function MethodologyPage() {
         frequent in academic prose, 10 = least). The AWL signal is the
         authoritative published reference and is separate from our DB
         <code>level=academic</code> heuristic. See our{" "}
-        <a href="/guide/awl-academic-word-list-sublists/">
-          AWL Sublists Explained guide
-        </a>{" "}
+        AWL Sublists Explained guide{" "}
         for the full 570-family breakdown and a recommended study order.
       </p>
 
@@ -244,7 +242,7 @@ export default function MethodologyPage() {
         official Council of Europe rating; every word entry surfaces this
         distinction in the CEFR reader-help block. The full classifier
         documentation is on the dedicated{" "}
-        <a href="/guide/cefr-difficulty-tiers/">CEFR Difficulty Tiers</a> guide.
+        CEFR Difficulty Tiers guide.
       </p>
 
       <h2>Coxhead AWL signal — the academic-register layer</h2>
@@ -263,9 +261,9 @@ export default function MethodologyPage() {
         in the AWL is honestly labelled outside the academic register
         (regardless of how "academic" it might sound). The CEFR tier and the
         Coxhead AWL sublist are orthogonal signals — see{" "}
-        <a href="/guide/awl-academic-word-list-sublists/">the AWL guide</a>{" "}
+        the AWL guide{" "}
         and{" "}
-        <a href="/guide/cefr-difficulty-tiers/">the CEFR guide</a> for the
+        the CEFR guide for the
         published references behind each layer.
       </p>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UpgradeAnalytics } from "@/components/upgrades/UpgradeAnalytics";
+import RelatedSites from "@/components/RelatedSites";
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 const SITE_NAME = "VocabWize";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vocabwize.com";
@@ -75,8 +76,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <a href="/word/" className="hover:text-indigo-600">Words</a>
               <a href="/compare/" className="hover:text-indigo-600">Compare</a>
               <a href="/insights/" className="hover:text-indigo-600">Insights</a>
-              <a href="/guide/" className="hover:text-indigo-600">Guides</a>
-              <a href="/blog/" className="hover:text-indigo-600">Articles</a>
               <a href="/pos/" className="hover:text-indigo-600">POS</a>
               <a href="/rankings/" className="hover:text-indigo-600">Rankings</a>
               <a href="/quiz/" className="hover:text-indigo-600">Quiz</a>
@@ -89,6 +88,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <p className="mb-2">
               <a href="/about/" className="hover:text-indigo-600">About</a>
               {" | "}
+              <a href="/methodology/" className="hover:text-indigo-600">Methodology</a>
+              {" | "}
+              <a href="/editorial-policy/" className="hover:text-indigo-600">Editorial Policy</a>
+              {" | "}
+              <a href="/corrections-policy/" className="hover:text-indigo-600">Corrections</a>
+              {" | "}
               <a href="/privacy/" className="hover:text-indigo-600">Privacy</a>
               {" | "}
               <a href="/terms/" className="hover:text-indigo-600">Terms</a>
@@ -97,14 +102,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               {" | "}
               <a href="/contact/" className="hover:text-indigo-600">Contact</a>
             </p>
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Discover More</p>
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                <a href="https://nameblooms.com" className="hover:text-indigo-600" rel="nofollow noopener">Baby Names</a>
-                <a href="https://degreewize.com" className="hover:text-indigo-600" rel="nofollow noopener">Colleges</a>
-                <a href="https://calcpeek.com" className="hover:text-indigo-600" rel="nofollow noopener">Calculators</a>
-              </div>
-            </div>
+            <RelatedSites currentSite="VocabWize" accentClass="hover:text-indigo-600" label="Discover More" />
             <p className="mt-3 text-xs italic text-slate-400">Building better vocabulary, one word at a time.</p>
             <p>&copy; {new Date().getFullYear()} {SITE_NAME}</p>
           </div>

@@ -50,13 +50,9 @@ export function WordInterpretation({ strip, cefr, awlSublist }: Props) {
 
       <p className="mt-4 text-xs text-slate-500">
         The strip is composed deterministically from the COCA/BNC frequency rank, the Coxhead 2000 AWL membership, and the surface form — same inputs always produce the same verdict.{" "}
-        <a href="/guide/cefr-difficulty-tiers/" className="underline hover:text-slate-700">
-          CEFR cutoffs
-        </a>
+        CEFR cutoffs
         {" · "}
-        <a href="/guide/awl-academic-word-list-sublists/" className="underline hover:text-slate-700">
-          AWL Sublist reference
-        </a>
+        AWL Sublist reference
       </p>
     </section>
   );
