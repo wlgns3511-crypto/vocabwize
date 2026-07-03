@@ -135,7 +135,11 @@ export function decodeWordCrosswalk(input: {
  * future keep-set extension.
  */
 export function buildWordP1Title(word: string, result: CrosswalkWordResult): string | null {
-  const title = `${word} — ${result.verdict} (${result.tierTag})`;
+  // 2026-07-03 Bing CTR fix: searchers type «{word} meaning» — the
+  // verdict-only title earned pos 7-10 impressions with zero clicks
+  // (dicionariowize «significado» precedent). Intent word first, verdict
+  // kept as the differentiator.
+  const title = `${word}: meaning — ${result.verdict} (${result.tierTag})`;
   if (title.length > 58) return null;
   return title;
 }
