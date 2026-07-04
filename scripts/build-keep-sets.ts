@@ -83,6 +83,24 @@ const GSC_EVIDENCE_WORDS = [
   'xvx',           // rank 46051 — 1 click (196 imp, interesting)
 ];
 
+// Market evidence — 2026-07-03 Bing GetRelatedKeywords mining. These are
+// high-volume search MARKETS (semiannual Bing impressions, NOT our own page
+// impressions — we serve 410 so we never appear, which is exactly why the
+// Bing-pages union above can't catch them). All are DB-backed with real
+// WordNet definitions; keep-add makes them 200-eligible for the trial.
+// See vault/50-Audit/2026-07-03-dict-sibling-mining.md.
+const MARKET_EVIDENCE_WORDS = [
+  'serendipity',    // ~130,000 impr
+  'synergy',        //  ~90,000
+  'demure',         //  ~63,000 (2024 slang revival)
+  'purview',        //  ~61,000
+  'pertinent',      //  ~50,000
+  'erroneous',      //  ~35,000
+  'amenable',       //  ~33,000
+  'acumen',         //  ~29,000 (definition fixed 2026-07-03 to lead with the modern sense)
+  'aforementioned', //  ~28,000
+];
+
 // GSC evidence — /compare/ URLs earning ≥1 click in 28d window. None exist
 // in comparisons table (historical artifacts), but all word halves exist in
 // words table → page renders successfully once in keep-set.
@@ -107,7 +125,7 @@ const wordBase = getTopWords(WORD_CAP).map((w) => w.slug);
 const wordSet = new Set<string>(wordBase);
 let wordAdded = 0;
 let wordSkipped = 0;
-for (const slug of GSC_EVIDENCE_WORDS) {
+for (const slug of [...GSC_EVIDENCE_WORDS, ...MARKET_EVIDENCE_WORDS]) {
   if (!getWordBySlug(slug)) {
     wordSkipped++;
     continue;
