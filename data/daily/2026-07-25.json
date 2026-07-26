@@ -1,0 +1,124 @@
+{
+  "date": "2026-07-25",
+  "kind": "spotlight",
+  "title": "Today’s Word data: Dps",
+  "description": "2 readings from the VocabWize dataset for 2026-07-25: record in focus: dps; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "intro": "2 readings from the VocabWize dataset for 2026-07-25: record in focus: dps; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "items": [
+    {
+      "label": "Dps",
+      "value": "Reference page",
+      "href": "/word/dps/"
+    },
+    {
+      "label": "Dumpers",
+      "value": "Reference page",
+      "href": "/word/dumpers/"
+    },
+    {
+      "label": "Due",
+      "value": "Reference page",
+      "href": "/word/due/"
+    },
+    {
+      "label": "Dry",
+      "value": "Reference page",
+      "href": "/word/dry/"
+    },
+    {
+      "label": "Drug",
+      "value": "Reference page",
+      "href": "/word/drug/"
+    },
+    {
+      "label": "Drop",
+      "value": "Reference page",
+      "href": "/word/drop/"
+    },
+    {
+      "label": "Drool",
+      "value": "Reference page",
+      "href": "/word/drool/"
+    },
+    {
+      "label": "Driveway",
+      "value": "Reference page",
+      "href": "/word/driveway/"
+    },
+    {
+      "label": "Driver",
+      "value": "Reference page",
+      "href": "/word/driver/"
+    }
+  ],
+  "links": [
+    {
+      "label": "View Dps",
+      "href": "/word/dps/"
+    }
+  ],
+  "sections": [
+    {
+      "kind": "spotlight",
+      "heading": "Record in focus: Dps",
+      "body": "Dps records a reference value in the current VocabWize data. The linked record holds the full field list and the source note behind the figure.",
+      "items": [
+        {
+          "label": "Dps",
+          "value": "Reference page",
+          "href": "/word/dps/"
+        }
+      ]
+    },
+    {
+      "kind": "route",
+      "heading": "Where to go next",
+      "body": "A short path through VocabWize for anyone starting today. These are entry points into the detailed pages, not a substitute for them.",
+      "items": [
+        {
+          "label": "Dumpers",
+          "value": "Reference page",
+          "href": "/word/dumpers/"
+        },
+        {
+          "label": "Due",
+          "value": "Reference page",
+          "href": "/word/due/"
+        },
+        {
+          "label": "Dry",
+          "value": "Reference page",
+          "href": "/word/dry/"
+        },
+        {
+          "label": "Drug",
+          "value": "Reference page",
+          "href": "/word/drug/"
+        },
+        {
+          "label": "Drop",
+          "value": "Reference page",
+          "href": "/word/drop/"
+        },
+        {
+          "label": "Drool",
+          "value": "Reference page",
+          "href": "/word/drool/"
+        },
+        {
+          "label": "Driveway",
+          "value": "Reference page",
+          "href": "/word/driveway/"
+        },
+        {
+          "label": "Driver",
+          "value": "Reference page",
+          "href": "/word/driver/"
+        }
+      ]
+    }
+  ],
+  "source": "ECDICT open-source dictionary (BNC/COCA-calibrated)",
+  "dataDate": "2026-07-04",
+  "fingerprint": "e6065478"
+}

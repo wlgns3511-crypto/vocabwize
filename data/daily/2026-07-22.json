@@ -1,0 +1,239 @@
+{
+  "date": "2026-07-22",
+  "kind": "comparison",
+  "title": "lay vs lie: a quick VocabWize comparison",
+  "description": "4 readings from the VocabWize dataset for 2026-07-22: lay vs lie; ranked by frequency; record in focus: drool; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "intro": "4 readings from the VocabWize dataset for 2026-07-22: lay vs lie; ranked by frequency; record in focus: drool; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "items": [
+    {
+      "label": "lay",
+      "value": "Frequency: 958",
+      "href": "/word/lay/",
+      "metric": 958,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #1475 of 2274 by frequency · 30% below the median (1,361)."
+    },
+    {
+      "label": "lie",
+      "value": "Frequency: 751",
+      "href": "/word/lie/",
+      "metric": 751,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #1648 of 2274 by frequency · 45% below the median (1,361)."
+    },
+    {
+      "label": "sargasso",
+      "value": "Frequency: 49,720",
+      "href": "/word/sargasso/",
+      "metric": 49720,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #7 of 2274 by frequency · top 1% · 3553% above the median (1,361)."
+    },
+    {
+      "label": "tory",
+      "value": "Frequency: 49,712",
+      "href": "/word/tory/",
+      "metric": 49712,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #8 of 2274 by frequency · top 1% · 3553% above the median (1,361)."
+    },
+    {
+      "label": "crouton",
+      "value": "Frequency: 49,692",
+      "href": "/word/crouton/",
+      "metric": 49692,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #9 of 2274 by frequency · top 1% · 3551% above the median (1,361)."
+    },
+    {
+      "label": "eldritch",
+      "value": "Frequency: 49,684",
+      "href": "/word/eldritch/",
+      "metric": 49684,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #10 of 2274 by frequency · top 1% · 3551% above the median (1,361)."
+    },
+    {
+      "label": "georgette",
+      "value": "Frequency: 49,676",
+      "href": "/word/georgette/",
+      "metric": 49676,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #11 of 2274 by frequency · top 1% · 3550% above the median (1,361)."
+    },
+    {
+      "label": "drool",
+      "value": "Frequency: 21,477",
+      "href": "/word/drool/",
+      "metric": 21477,
+      "metricLabel": "frequency",
+      "verdict": "Ranks #87 of 2274 by frequency · top 4% · 1478% above the median (1,361)."
+    },
+    {
+      "label": "rarely",
+      "value": "Frequency: 2,271",
+      "href": "/word/rarely/",
+      "metric": 2271,
+      "metricLabel": "frequency"
+    },
+    {
+      "label": "rare",
+      "value": "Frequency: 1,872",
+      "href": "/word/rare/",
+      "metric": 1872,
+      "metricLabel": "frequency"
+    },
+    {
+      "label": "range",
+      "value": "Frequency: 972",
+      "href": "/word/range/",
+      "metric": 972,
+      "metricLabel": "frequency"
+    },
+    {
+      "label": "rancor",
+      "value": "Frequency: 19,522",
+      "href": "/word/rancor/",
+      "metric": 19522,
+      "metricLabel": "frequency"
+    }
+  ],
+  "links": [
+    {
+      "label": "View lay",
+      "href": "/word/lay/"
+    },
+    {
+      "label": "View lie",
+      "href": "/word/lie/"
+    }
+  ],
+  "sections": [
+    {
+      "kind": "comparison",
+      "heading": "lay vs lie",
+      "body": "lay (Frequency: 958) against lie (Frequency: 751). lay is 207 frequency higher, a 27.6% gap.",
+      "items": [
+        {
+          "label": "lay",
+          "value": "Frequency: 958",
+          "href": "/word/lay/",
+          "metric": 958,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #1475 of 2274 by frequency · 30% below the median (1,361)."
+        },
+        {
+          "label": "lie",
+          "value": "Frequency: 751",
+          "href": "/word/lie/",
+          "metric": 751,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #1648 of 2274 by frequency · 45% below the median (1,361)."
+        }
+      ],
+      "takeaway": "Both sit against a dataset median of 1,361 frequency."
+    },
+    {
+      "kind": "ranking",
+      "heading": "Ranked by frequency",
+      "body": "Positions 7–11 of 2274 records carrying a frequency figure. Ordering is computed from the stored values, not editorial preference.",
+      "items": [
+        {
+          "label": "sargasso",
+          "value": "Frequency: 49,720",
+          "href": "/word/sargasso/",
+          "metric": 49720,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #7 of 2274 by frequency · top 1% · 3553% above the median (1,361)."
+        },
+        {
+          "label": "tory",
+          "value": "Frequency: 49,712",
+          "href": "/word/tory/",
+          "metric": 49712,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #8 of 2274 by frequency · top 1% · 3553% above the median (1,361)."
+        },
+        {
+          "label": "crouton",
+          "value": "Frequency: 49,692",
+          "href": "/word/crouton/",
+          "metric": 49692,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #9 of 2274 by frequency · top 1% · 3551% above the median (1,361)."
+        },
+        {
+          "label": "eldritch",
+          "value": "Frequency: 49,684",
+          "href": "/word/eldritch/",
+          "metric": 49684,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #10 of 2274 by frequency · top 1% · 3551% above the median (1,361)."
+        },
+        {
+          "label": "georgette",
+          "value": "Frequency: 49,676",
+          "href": "/word/georgette/",
+          "metric": 49676,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #11 of 2274 by frequency · top 1% · 3550% above the median (1,361)."
+        }
+      ],
+      "takeaway": "Dataset median: 1,361. Highest on file: 49,997 (bessemer)."
+    },
+    {
+      "kind": "spotlight",
+      "heading": "Record in focus: drool",
+      "body": "drool records frequency of 21,477 in the current VocabWize data. The linked record holds the full field list and the source note behind the figure.",
+      "items": [
+        {
+          "label": "drool",
+          "value": "Frequency: 21,477",
+          "href": "/word/drool/",
+          "metric": 21477,
+          "metricLabel": "frequency",
+          "verdict": "Ranks #87 of 2274 by frequency · top 4% · 1478% above the median (1,361)."
+        }
+      ],
+      "takeaway": "Ranks #87 of 2274 by frequency · top 4% · 1478% above the median (1,361)."
+    },
+    {
+      "kind": "route",
+      "heading": "Where to go next",
+      "body": "A short path through VocabWize for anyone starting today. These are entry points into the detailed pages, not a substitute for them.",
+      "items": [
+        {
+          "label": "rarely",
+          "value": "Frequency: 2,271",
+          "href": "/word/rarely/",
+          "metric": 2271,
+          "metricLabel": "frequency"
+        },
+        {
+          "label": "rare",
+          "value": "Frequency: 1,872",
+          "href": "/word/rare/",
+          "metric": 1872,
+          "metricLabel": "frequency"
+        },
+        {
+          "label": "range",
+          "value": "Frequency: 972",
+          "href": "/word/range/",
+          "metric": 972,
+          "metricLabel": "frequency"
+        },
+        {
+          "label": "rancor",
+          "value": "Frequency: 19,522",
+          "href": "/word/rancor/",
+          "metric": 19522,
+          "metricLabel": "frequency"
+        }
+      ]
+    }
+  ],
+  "source": "ECDICT open-source dictionary (BNC/COCA-calibrated)",
+  "dataDate": "2026-07-04",
+  "fingerprint": "53e7db99"
+}

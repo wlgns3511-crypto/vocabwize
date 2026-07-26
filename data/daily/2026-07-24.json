@@ -1,0 +1,124 @@
+{
+  "date": "2026-07-24",
+  "kind": "spotlight",
+  "title": "Today’s Word data: Practical",
+  "description": "2 readings from the VocabWize dataset for 2026-07-24: record in focus: practical; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "intro": "2 readings from the VocabWize dataset for 2026-07-24: record in focus: practical; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "items": [
+    {
+      "label": "Practical",
+      "value": "Reference page",
+      "href": "/word/practical/"
+    },
+    {
+      "label": "Post",
+      "value": "Reference page",
+      "href": "/word/post/"
+    },
+    {
+      "label": "Possibly",
+      "value": "Reference page",
+      "href": "/word/possibly/"
+    },
+    {
+      "label": "Possible",
+      "value": "Reference page",
+      "href": "/word/possible/"
+    },
+    {
+      "label": "Possibility",
+      "value": "Reference page",
+      "href": "/word/possibility/"
+    },
+    {
+      "label": "Positive",
+      "value": "Reference page",
+      "href": "/word/positive/"
+    },
+    {
+      "label": "Position",
+      "value": "Reference page",
+      "href": "/word/position/"
+    },
+    {
+      "label": "Population",
+      "value": "Reference page",
+      "href": "/word/population/"
+    },
+    {
+      "label": "Popular",
+      "value": "Reference page",
+      "href": "/word/popular/"
+    }
+  ],
+  "links": [
+    {
+      "label": "View Practical",
+      "href": "/word/practical/"
+    }
+  ],
+  "sections": [
+    {
+      "kind": "spotlight",
+      "heading": "Record in focus: Practical",
+      "body": "Practical records a reference value in the current VocabWize data. The linked record holds the full field list and the source note behind the figure.",
+      "items": [
+        {
+          "label": "Practical",
+          "value": "Reference page",
+          "href": "/word/practical/"
+        }
+      ]
+    },
+    {
+      "kind": "route",
+      "heading": "Where to go next",
+      "body": "A short path through VocabWize for anyone starting today. These are entry points into the detailed pages, not a substitute for them.",
+      "items": [
+        {
+          "label": "Post",
+          "value": "Reference page",
+          "href": "/word/post/"
+        },
+        {
+          "label": "Possibly",
+          "value": "Reference page",
+          "href": "/word/possibly/"
+        },
+        {
+          "label": "Possible",
+          "value": "Reference page",
+          "href": "/word/possible/"
+        },
+        {
+          "label": "Possibility",
+          "value": "Reference page",
+          "href": "/word/possibility/"
+        },
+        {
+          "label": "Positive",
+          "value": "Reference page",
+          "href": "/word/positive/"
+        },
+        {
+          "label": "Position",
+          "value": "Reference page",
+          "href": "/word/position/"
+        },
+        {
+          "label": "Population",
+          "value": "Reference page",
+          "href": "/word/population/"
+        },
+        {
+          "label": "Popular",
+          "value": "Reference page",
+          "href": "/word/popular/"
+        }
+      ]
+    }
+  ],
+  "source": "ECDICT open-source dictionary (BNC/COCA-calibrated)",
+  "dataDate": "2026-07-04",
+  "fingerprint": "7643d317"
+}

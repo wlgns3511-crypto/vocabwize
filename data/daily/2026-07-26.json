@@ -1,0 +1,124 @@
+{
+  "date": "2026-07-26",
+  "kind": "spotlight",
+  "title": "Today’s Word data: Usa",
+  "description": "2 readings from the VocabWize dataset for 2026-07-26: record in focus: usa; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "intro": "2 readings from the VocabWize dataset for 2026-07-26: record in focus: usa; where to go next. Every figure below is computed from the stored records, and each link opens the record it came from.",
+  "items": [
+    {
+      "label": "Usa",
+      "value": "Reference page",
+      "href": "/word/usa/"
+    },
+    {
+      "label": "Upon",
+      "value": "Reference page",
+      "href": "/word/upon/"
+    },
+    {
+      "label": "Up",
+      "value": "Reference page",
+      "href": "/word/up/"
+    },
+    {
+      "label": "Unusual",
+      "value": "Reference page",
+      "href": "/word/unusual/"
+    },
+    {
+      "label": "Until",
+      "value": "Reference page",
+      "href": "/word/until/"
+    },
+    {
+      "label": "Unless",
+      "value": "Reference page",
+      "href": "/word/unless/"
+    },
+    {
+      "label": "Unix",
+      "value": "Reference page",
+      "href": "/word/unix/"
+    },
+    {
+      "label": "University",
+      "value": "Reference page",
+      "href": "/word/university/"
+    },
+    {
+      "label": "United",
+      "value": "Reference page",
+      "href": "/word/united/"
+    }
+  ],
+  "links": [
+    {
+      "label": "View Usa",
+      "href": "/word/usa/"
+    }
+  ],
+  "sections": [
+    {
+      "kind": "spotlight",
+      "heading": "Record in focus: Usa",
+      "body": "Usa records a reference value in the current VocabWize data. The linked record holds the full field list and the source note behind the figure.",
+      "items": [
+        {
+          "label": "Usa",
+          "value": "Reference page",
+          "href": "/word/usa/"
+        }
+      ]
+    },
+    {
+      "kind": "route",
+      "heading": "Where to go next",
+      "body": "A short path through VocabWize for anyone starting today. These are entry points into the detailed pages, not a substitute for them.",
+      "items": [
+        {
+          "label": "Upon",
+          "value": "Reference page",
+          "href": "/word/upon/"
+        },
+        {
+          "label": "Up",
+          "value": "Reference page",
+          "href": "/word/up/"
+        },
+        {
+          "label": "Unusual",
+          "value": "Reference page",
+          "href": "/word/unusual/"
+        },
+        {
+          "label": "Until",
+          "value": "Reference page",
+          "href": "/word/until/"
+        },
+        {
+          "label": "Unless",
+          "value": "Reference page",
+          "href": "/word/unless/"
+        },
+        {
+          "label": "Unix",
+          "value": "Reference page",
+          "href": "/word/unix/"
+        },
+        {
+          "label": "University",
+          "value": "Reference page",
+          "href": "/word/university/"
+        },
+        {
+          "label": "United",
+          "value": "Reference page",
+          "href": "/word/united/"
+        }
+      ]
+    }
+  ],
+  "source": "ECDICT open-source dictionary (BNC/COCA-calibrated)",
+  "dataDate": "2026-07-04",
+  "fingerprint": "d5f04155"
+}
